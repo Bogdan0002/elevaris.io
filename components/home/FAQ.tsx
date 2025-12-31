@@ -81,7 +81,7 @@ export function FAQ({ faq }: FAQProps) {
             >
               Book a quick call
             </a>{" "}
-            and we'll walk you through how the system works for your business.
+            and we&apos;ll walk you through how the system works for your business.
           </p>
         </div>
       </Container>

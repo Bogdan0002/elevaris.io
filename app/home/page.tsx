@@ -107,7 +107,14 @@ const servicesData = [
   },
 ]
 
-const workData = [
+const workData: Array<{
+  title: string
+  description?: string
+  url?: string
+  imageUrl?: string
+  tags?: string[]
+  layout?: "horizontal" | "vertical"
+}> = [
   { 
     title: "In The Details Auto Spa",
     description: "Premium auto detailing website with service booking, gallery showcase, and modern design that reflects the brand's attention to detail.",

@@ -254,7 +254,7 @@ export function ContactSection({
                 {/* Status Messages */}
                 {submitStatus === "success" && (
                   <p className="text-sm text-primary">
-                    Thank you! We'll be in touch soon.
+                    Thank you! We&apos;ll be in touch soon.
                   </p>
                 )}
                 {submitStatus === "error" && (

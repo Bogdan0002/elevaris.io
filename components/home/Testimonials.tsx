@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, Star } from "lucide-react"
+import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react"
 import { Container } from "@/components/site/Container"
 import { SectionHeading } from "@/components/site/SectionHeading"
-import { GlowCard } from "@/components/brand/GlowCard"
+import { GlowingEffect } from "@/components/ui/glowing-effect"
 
 interface Testimonial {
   quote: string
@@ -23,11 +23,18 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
   const [cardWidth, setCardWidth] = useState<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const GAP_PX = 24 // Fixed gap between cards
+  const GAP_PX = 24
 
   useEffect(() => {
     const updateSizes = () => {
-      setSlidesToShow(3)
+      if (window.innerWidth < 640) {
+        setSlidesToShow(1)
+      } else if (window.innerWidth < 1024) {
+        setSlidesToShow(2)
+      } else {
+        setSlidesToShow(3)
+      }
+      
       if (containerRef.current) {
         const containerWidth = containerRef.current.clientWidth
         const calculatedWidth = (containerWidth - (slidesToShow - 1) * GAP_PX) / slidesToShow
@@ -55,88 +62,52 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
     return () => clearInterval(interval)
   }, [next])
 
-  // Calculate number of dots based on slides
   const totalDots = Math.ceil(testimonials.length / slidesToShow)
-
-  // Calculate offset in pixels
   const offsetPx = cardWidth !== null ? -(currentIndex * (cardWidth + GAP_PX)) : 0
 
   return (
-    <section className="py-20">
+    <section className="py-20 relative">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(123,99,255,0.04),transparent_60%)] pointer-events-none" />
+      
       <Container>
         <SectionHeading
-          title="What Our Clients Say About Us"
+          overline="TESTIMONIALS"
+          title="What Our Clients Say"
           highlightWord="Clients"
+          subtitle="Real feedback from businesses we've helped grow."
         />
 
-        <div className="relative">
+        <div className="relative mt-12">
           {/* Carousel */}
           <div className="overflow-hidden w-full" ref={containerRef}>
             <motion.div
               className="flex"
               style={{ gap: `${GAP_PX}px` }}
               animate={{ x: cardWidth !== null ? `${offsetPx}px` : 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               {testimonials.map((testimonial, index) => (
-                <div
+                <motion.div
                   key={index}
                   className="flex-shrink-0"
                   style={{ width: cardWidth !== null ? `${cardWidth}px` : '33.333%' }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  <GlowCard
-                    hover={false}
-                    className="h-full min-h-[240px] flex flex-col rounded-2xl border border-white/8 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_36%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#151016_0%,#0d0a0d_100%)] shadow-[0_14px_32px_rgba(0,0,0,0.28)]"
-                  >
-                    <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-primary via-purple-400/60 to-primary/70 opacity-70" />
-                    <div className="mb-4 mt-3 flex-grow">
-                      <p className="mb-3 text-sm text-foreground-secondary leading-relaxed">
-                        "{testimonial.quote}"
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between mt-auto pt-1">
-                      <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full overflow-hidden bg-primary/30 flex-shrink-0 border border-white/10">
-                          <img
-                            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&w=120&h=120&q=80"
-                            alt={testimonial.name}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-foreground">
-                            {testimonial.name}
-                          </p>
-                          <p className="text-xs text-foreground-muted">
-                            {testimonial.role}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className="h-4 w-4 fill-primary text-primary"
-                            />
-                          ))}
-                        </div>
-                        <p className="text-xs text-foreground-muted whitespace-nowrap">
-                          5-star rating
-                        </p>
-                      </div>
-                    </div>
-                  </GlowCard>
-                </div>
+                  <TestimonialCard testimonial={testimonial} />
+                </motion.div>
               ))}
             </motion.div>
           </div>
 
           {/* Controls */}
-          <div className="mt-8 flex items-center justify-center gap-4">
+          <div className="mt-10 flex items-center justify-center gap-4">
             <button
               onClick={prev}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-primary/30 bg-background-soft text-primary transition-all hover:border-primary/50 hover:bg-primary/10"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-foreground transition-all duration-300 hover:border-white/20 hover:bg-white/10"
               aria-label="Previous testimonial"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -150,10 +121,10 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index * slidesToShow)}
-                    className={`h-2 rounded-full transition-all ${
+                    className={`h-2 rounded-full transition-all duration-300 ${
                       isActive
-                        ? "w-8 bg-primary"
-                        : "w-2 bg-primary/30"
+                        ? "w-8 bg-gradient-to-r from-primary to-[#7b63ff]"
+                        : "w-2 bg-white/20 hover:bg-white/30"
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
@@ -163,7 +134,7 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
 
             <button
               onClick={next}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-primary/30 bg-background-soft text-primary transition-all hover:border-primary/50 hover:bg-primary/10"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-foreground transition-all duration-300 hover:border-white/20 hover:bg-white/10"
               aria-label="Next testimonial"
             >
               <ChevronRight className="h-5 w-5" />
@@ -172,5 +143,68 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
         </div>
       </Container>
     </section>
+  )
+}
+
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <div className="relative h-full group">
+      {/* Glowing effect */}
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        <GlowingEffect
+          spread={30}
+          glow={true}
+          disabled={false}
+          proximity={50}
+          inactiveZone={0.01}
+          borderWidth={1}
+          className="rounded-2xl"
+        />
+      </div>
+      
+      <div className="relative h-full min-h-[280px] flex flex-col rounded-2xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] p-6 transition-all duration-300 hover:border-white/20">
+        {/* Quote icon */}
+        <div className="mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center">
+            <Quote className="w-5 h-5 text-primary" />
+          </div>
+        </div>
+        
+        {/* Quote text */}
+        <p className="flex-grow text-sm sm:text-base text-foreground-secondary leading-relaxed mb-6">
+          &ldquo;{testimonial.quote}&rdquo;
+        </p>
+        
+        {/* Author info */}
+        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="flex items-center gap-3">
+            {/* Avatar */}
+            <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-primary/30 to-[#7b63ff]/30 flex items-center justify-center border border-white/10">
+              <span className="text-sm font-semibold text-white">
+                {testimonial.name.split(' ').map(n => n[0]).join('')}
+              </span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {testimonial.name}
+              </p>
+              <p className="text-xs text-foreground-secondary">
+                {testimonial.role}
+              </p>
+            </div>
+          </div>
+          
+          {/* Stars */}
+          <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className="h-4 w-4 fill-yellow-400 text-yellow-400"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

@@ -113,7 +113,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
       <Container>
         <SectionHeading title="Our Process" highlightWord="Process" />
 
-        <div className="process-container relative mt-10 pb-[220px]">
+        <div className="process-container relative mt-10 pb-[280px]">
           {/* Timeline rail (desktop) */}
           <div className="timeline absolute left-1/2 top-0 hidden -translate-x-1/2 lg:block" style={{ bottom: "300px" }}>
             <div className="timeline-rail absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 rounded-full bg-white/12" />
@@ -256,11 +256,11 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
           </div>
 
           {/* CTA */}
-          <div className="process-button-container mt-24 lg:mt-28 flex justify-center">
+          <div className="process-button-container mt-32 lg:mt-40 flex justify-center">
             <GlowButton
-              variant="outline"
+              variant="primary"
               href="/contact-us"
-              className="rounded-2xl px-8 py-4 text-base"
+              className="px-8 py-4 text-base"
             >
               Start a Project →
             </GlowButton>

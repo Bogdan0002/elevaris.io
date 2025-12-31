@@ -368,7 +368,7 @@ export default function AdvertisingPage() {
               </h1>
               
               <p className="text-lg sm:text-xl text-foreground-secondary mb-8 leading-relaxed">
-                Stop wasting ad spend on campaigns that don't convert. We build data-driven advertising systems that turn clicks into customers.
+                Stop wasting ad spend on campaigns that don&apos;t convert. We build data-driven advertising systems that turn clicks into customers.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -411,7 +411,7 @@ export default function AdvertisingPage() {
             overline="ADVERTISING CHANNELS"
             title="Multi-Platform Campaigns That Convert"
             highlightWord="Convert"
-            subtitle="We don't just run ads — we build complete acquisition systems across the platforms that matter most."
+            subtitle="We don&apos;t just run ads — we build complete acquisition systems across the platforms that matter most."
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
@@ -596,7 +596,7 @@ export default function AdvertisingPage() {
                 </span>
               </h2>
               <p className="text-foreground-secondary max-w-2xl mx-auto mb-8 leading-relaxed">
-                Book a free strategy call. We'll analyze your business, discuss your goals, and show you exactly how paid advertising can fuel your growth.
+                Book a free strategy call. We&apos;ll analyze your business, discuss your goals, and show you exactly how paid advertising can fuel your growth.
               </p>
               <Link
                 href="/schedule-a-call"

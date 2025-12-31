@@ -355,8 +355,8 @@ function PhoneMockup() {
             <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />
           ))}
         </div>
-        <p className="text-[9px] text-white/80 max-w-[120px]">"Best decision for my business!"</p>
-        <p className="text-[8px] text-white/50 mt-1">— Mike's Cleaning Co.</p>
+        <p className="text-[9px] text-white/80 max-w-[120px]">&ldquo;Best decision for my business!&rdquo;</p>
+        <p className="text-[8px] text-white/50 mt-1">— Mike&apos;s Cleaning Co.</p>
       </motion.div>
     </motion.div>
   )
@@ -635,7 +635,7 @@ export default function CleaningPage() {
                     
                     {/* Included */}
                     <div className="mb-6 flex-1">
-                      <p className="text-sm font-semibold text-foreground mb-3">What's included:</p>
+                      <p className="text-sm font-semibold text-foreground mb-3">What&apos;s included:</p>
                       <ul className="space-y-2.5">
                         {tier.included.map((item, i) => (
                           <li key={i} className="flex items-start gap-2.5 text-sm text-foreground-secondary">
@@ -836,7 +836,7 @@ export default function CleaningPage() {
                 </span>
               </h2>
               <p className="text-foreground-secondary max-w-2xl mx-auto mb-8 leading-relaxed">
-                Book a free 15-minute call. We'll learn about your business, answer your questions, and show you exactly how the system works.
+                Book a free 15-minute call. We&apos;ll learn about your business, answer your questions, and show you exactly how the system works.
               </p>
               <Link
                 href="/schedule-a-call"
@@ -846,7 +846,7 @@ export default function CleaningPage() {
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <p className="text-xs text-foreground-secondary mt-4">
-                No commitment required • See if it's the right fit
+                No commitment required • See if it&apos;s the right fit
               </p>
             </div>
           </motion.div>
@@ -862,7 +862,7 @@ export default function CleaningPage() {
               <Link href="/contact-us" className="text-primary hover:text-primary/80 transition-colors underline">
                 Contact us
               </Link>{" "}
-              and we'll tailor a package around your goals.
+              and we&apos;ll tailor a package around your goals.
             </p>
           </div>
         </Container>

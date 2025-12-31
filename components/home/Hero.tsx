@@ -1,13 +1,20 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Image from "next/image"
 import Spline from "@splinetool/react-spline/next"
 import { Container } from "@/components/site/Container"
 import { GlowButton } from "@/components/brand/GlowButton"
 import { GlowCard } from "@/components/brand/GlowCard"
 import { FloatingCard } from "@/components/brand/FloatingCard"
 import { SparklesCore } from "@/components/ui/sparkles"
+import { 
+  CheckCircle2, 
+  TrendingUp, 
+  Star, 
+  Users,
+  Zap,
+  MessageSquare
+} from "lucide-react"
 
 interface HeroProps {
   title: string
@@ -26,7 +33,6 @@ export function Hero({
   floatingCards,
   badge,
 }: HeroProps) {
-  const titleParts = title.split(new RegExp(`(${highlight})`, "gi"))
   const highlightMatch = title.match(new RegExp(`(${highlight})`, "i"))
   const beforeHighlight = highlightMatch ? title.slice(0, highlightMatch.index).trimEnd() : title
   const highlightText = highlightMatch ? highlightMatch[0] : highlight
@@ -51,7 +57,7 @@ export function Hero({
       </div>
 
       <Container className="relative z-10">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left Column */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -86,9 +92,26 @@ export function Hero({
                 {button}
               </GlowButton>
             </div>
+
+            {/* Trust indicators */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="flex flex-wrap items-center gap-6 pt-4 text-sm text-foreground-secondary"
+            >
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-primary" />
+                No long-term contracts
+              </span>
+              <span className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-primary" />
+                Launch in days
+              </span>
+            </motion.div>
           </motion.div>
 
-          {/* Right Column - Blob Image with glow and badge */}
+          {/* Right Column - Spline with floating elements */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -96,7 +119,7 @@ export function Hero({
             className="relative lg:pl-6"
           >
             <div className="relative mx-auto aspect-[4/3] w-full max-w-[720px] lg:translate-x-4">
-              {/* Outer glow rim - emphasize right side, softer reach */}
+              {/* Outer glow rim */}
               <div className="pointer-events-none absolute inset-0 rounded-[64%_40%_58%_48%/48%_62%_46%_56%] bg-[linear-gradient(94deg,rgba(255,106,85,0)_0%,rgba(255,106,85,0.14)_46%,rgba(255,106,85,0.48)_90%),radial-gradient(circle_at_86%_64%,rgba(255,106,85,0.28),transparent_46%)] blur-[28px]" />
 
               {/* Spline scene blob */}
@@ -108,12 +131,46 @@ export function Hero({
                 />
               </div>
 
+              {/* Floating stats card - top right */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+                className="absolute -top-4 -right-4 sm:-right-8 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-white/10"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-white/50">Avg. Traffic Increase</p>
+                    <p className="text-lg font-bold text-primary">+180%</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating review card - bottom left */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, x: -20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 1.2, duration: 0.5 }}
+                className="absolute -bottom-6 -left-4 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100"
+              >
+                <div className="flex items-center gap-1 mb-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-[9px] text-gray-600 max-w-[100px]">&ldquo;Game changer for our business!&rdquo;</p>
+                <p className="text-[8px] text-gray-400 mt-1">— Local Business Owner</p>
+              </motion.div>
+
               {/* Badge */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
-                className="absolute -bottom-10 left-4 flex items-center gap-3 rounded-2xl border border-[#FF6A55]/50 bg-[rgba(10,10,10,0.8)] px-4 py-2 backdrop-blur-xl shadow-[0_0_26px_rgba(255,106,85,0.35)]"
+                className="absolute bottom-8 right-4 flex items-center gap-3 rounded-2xl border border-[#FF6A55]/50 bg-[rgba(10,10,10,0.8)] px-4 py-2 backdrop-blur-xl shadow-[0_0_26px_rgba(255,106,85,0.35)]"
               >
                 <div className="flex -space-x-2">
                   {[1, 2, 3].map((i) => (
@@ -133,20 +190,20 @@ export function Hero({
         </div>
 
         {/* Floating Cards Below Hero - Evenly Spaced */}
-        <div className="mt-24 grid grid-cols-1 gap-6 sm:grid-cols-3 relative sm:h-[200px] sm:flex sm:justify-between sm:items-start sm:gap-0">
+        <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-3 relative sm:h-[200px] sm:flex sm:justify-between sm:items-start sm:gap-0">
           {floatingCards.map((card, index) => (
             <FloatingCard
               key={card.title}
-              rotation={index === 0 ? -8 : index === 1 ? 5 : -5}
+              rotation={index === 0 ? -6 : index === 1 ? 4 : -4}
               delay={index * 0.2}
               className="sm:w-[280px] sm:flex-shrink-0"
             >
-              <div className="h-full rounded-2xl p-[1px] bg-gradient-to-r from-[#ff6a55] via-[#ff7a59] to-[#7b63ff]">
+              <div className="h-full rounded-2xl p-[1px] bg-gradient-to-r from-[#ff6a55]/60 via-[#ff7a59]/40 to-[#7b63ff]/60">
                 <GlowCard hover={false} className="h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-0 shadow-[0_12px_30px_rgba(0,0,0,0.3)]">
                   <h3 className="mb-2 text-lg font-semibold text-foreground">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-foreground-secondary">
+                  <p className="text-sm text-foreground-secondary leading-relaxed">
                     {card.text}
                   </p>
                 </GlowCard>
@@ -172,18 +229,6 @@ export function Hero({
           }
           100% {
             background-position: 0% 50%;
-          }
-        }
-
-        @keyframes sparkle {
-          0%,
-          100% {
-            opacity: 0.35;
-            transform: scale(0.9);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.2);
           }
         }
       `}</style>

@@ -19,24 +19,55 @@ export function GlowButton({
   type,
   ...props
 }: GlowButtonProps) {
-  const baseStyles =
-    "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none rounded-xl"
+  const baseStyles = cn(
+    "relative inline-flex items-center justify-center gap-2",
+    "font-medium tracking-[-0.01em]",
+    "transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background/95",
+    "disabled:opacity-40 disabled:pointer-events-none disabled:cursor-not-allowed",
+    "transform-gpu will-change-transform",
+    "active:scale-[0.97]",
+    "select-none"
+  )
   
   const sizeStyles = {
-    sm: "px-4 py-2 text-sm",
-    md: "px-6 py-3 text-sm",
-    lg: "px-8 py-4 text-base",
+    sm: "h-9 px-4 text-[13px] rounded-[10px]",
+    md: "h-11 px-5 text-[13px] rounded-[11px]",
+    lg: "h-[50px] px-7 text-[15px] rounded-[12px]",
   }
   
   const variantStyles = {
-    primary:
-      "bg-primary hover:bg-primary/90 text-white shadow-[0_0_20px_rgba(255,106,85,0.3)] hover:shadow-[0_0_30px_rgba(255,106,85,0.5)] hover:-translate-y-0.5",
-    secondary:
-      "bg-gradient-to-r from-primary to-[#7b63ff] text-white shadow-[0_0_24px_rgba(123,99,255,0.3)] hover:shadow-[0_0_34px_rgba(123,99,255,0.5)] hover:-translate-y-0.5",
-    outline:
-      "border border-white/20 bg-white/5 text-foreground hover:border-white/30 hover:bg-white/10 backdrop-blur-sm",
-    ghost:
-      "bg-transparent text-foreground hover:bg-white/5",
+    // Primary: Solid orange - main CTA
+    primary: cn(
+      "bg-primary text-white",
+      "hover:brightness-[1.08]",
+      "shadow-[0_1px_3px_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.12),inset_0_0_0_1px_rgba(255,255,255,0.1)]",
+      "hover:shadow-[0_4px_12px_-2px_rgba(255,106,85,0.5),0_2px_6px_-2px_rgba(255,106,85,0.3),inset_0_0_0_1px_rgba(255,255,255,0.15)]",
+      "hover:-translate-y-[1px]"
+    ),
+    // Secondary: Gradient - special emphasis
+    secondary: cn(
+      "bg-gradient-to-r from-primary via-[#f06a50] to-[#8b6fff] text-white",
+      "hover:brightness-[1.08]",
+      "shadow-[0_1px_3px_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.12),inset_0_0_0_1px_rgba(255,255,255,0.15)]",
+      "hover:shadow-[0_6px_16px_-4px_rgba(123,99,255,0.45),0_2px_6px_-2px_rgba(255,106,85,0.3),inset_0_0_0_1px_rgba(255,255,255,0.2)]",
+      "hover:-translate-y-[1px]"
+    ),
+    // Outline: Glass effect - secondary actions
+    outline: cn(
+      "bg-white/[0.02] text-foreground/90",
+      "border border-white/[0.06]",
+      "hover:bg-white/[0.05] hover:border-white/[0.12] hover:text-foreground",
+      "backdrop-blur-md",
+      "shadow-[0_1px_2px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.02)]",
+      "hover:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.04)]"
+    ),
+    // Ghost: Minimal - tertiary actions
+    ghost: cn(
+      "text-foreground-secondary/80",
+      "hover:text-foreground hover:bg-white/[0.03]",
+      "hover:shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+    ),
   }
 
   const content = (

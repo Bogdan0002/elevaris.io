@@ -85,9 +85,9 @@ export function Hero({
             </p>
             <div className="flex items-center gap-4">
               <GlowButton
-                variant="outline"
+                variant="primary"
+                size="lg"
                 href="/contact-us"
-                className="rounded-2xl"
               >
                 {button}
               </GlowButton>

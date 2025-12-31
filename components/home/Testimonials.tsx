@@ -104,27 +104,27 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
           </div>
 
           {/* Controls */}
-          <div className="mt-10 flex items-center justify-center gap-4">
+          <div className="mt-10 flex items-center justify-center gap-3">
             <button
               onClick={prev}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-foreground transition-all duration-300 hover:border-white/20 hover:bg-white/10"
+              className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.08] text-foreground-secondary transition-all duration-200 hover:bg-white/[0.06] hover:border-white/[0.15] hover:text-foreground active:scale-95"
               aria-label="Previous testimonial"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4" />
             </button>
 
             {/* Dots */}
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-1.5 items-center px-2">
               {Array.from({ length: totalDots }).map((_, index) => {
                 const isActive = Math.floor(currentIndex / slidesToShow) === index
                 return (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index * slidesToShow)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`h-1.5 rounded-full transition-all duration-200 ${
                       isActive
-                        ? "w-8 bg-gradient-to-r from-primary to-[#7b63ff]"
-                        : "w-2 bg-white/20 hover:bg-white/30"
+                        ? "w-6 bg-primary"
+                        : "w-1.5 bg-white/20 hover:bg-white/40"
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
@@ -134,10 +134,10 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
 
             <button
               onClick={next}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-foreground transition-all duration-300 hover:border-white/20 hover:bg-white/10"
+              className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.03] border border-white/[0.08] text-foreground-secondary transition-all duration-200 hover:bg-white/[0.06] hover:border-white/[0.15] hover:text-foreground active:scale-95"
               aria-label="Next testimonial"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-4 w-4" />
             </button>
           </div>
         </div>

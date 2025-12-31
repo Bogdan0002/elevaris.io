@@ -417,17 +417,17 @@ export default function CleaningPage() {
                 A complete system that captures leads, follows up automatically, collects reviews, and keeps everything organized — so you can focus on cleaning, not chasing.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 mb-8">
                 <Link
                   href="#pricing"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(255,106,85,0.3)] hover:shadow-[0_0_30px_rgba(255,106,85,0.5)]"
+                  className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-primary text-white font-semibold rounded-xl transition-all duration-200 hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_rgba(255,106,85,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98]"
                 >
                   View Pricing
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/schedule-a-call"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-foreground font-semibold rounded-xl transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-white/[0.03] border border-white/[0.08] text-foreground font-semibold rounded-xl transition-all duration-200 hover:bg-white/[0.06] hover:border-white/[0.15] backdrop-blur-sm active:scale-[0.98]"
                 >
                   <Play className="w-4 h-4" />
                   See How It Works
@@ -664,10 +664,10 @@ export default function CleaningPage() {
                     {/* CTA */}
                     <Link
                       href="/schedule-a-call"
-                      className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold rounded-xl transition-all duration-300 mt-auto ${
+                      className={`w-full inline-flex items-center justify-center gap-2 h-11 px-5 font-semibold rounded-xl transition-all duration-200 mt-auto active:scale-[0.98] ${
                         tier.popular 
-                          ? 'bg-primary hover:bg-primary/90 text-white shadow-[0_0_20px_rgba(255,106,85,0.3)] hover:shadow-[0_0_30px_rgba(255,106,85,0.5)]'
-                          : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-foreground'
+                          ? 'bg-primary text-white hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_rgba(255,106,85,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]'
+                          : 'bg-white/[0.03] border border-white/[0.08] text-foreground hover:bg-white/[0.06] hover:border-white/[0.15]'
                       }`}
                     >
                       {tier.cta}
@@ -840,7 +840,7 @@ export default function CleaningPage() {
               </p>
               <Link
                 href="/schedule-a-call"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(255,106,85,0.3)] hover:shadow-[0_0_30px_rgba(255,106,85,0.5)]"
+                className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-primary text-white font-semibold rounded-xl transition-all duration-200 hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_rgba(255,106,85,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98]"
               >
                 Schedule Your Free Call
                 <ArrowRight className="w-5 h-5" />

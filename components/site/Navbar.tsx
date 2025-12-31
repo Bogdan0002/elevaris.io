@@ -108,9 +108,9 @@ export function Navbar() {
               )
             })}
             <GlowButton 
-              variant="outline" 
+              variant="primary" 
+              size="sm"
               href={ctaButton.href}
-              className="rounded-2xl shadow-[0_0_12px_rgba(255,106,85,0.25)] hover:shadow-[0_0_20px_rgba(255,106,85,0.4)]"
             >
               {ctaButton.label}
             </GlowButton>
@@ -167,7 +167,7 @@ export function Navbar() {
                 })}
                 <div className="pt-4">
                   <GlowButton
-                    variant="outline"
+                    variant="primary"
                     href={ctaButton.href}
                     className="w-full"
                     onClick={() => setIsOpen(false)}

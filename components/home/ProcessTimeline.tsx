@@ -113,9 +113,9 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
       <Container>
         <SectionHeading title="Our Process" highlightWord="Process" />
 
-        <div className="process-container relative mt-10 pb-[280px]">
+        <div className="process-container relative mt-10 pb-[320px]">
           {/* Timeline rail (desktop) */}
-          <div className="timeline absolute left-1/2 top-0 hidden -translate-x-1/2 lg:block" style={{ bottom: "300px" }}>
+          <div className="timeline absolute left-1/2 top-0 hidden -translate-x-1/2 lg:block" style={{ bottom: "420px" }}>
             <div className="timeline-rail absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 rounded-full bg-white/12" />
             <div
               ref={timelineFillRef}
@@ -225,7 +225,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
           </div>
 
           {/* Final arrow (desktop) */}
-          <div className="timeline-end pointer-events-none absolute left-1/2 hidden -translate-x-1/2 lg:block" style={{ bottom: "285px" }}>
+          <div className="timeline-end pointer-events-none absolute left-1/2 hidden -translate-x-1/2 lg:block" style={{ bottom: "400px" }}>
             <div
               className={cn(
                 "timeline-arrow relative transition-all duration-500",
@@ -258,9 +258,9 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
           {/* CTA */}
           <div className="process-button-container mt-32 lg:mt-40 flex justify-center">
             <GlowButton
-              variant="primary"
+              variant="secondary"
+              size="lg"
               href="/contact-us"
-              className="px-8 py-4 text-base"
             >
               Start a Project →
             </GlowButton>

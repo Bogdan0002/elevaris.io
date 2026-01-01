@@ -598,7 +598,7 @@ export default function UXUIDesignPage() {
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-foreground-secondary">UX/UI Design Services</span>
               </motion.div>
-              
+
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Design That{" "}
                 <span className="bg-gradient-to-r from-primary via-[#ff7a59] to-[#7b63ff] bg-clip-text text-transparent">
@@ -609,7 +609,7 @@ export default function UXUIDesignPage() {
               <p className="text-lg sm:text-xl text-foreground-secondary mb-8 leading-relaxed">
                 Beautiful, user-centered interfaces you can experience before launch. We build live previews so you can test, refine, and approve with confidence—not just look at pictures.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link
                   href="/schedule-a-call"
@@ -911,20 +911,21 @@ export default function UXUIDesignPage() {
                 <span className="bg-gradient-to-r from-primary to-[#7b63ff] bg-clip-text text-transparent">
                   Design?
                 </span>
-              </h2>
-              <p className="text-foreground-secondary max-w-2xl mx-auto mb-8 leading-relaxed">
-                Let&apos;s create a beautiful, user-centered experience that drives real results for your business.
-              </p>
-              <Link
-                href="/schedule-a-call"
+                </h2>
+                <p className="text-foreground-secondary max-w-2xl mx-auto mb-8 leading-relaxed">
+                  Let&apos;s create a beautiful, user-centered experience that drives real results for your business.
+                </p>
+                <Link
+                  href="/schedule-a-call"
                 className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-primary text-white font-semibold rounded-xl transition-all duration-200 hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_rgba(255,106,85,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98]"
-              >
-                Schedule Your Free Consultation
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <p className="text-xs text-foreground-secondary mt-4">
+                >
+                  <span className="hidden sm:inline">Schedule Your Free Consultation</span>
+                  <span className="inline sm:hidden">Schedule Call</span>
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <p className="text-xs text-foreground-secondary mt-4">
                 No commitment required • Free consultation • Expert advice
-              </p>
+                </p>
             </div>
           </motion.div>
         </Container>

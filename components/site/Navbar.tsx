@@ -43,8 +43,8 @@ export function Navbar() {
           "relative z-10 mx-auto flex items-center justify-between transition-all duration-400 pointer-events-auto",
           "px-5 sm:px-7 lg:px-9",
           isScrolled
-            ? "max-w-[1100px] py-3 mt-3 rounded-2xl bg-background/88 backdrop-blur-lg shadow-[0_10px_30px_rgba(0,0,0,0.28)]"
-            : "max-w-[1200px] py-5"
+            ? "max-w-[calc(100%-2rem)] md:max-w-[1100px] py-3 mt-3 rounded-2xl bg-background/88 backdrop-blur-lg shadow-[0_10px_30px_rgba(0,0,0,0.28)]"
+            : "max-w-full md:max-w-[1200px] py-5"
         )}
       >
         {/* Sparkles on top of the glass */}
@@ -166,14 +166,13 @@ export function Navbar() {
                   )
                 })}
                 <div className="pt-4">
-                  <GlowButton
-                    variant="primary"
+                  <Link
                     href={ctaButton.href}
-                    className="w-full"
                     onClick={() => setIsOpen(false)}
+                    className="w-full inline-flex items-center justify-center h-12 px-7 bg-gradient-to-r from-primary via-[#ff7a59] to-[#7b63ff] text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(255,106,85,0.5)] active:scale-[0.98]"
                   >
                     {ctaButton.label}
-                  </GlowButton>
+                  </Link>
                 </div>
               </div>
             </SheetContent>

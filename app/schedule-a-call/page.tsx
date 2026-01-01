@@ -156,11 +156,11 @@ export default function ScheduleACallPage() {
                   <h2 className="text-xl sm:text-2xl font-bold">Pick Your Time</h2>
                 </div>
                 
-                <div className="rounded-xl overflow-hidden bg-white/5 min-h-[550px]">
+                <div className="rounded-xl overflow-auto bg-white/5 min-h-[700px] max-h-[900px]">
                   <iframe 
                     src="https://link.elevaris.app/widget/booking/CE1Idz6ruqaUcAU7LYMc" 
-                    style={{ width: '100%', height: '600px', border: 'none' }}
-                    scrolling="no"
+                    style={{ width: '100%', height: '900px', border: 'none' }}
+                    scrolling="yes"
                     title="Schedule a Call"
                   />
                 </div>

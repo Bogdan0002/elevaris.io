@@ -23,7 +23,7 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
     <section className="py-20">
       <Container>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
-          {/* Left: Blob Image */}
+          {/* Left: Creative Design */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -33,10 +33,70 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
           >
             <div className="relative aspect-[4/3] max-w-lg mx-auto">
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.3)]">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#ff6a55]/20 via-[#7b63ff]/10 to-transparent" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-foreground-secondary">Team Image</span>
+                {/* Animated grid pattern */}
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,106,85,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,106,85,0.1)_1px,transparent_1px)] bg-[size:40px_40px]" />
                 </div>
+                
+                {/* Floating elements */}
+                <div className="absolute inset-0 flex items-center justify-center p-8">
+                  <div className="relative w-full h-full">
+                    {/* Center glow */}
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.6, 0.3],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-gradient-to-br from-primary/40 to-[#7b63ff]/40 blur-3xl"
+                    />
+                    
+                    {/* Floating cards */}
+                    {[...Array(6)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-12 h-12 rounded-lg bg-gradient-to-br from-primary/30 to-[#7b63ff]/30 border border-white/10"
+                        style={{
+                          top: `${20 + (i % 3) * 30}%`,
+                          left: `${15 + Math.floor(i / 3) * 60}%`,
+                        }}
+                        animate={{
+                          y: [0, -15, 0],
+                          rotate: [0, 180, 360],
+                        }}
+                        transition={{
+                          duration: 3 + i * 0.5,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: i * 0.3,
+                        }}
+                      />
+                    ))}
+                    
+                    {/* Center icon/text */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.05, 1],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                        className="text-6xl font-bold bg-gradient-to-r from-primary via-[#ff7a59] to-[#7b63ff] bg-clip-text text-transparent"
+                      >
+                        E
+                      </motion.div>
+                      <p className="text-xs text-foreground-secondary mt-2">Building Impact</p>
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="absolute inset-0 rounded-2xl border-2 border-primary/30 shadow-[0_0_20px_rgba(255,106,85,0.3)]" />
               </div>
             </div>

@@ -36,6 +36,9 @@ export default function PrivacyPolicyPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,106,85,0.08),transparent_50%)] pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(123,99,255,0.08),transparent_50%)] pointer-events-none" />
         
+        {/* Smooth gradient transition at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+        
         <Container>
           <div className="text-center max-w-3xl mx-auto mb-12">
             <motion.div

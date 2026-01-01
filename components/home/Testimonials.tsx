@@ -85,7 +85,10 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
               className="flex"
               style={{ gap: `${GAP_PX}px` }}
               animate={{ x: cardWidth !== null ? `${offsetPx}px` : 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ 
+                duration: 0.8, 
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
             >
               {testimonials.map((testimonial, index) => (
                 <motion.div

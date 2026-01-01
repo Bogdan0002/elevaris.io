@@ -227,11 +227,11 @@ export default function ContactUsPage() {
               
               <div className="relative rounded-2xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] p-6 overflow-hidden">
                 <h3 className="text-xl font-bold mb-4 text-center">Book Your Free Consultation</h3>
-                <div className="rounded-xl overflow-hidden bg-white/5 min-h-[500px]">
+                <div className="rounded-xl overflow-auto bg-white/5 min-h-[700px] max-h-[900px]">
                   <iframe 
                     src="https://link.elevaris.app/widget/booking/CE1Idz6ruqaUcAU7LYMc" 
-                    style={{ width: '100%', height: '550px', border: 'none' }}
-                    scrolling="no"
+                    style={{ width: '100%', height: '900px', border: 'none' }}
+                    scrolling="yes"
                     title="Schedule a Call"
                   />
                 </div>

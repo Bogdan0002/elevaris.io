@@ -712,8 +712,10 @@ export default function SEOStrategiesPage() {
             </motion.div>
 
             {/* Right - Interactive Dashboard mockup */}
-            <div className="relative lg:pl-8">
-              <InteractiveSEOMockup />
+            <div className="relative lg:pl-8 w-full overflow-hidden">
+              <div className="max-w-full">
+                <InteractiveSEOMockup />
+              </div>
             </div>
           </div>
         </Container>
@@ -938,7 +940,8 @@ export default function SEOStrategiesPage() {
                 href="/schedule-a-call"
                 className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-primary text-white font-semibold rounded-xl transition-all duration-200 hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_rgba(255,106,85,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98]"
               >
-                Schedule Your Free SEO Audit
+                <span className="hidden sm:inline">Schedule Your Free SEO Audit</span>
+                <span className="inline sm:hidden">Schedule Call</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <p className="text-xs text-foreground-secondary mt-4">

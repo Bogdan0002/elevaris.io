@@ -729,8 +729,10 @@ export default function OngoingSupportPage() {
             </motion.div>
 
             {/* Right - Interactive Dashboard mockup */}
-            <div className="relative lg:pl-8">
-              <InteractiveSupportMockup />
+            <div className="relative lg:pl-8 w-full overflow-hidden">
+              <div className="max-w-full">
+                <InteractiveSupportMockup />
+              </div>
             </div>
           </div>
         </Container>

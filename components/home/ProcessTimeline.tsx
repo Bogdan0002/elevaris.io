@@ -124,6 +124,12 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
             />
           </div>
 
+          {/* Mobile timeline rail */}
+          <div className="timeline-mobile absolute left-[3rem] top-0 lg:hidden" style={{ height: "calc(100% - 420px)" }}>
+            <div className="timeline-rail absolute left-0 top-0 h-full w-[2px] rounded-full bg-white/12" />
+            <div className="timeline-fill absolute left-0 top-0 h-full w-[2px] rounded-full bg-gradient-to-b from-[#ff6a55] via-[#7b63ff] to-[#3d52d5] shadow-[0_0_12px_rgba(255,106,85,0.6)]" />
+          </div>
+
           {/* Steps */}
           <div className="space-y-10 lg:space-y-14">
             {process.map((step, index) => {

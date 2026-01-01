@@ -199,39 +199,39 @@ const aboutData = {
 const testimonialsData = [
   {
     quote:
-      "Our website traffic doubled within the first month, and the centralized CRM makes managing leads so much easier. This service has been a game-changer for our small business!",
-    name: "Jane Doe",
-    role: "Marketing Manager",
+      "Elevaris transformed our outdated website into a modern, conversion-optimized platform. Our online bookings increased by 180% in just two months. The team understood our business needs and delivered beyond expectations.",
+    name: "Michael Rodriguez",
+    role: "Owner, Premium Auto Detailing",
   },
   {
     quote:
-      "The team's expertise in digital marketing helped us reach our target audience more effectively. We've seen a 200% increase in qualified leads since partnering with them.",
-    name: "John Smith",
-    role: "CEO, Startup",
+      "As a construction company, we needed a website that showcased our projects professionally. Elevaris delivered a stunning site with an intuitive portfolio system. We've seen a 240% increase in qualified leads since launch.",
+    name: "Sarah Thompson",
+    role: "Operations Manager, Thompson Construction",
   },
   {
     quote:
-      "Professional, reliable, and results-driven. They transformed our outdated website into a modern, conversion-focused platform that our customers love.",
-    name: "Emily Johnson",
-    role: "Product Designer",
+      "Working with Elevaris was seamless from start to finish. They built us a custom CRM-connected website that automated our entire lead management process. Our response time went from hours to minutes.",
+    name: "James Chen",
+    role: "Founder, Chen & Associates Law Firm",
   },
   {
     quote:
-      "Their attention to detail and customer service is exceptional. They didn't just build us a website, they built us a complete digital presence that drives real business results.",
-    name: "Michael Brown",
-    role: "Restaurant Owner",
+      "The ongoing support and maintenance have been exceptional. Whenever we need updates or have questions, the team responds immediately. Our website stays fast, secure, and up-to-date without any effort on our part.",
+    name: "Amanda Foster",
+    role: "Marketing Director, Foster Medical Group",
   },
   {
     quote:
-      "Working with Elevaris was seamless from start to finish. They understood our vision and delivered beyond our expectations. Our new website has significantly improved our online presence and customer engagement.",
-    name: "Sarah Williams",
-    role: "E-commerce Director",
+      "Elevaris didn't just build us a website—they created a complete digital ecosystem. The integration with our CRM, automated follow-ups, and review management system has saved us 15+ hours per week.",
+    name: "Robert Martinez",
+    role: "CEO, Martinez Real Estate Group",
   },
   {
     quote:
-      "The SEO improvements they implemented have been remarkable. We're now ranking on the first page for our key terms, and organic traffic has increased by 150%. Highly recommend their services!",
-    name: "David Chen",
-    role: "Founder, Tech Startup",
+      "The ROI has been incredible. Within 3 months of launching our new website, we recovered our entire investment and more. The SEO optimization they implemented has us ranking #1 for all our key services.",
+    name: "Emily Parker",
+    role: "Owner, Parker's Home Services",
   },
 ]
 

@@ -297,6 +297,7 @@ const footerData = {
     { label: "UX/UI Design", href: "/ux-ui-design" },
     { label: "Web Development", href: "/web-development" },
     { label: "SEO Strategies", href: "/seo-strategies" },
+    { label: "Advertising", href: "/advertising" },
     { label: "Ongoing Support", href: "/ongoing-support" },
     { label: "Contact Us", href: "/contact-us" },
     { label: "Schedule a Call", href: "/schedule-a-call" },

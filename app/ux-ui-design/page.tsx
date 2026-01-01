@@ -1,7 +1,8 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import Link from "next/link"
+import { useState, useRef, useCallback } from "react"
 import { Container } from "@/components/site/Container"
 import { SectionHeading } from "@/components/site/SectionHeading"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
@@ -21,7 +22,11 @@ import {
   Sparkles,
   Play,
   ChevronRight,
-  ArrowUpRight
+  ArrowUpRight,
+  Type,
+  Square,
+  Circle,
+  Image as ImageIcon
 } from "lucide-react"
 
 const footerData = {
@@ -32,6 +37,7 @@ const footerData = {
     { label: "UX/UI Design", href: "/ux-ui-design" },
     { label: "Web Development", href: "/web-development" },
     { label: "SEO Strategies", href: "/seo-strategies" },
+    { label: "Advertising", href: "/advertising" },
     { label: "Ongoing Support", href: "/ongoing-support" },
     { label: "Contact Us", href: "/contact-us" },
     { label: "Schedule a Call", href: "/schedule-a-call" },
@@ -184,155 +190,324 @@ const faqs = [
 ]
 
 // Design Dashboard Mockup Component
-function DesignDashboardMockup() {
+// Interactive Design Mockup with 3D Mouse Tracking
+function InteractiveDesignMockup() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [activeMode, setActiveMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
+  const [selectedElement, setSelectedElement] = useState<number | null>(null)
+  const [colorScheme, setColorScheme] = useState(0)
+  
+  // Mouse position for 3D effect
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  
+  // Smooth spring animation
+  const springConfig = { damping: 25, stiffness: 150 }
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), springConfig)
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig)
+  
+  // Parallax for floating elements
+  const floatX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), springConfig)
+  const floatY = useSpring(useTransform(mouseY, [-0.5, 0.5], [-15, 15]), springConfig)
+  const floatXReverse = useSpring(useTransform(mouseX, [-0.5, 0.5], [15, -15]), springConfig)
+  const floatYReverse = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), springConfig)
+  
+  // Glow position
+  const glowX = useSpring(useTransform(mouseX, [-0.5, 0.5], [0, 100]), springConfig)
+  const glowY = useSpring(useTransform(mouseY, [-0.5, 0.5], [0, 100]), springConfig)
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    mouseX.set(x)
+    mouseY.set(y)
+  }, [mouseX, mouseY])
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false)
+    mouseX.set(0)
+    mouseY.set(0)
+  }, [mouseX, mouseY])
+
+  const colorSchemes = [
+    { primary: '#ff6a55', secondary: '#7b63ff' },
+    { primary: '#3b82f6', secondary: '#8b5cf6' },
+    { primary: '#10b981', secondary: '#06b6d4' },
+  ]
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, rotateY: 10 }}
-      animate={{ opacity: 1, y: 0, rotateY: 0 }}
+      ref={containerRef}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.3 }}
-      className="relative mx-auto w-full max-w-[500px]"
-      style={{ perspective: 1000 }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      className="relative mx-auto w-full max-w-[520px] cursor-pointer"
+      style={{ perspective: 1200 }}
     >
-      {/* Browser frame */}
-      <div className="relative rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 p-1 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_60px_rgba(123,99,255,0.15)]">
-        {/* Browser header */}
-        <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 rounded-t-xl border-b border-white/5">
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-          </div>
-          <div className="flex-1 mx-4">
-            <div className="bg-zinc-800 rounded-lg px-3 py-1.5 text-[10px] text-white/40 text-center">
-              preview.elevaris.app/your-project
+      {/* 3D Container */}
+      <motion.div
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+        }}
+        className="relative"
+      >
+        {/* Dynamic glow effect */}
+        <motion.div
+          className="absolute -inset-4 rounded-3xl opacity-0 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(600px circle at ${glowX}% ${glowY}%, rgba(255,106,85,0.15), rgba(123,99,255,0.1), transparent 40%)`,
+            opacity: isHovered ? 1 : 0,
+          }}
+        />
+
+        {/* Browser frame */}
+        <div className="relative rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 p-1 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_60px_rgba(123,99,255,0.15)] transition-shadow duration-300 hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6),0_0_80px_rgba(255,106,85,0.2)]">
+          {/* Browser header */}
+          <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 rounded-t-xl border-b border-white/5">
+            <div className="flex gap-1.5">
+              <motion.div 
+                className="w-3 h-3 rounded-full bg-red-500/80 cursor-pointer"
+                whileHover={{ scale: 1.2, backgroundColor: 'rgb(239 68 68)' }}
+                whileTap={{ scale: 0.9 }}
+              />
+              <motion.div 
+                className="w-3 h-3 rounded-full bg-yellow-500/80 cursor-pointer"
+                whileHover={{ scale: 1.2, backgroundColor: 'rgb(234 179 8)' }}
+                whileTap={{ scale: 0.9 }}
+              />
+              <motion.div 
+                className="w-3 h-3 rounded-full bg-green-500/80 cursor-pointer"
+                whileHover={{ scale: 1.2, backgroundColor: 'rgb(34 197 94)' }}
+                whileTap={{ scale: 0.9 }}
+              />
             </div>
-          </div>
-        </div>
-        
-        {/* Dashboard content */}
-        <div className="bg-[#0f0b0e] rounded-b-xl p-4 min-h-[320px]">
-          {/* Grid background */}
-          <div className="absolute inset-0 rounded-b-xl overflow-hidden" style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
-            backgroundSize: '20px 20px'
-          }} />
+            
+            {/* Device mode tabs */}
+            <div className="flex-1 flex items-center justify-center gap-1">
+              {(['desktop', 'tablet', 'mobile'] as const).map((mode) => (
+                <motion.button
+                  key={mode}
+                  onClick={() => setActiveMode(mode)}
+                  className={`px-3 py-1 rounded-lg text-[10px] font-medium transition-all capitalize flex items-center gap-1 ${
+                    activeMode === mode 
+                      ? 'bg-primary/20 text-primary border border-primary/30' 
+                      : 'text-white/40 hover:text-white/60 hover:bg-white/5'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {mode === 'desktop' && <Monitor className="w-3 h-3" />}
+                  {mode === 'tablet' && <Layers className="w-3 h-3" />}
+                  {mode === 'mobile' && <Smartphone className="w-3 h-3" />}
+                  {mode}
+                </motion.button>
+              ))}
+            </div>
 
-          {/* Design preview content */}
-          <div className="relative space-y-3">
-            {/* Header mockup */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
-              className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-white/5"
+            {/* Color scheme button */}
+            <motion.button
+              onClick={() => setColorScheme((prev) => (prev + 1) % 3)}
+              className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[#7b63ff] border border-white/10"
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[#7b63ff]" />
-                <div className="space-y-1">
-                  <div className="w-16 h-2 rounded bg-white/20" />
-                  <div className="w-12 h-1.5 rounded bg-white/10" />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="w-14 h-5 rounded-lg bg-primary/20 border border-primary/30" />
-                <div className="w-14 h-5 rounded-lg bg-white/5 border border-white/10" />
-              </div>
-            </motion.div>
+              <Palette className="w-4 h-4 text-white mx-auto" />
+            </motion.button>
+          </div>
+          
+          {/* Content area */}
+          <div className="bg-[#0f0b0e] rounded-b-xl min-h-[340px] overflow-hidden relative">
+            {/* Grid background */}
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+              backgroundSize: '20px 20px'
+            }} />
 
-            {/* Hero section mockup */}
-            <motion.div
+            <motion.div 
+              className="relative p-4"
+              key={activeMode}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.7, duration: 0.4 }}
-              className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-gradient-to-br from-zinc-800/30 to-zinc-900/30 border border-white/5"
+              transition={{ duration: 0.3 }}
+              style={{
+                maxWidth: activeMode === 'mobile' ? '280px' : activeMode === 'tablet' ? '400px' : '100%',
+                margin: '0 auto'
+              }}
             >
-              <div className="space-y-2">
-                <div className="w-20 h-2.5 rounded bg-gradient-to-r from-primary/40 to-[#7b63ff]/40" />
-                <div className="w-full h-1.5 rounded bg-white/10" />
-                <div className="w-3/4 h-1.5 rounded bg-white/10" />
-                <div className="w-16 h-6 rounded-lg bg-gradient-to-r from-primary to-[#7b63ff] shadow-[0_0_15px_rgba(255,106,85,0.3)]" />
-              </div>
-              <div className="relative">
-                <motion.div
-                  className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 border border-white/10"
-                  animate={{
-                    scale: [1, 1.02, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-              </div>
-            </motion.div>
+              {/* Header mockup */}
+              <motion.div
+                className={`flex items-center ${activeMode === 'mobile' ? 'flex-col gap-2' : 'justify-between'} p-3 rounded-xl bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border border-white/5 mb-3 cursor-pointer`}
+                whileHover={{ scale: 1.02, borderColor: 'rgba(255,106,85,0.3)' }}
+                onClick={() => setSelectedElement(selectedElement === 0 ? null : 0)}
+                animate={selectedElement === 0 ? { borderColor: 'rgba(255,106,85,0.5)' } : {}}
+              >
+                <div className="flex items-center gap-3">
+                  <motion.div 
+                    className={`rounded-lg ${activeMode === 'mobile' ? 'w-6 h-6' : 'w-8 h-8'}`}
+                    style={{ 
+                      background: `linear-gradient(135deg, ${colorSchemes[colorScheme].primary}, ${colorSchemes[colorScheme].secondary})` 
+                    }}
+                    animate={{ rotate: selectedElement === 0 ? [0, 5, -5, 0] : 0 }}
+                  />
+                  {activeMode !== 'mobile' && (
+                    <div className="space-y-1">
+                      <div className="w-16 h-2 rounded bg-white/20" />
+                      <div className="w-12 h-1.5 rounded bg-white/10" />
+                    </div>
+                  )}
+                </div>
+                <div className={`flex gap-2 ${activeMode === 'mobile' ? 'w-full' : ''}`}>
+                  <div className={`rounded-lg bg-primary/20 border border-primary/30 ${activeMode === 'mobile' ? 'flex-1 h-6' : 'w-14 h-5'}`} />
+                  {activeMode !== 'mobile' && (
+                    <div className="w-14 h-5 rounded-lg bg-white/5 border border-white/10" />
+                  )}
+                </div>
+              </motion.div>
 
-            {/* Cards mockup */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.4 }}
-              className="grid grid-cols-3 gap-2"
-            >
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="p-2.5 rounded-lg bg-zinc-800/30 border border-white/5 space-y-1.5">
-                  <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-primary/30 to-[#7b63ff]/30" />
+              {/* Hero section mockup */}
+              <motion.div
+                className={`${activeMode === 'mobile' ? 'flex flex-col' : 'grid grid-cols-2'} gap-3 p-3 rounded-xl bg-gradient-to-br from-zinc-800/30 to-zinc-900/30 border border-white/5 mb-3 cursor-pointer`}
+                whileHover={{ scale: 1.02, borderColor: 'rgba(255,106,85,0.3)' }}
+                onClick={() => setSelectedElement(selectedElement === 1 ? null : 1)}
+                animate={selectedElement === 1 ? { borderColor: 'rgba(255,106,85,0.5)' } : {}}
+              >
+                <div className={`space-y-2 ${activeMode === 'mobile' ? 'order-2' : ''}`}>
+                  <motion.div 
+                    className={`rounded ${activeMode === 'mobile' ? 'w-16 h-2' : 'w-20 h-2.5'}`}
+                    style={{ 
+                      background: `linear-gradient(90deg, ${colorSchemes[colorScheme].primary}66, ${colorSchemes[colorScheme].secondary}66)` 
+                    }}
+                  />
                   <div className="w-full h-1.5 rounded bg-white/10" />
-                  <div className="w-3/4 h-1 rounded bg-white/5" />
+                  <div className="w-3/4 h-1.5 rounded bg-white/10" />
+                  <motion.div 
+                    className={`rounded-lg shadow-lg ${activeMode === 'mobile' ? 'w-full h-8' : 'w-16 h-6'}`}
+                    style={{ 
+                      background: `linear-gradient(135deg, ${colorSchemes[colorScheme].primary}, ${colorSchemes[colorScheme].secondary})`,
+                      boxShadow: `0 0 15px ${colorSchemes[colorScheme].primary}66`
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                  />
                 </div>
-              ))}
-            </motion.div>
+                <div className={`relative ${activeMode === 'mobile' ? 'h-24 order-1 mb-2' : ''}`}>
+                  <motion.div
+                    className="absolute inset-0 rounded-lg border border-white/10"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${colorSchemes[colorScheme].primary}33, ${colorSchemes[colorScheme].secondary}33)` 
+                    }}
+                    animate={{ scale: [1, 1.02, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </div>
+              </motion.div>
 
-            {/* Stats row */}
-            <div className="grid grid-cols-3 gap-2 mt-3">
-              <motion.div 
-                className="rounded-xl bg-white/5 p-2.5 border border-white/10"
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-              >
-                <div className="flex items-center gap-1 mb-1">
-                  <Eye className="w-3 h-3 text-primary/60" />
-                  <p className="text-[8px] text-white/50">Views</p>
-                </div>
-                <p className="text-base font-bold text-white">12.4K</p>
-              </motion.div>
-              <motion.div 
-                className="rounded-xl bg-primary/10 p-2.5 border border-primary/20"
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, delay: 0.5 }}
-              >
-                <div className="flex items-center gap-1 mb-1">
-                  <MousePointer2 className="w-3 h-3 text-primary/60" />
-                  <p className="text-[8px] text-white/50">Clicks</p>
-                </div>
-                <p className="text-base font-bold text-primary">847</p>
-              </motion.div>
-              <motion.div 
-                className="rounded-xl bg-white/5 p-2.5 border border-white/10"
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, delay: 1 }}
-              >
-                <div className="flex items-center gap-1 mb-1">
-                  <BarChart3 className="w-3 h-3 text-green-400/60" />
-                  <p className="text-[8px] text-white/50">Conv.</p>
-                </div>
-                <p className="text-base font-bold text-green-400">8.2%</p>
-              </motion.div>
-            </div>
+              {/* Cards mockup */}
+              <div className={`grid ${activeMode === 'mobile' ? 'grid-cols-1' : activeMode === 'tablet' ? 'grid-cols-2' : 'grid-cols-3'} gap-2 mb-3`}>
+                {[0, 1, 2].map((i) => (
+                  <motion.div 
+                    key={i} 
+                    className="p-2.5 rounded-lg bg-zinc-800/30 border border-white/5 space-y-1.5 cursor-pointer"
+                    whileHover={{ scale: 1.05, borderColor: 'rgba(255,106,85,0.3)' }}
+                    onClick={() => setSelectedElement(selectedElement === (i + 2) ? null : (i + 2))}
+                    animate={selectedElement === (i + 2) ? { borderColor: 'rgba(255,106,85,0.5)' } : {}}
+                  >
+                    <motion.div 
+                      className="w-5 h-5 rounded-lg"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${colorSchemes[colorScheme].primary}4D, ${colorSchemes[colorScheme].secondary}4D)` 
+                      }}
+                      whileHover={{ rotate: 180 }}
+                      transition={{ duration: 0.5 }}
+                    />
+                    <div className="w-full h-1.5 rounded bg-white/10" />
+                    <div className="w-3/4 h-1 rounded bg-white/5" />
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div className={`grid ${activeMode === 'mobile' ? 'grid-cols-1' : 'grid-cols-3'} gap-2`}>
+                {[
+                  { icon: Eye, label: 'Views', value: '12.4K', color: 'white' },
+                  { icon: MousePointer2, label: 'Clicks', value: '847', color: 'primary' },
+                  { icon: BarChart3, label: 'Conv.', value: '8.2%', color: 'green' },
+                ].map((stat, idx) => (
+                  <motion.div 
+                    key={idx}
+                    className={`rounded-xl p-2.5 border cursor-pointer ${
+                      stat.color === 'primary' 
+                        ? 'bg-primary/10 border-primary/20' 
+                        : 'bg-white/5 border-white/10'
+                    } ${activeMode === 'mobile' ? 'flex items-center gap-3' : ''}`}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <div className={`flex items-center gap-1 ${activeMode === 'mobile' ? '' : 'mb-1'}`}>
+                      <stat.icon className="w-3 h-3 text-primary/60" />
+                      <p className="text-[8px] text-white/50">{stat.label}</p>
+                    </div>
+                    <p className={`text-base font-bold ${activeMode === 'mobile' ? 'ml-auto' : ''} ${
+                      stat.color === 'primary' 
+                        ? 'text-primary' 
+                        : stat.color === 'green' 
+                        ? 'text-green-400' 
+                        : 'text-white'
+                    }`}>
+                      {stat.value}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Tool palette */}
+              {selectedElement !== null && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-zinc-900/90 backdrop-blur-sm rounded-xl p-2 border border-white/10 flex gap-2"
+                >
+                  {[Type, Square, Circle, ImageIcon].map((Icon, idx) => (
+                    <motion.button
+                      key={idx}
+                      className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center"
+                      whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,106,85,0.2)', borderColor: 'rgba(255,106,85,0.3)' }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Icon className="w-4 h-4 text-white/60" />
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
       
       {/* Floating Live Preview badge */}
       <motion.div
-        className="absolute -top-4 -right-4 sm:-right-8 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-[#7b63ff]/30"
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="absolute -top-12 -right-4 sm:-right-12 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-[#7b63ff]/30 cursor-pointer z-10"
+        style={{ x: floatX, y: floatY, transformStyle: 'preserve-3d', transform: 'translateZ(40px)' }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 2, duration: 0.5 }}
+        whileHover={{ scale: 1.1, borderColor: 'rgba(123,99,255,0.5)' }}
+        whileTap={{ scale: 0.95 }}
       >
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center">
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+            <motion.div 
+              className="w-3 h-3 rounded-full bg-green-500"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
           </div>
           <div>
             <p className="text-[10px] text-white/50">Live Preview</p>
@@ -343,20 +518,38 @@ function DesignDashboardMockup() {
       
       {/* Floating interaction badge */}
       <motion.div
-        className="absolute -bottom-2 -left-4 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100"
-        initial={{ opacity: 0, scale: 0.8, x: -20 }}
-        animate={{ opacity: 1, scale: 1, x: 0 }}
+        className="absolute -bottom-2 -left-4 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
+        style={{ x: floatXReverse, y: floatYReverse, transformStyle: 'preserve-3d', transform: 'translateZ(30px)' }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 2.5, duration: 0.5 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
       >
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <motion.div 
+            className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center"
+            animate={selectedElement !== null ? { scale: [1, 1.2, 1] } : {}}
+            transition={{ duration: 0.5 }}
+          >
             <MousePointer2 className="w-4 h-4 text-primary" />
-          </div>
+          </motion.div>
           <div>
-            <p className="text-[10px] font-medium text-gray-900">Click to Test</p>
-            <p className="text-[9px] text-gray-500">Works on any device</p>
+            <p className="text-[10px] font-medium text-gray-900">Click Elements</p>
+            <p className="text-[9px] text-gray-500">Change colors & modes</p>
           </div>
         </div>
+      </motion.div>
+
+      {/* Interaction hint */}
+      <motion.div
+        className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 text-[11px] text-white/40"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 3, duration: 0.5 }}
+      >
+        <MousePointer2 className="w-3 h-3" />
+        <span>Click elements • Switch modes • Change colors</span>
       </motion.div>
     </motion.div>
   )
@@ -442,9 +635,9 @@ export default function UXUIDesignPage() {
               </div>
             </motion.div>
 
-            {/* Right - Dashboard mockup */}
+            {/* Right - Interactive Dashboard mockup */}
             <div className="relative lg:pl-8">
-              <DesignDashboardMockup />
+              <InteractiveDesignMockup />
             </div>
           </div>
         </Container>

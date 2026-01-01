@@ -1,7 +1,8 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import Link from "next/link"
+import { useState, useRef, useCallback, useEffect } from "react"
 import { Container } from "@/components/site/Container"
 import { SectionHeading } from "@/components/site/SectionHeading"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
@@ -23,7 +24,9 @@ import {
   ArrowUpRight,
   Eye,
   ChevronRight,
-  Play
+  Play,
+  RefreshCw,
+  MapPin
 } from "lucide-react"
 
 const benefits = [
@@ -144,6 +147,7 @@ const footerData = {
     { label: "UX/UI Design", href: "/ux-ui-design" },
     { label: "Web Development", href: "/web-development" },
     { label: "SEO Strategies", href: "/seo-strategies" },
+    { label: "Advertising", href: "/advertising" },
     { label: "Ongoing Support", href: "/ongoing-support" },
     { label: "Contact Us", href: "/contact-us" },
     { label: "Schedule a Call", href: "/schedule-a-call" },
@@ -158,168 +162,470 @@ const footerData = {
 }
 
 // SEO Dashboard Mockup Component
-function SEODashboardMockup() {
+// Interactive SEO Dashboard Mockup with 3D Mouse Tracking
+function InteractiveSEOMockup() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [activeView, setActiveView] = useState<'rankings' | 'analytics' | 'map'>('rankings')
+  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [rankingPosition, setRankingPosition] = useState(15)
+  const [impressions, setImpressions] = useState(124)
+  const [clicks, setClicks] = useState(0)
+  
+  // Mouse position for 3D effect
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  
+  // Smooth spring animation
+  const springConfig = { damping: 25, stiffness: 150 }
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), springConfig)
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig)
+  
+  // Parallax for floating elements
+  const floatX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), springConfig)
+  const floatY = useSpring(useTransform(mouseY, [-0.5, 0.5], [-15, 15]), springConfig)
+  const floatXReverse = useSpring(useTransform(mouseX, [-0.5, 0.5], [15, -15]), springConfig)
+  const floatYReverse = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), springConfig)
+  
+  // Glow position
+  const glowX = useSpring(useTransform(mouseX, [-0.5, 0.5], [0, 100]), springConfig)
+  const glowY = useSpring(useTransform(mouseY, [-0.5, 0.5], [0, 100]), springConfig)
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    mouseX.set(x)
+    mouseY.set(y)
+  }, [mouseX, mouseY])
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false)
+    mouseX.set(0)
+    mouseY.set(0)
+  }, [mouseX, mouseY])
+
+  // Simulate SEO optimization
+  const handleOptimize = useCallback(() => {
+    if (isOptimizing) return
+    setIsOptimizing(true)
+    
+    // Animate ranking improvement
+    let currentRank = rankingPosition
+    const interval = setInterval(() => {
+      currentRank = Math.max(1, currentRank - 1)
+      setRankingPosition(currentRank)
+      if (currentRank <= 1) clearInterval(interval)
+    }, 100)
+    
+    // Animate impressions
+    let currentImpressions = impressions
+    const impInterval = setInterval(() => {
+      currentImpressions += Math.floor(Math.random() * 15) + 5
+      setImpressions(Math.min(currentImpressions, 247))
+      if (currentImpressions >= 247) clearInterval(impInterval)
+    }, 80)
+    
+    // Animate clicks
+    setTimeout(() => {
+      let currentClicks = 0
+      const clickInterval = setInterval(() => {
+        currentClicks += Math.floor(Math.random() * 500) + 200
+        setClicks(Math.min(currentClicks, 8542))
+        if (currentClicks >= 8542) {
+          clearInterval(clickInterval)
+          setIsOptimizing(false)
+        }
+      }, 100)
+    }, 500)
+  }, [isOptimizing, rankingPosition, impressions])
+
+  // Auto-optimize on mount
+  useEffect(() => {
+    const timeout = setTimeout(() => handleOptimize(), 1500)
+    return () => clearTimeout(timeout)
+  }, [])
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, rotateY: 10 }}
-      animate={{ opacity: 1, y: 0, rotateY: 0 }}
+      ref={containerRef}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.3 }}
-      className="relative mx-auto w-full max-w-[500px]"
-      style={{ perspective: 1000 }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      className="relative mx-auto w-full max-w-[520px] cursor-pointer"
+      style={{ perspective: 1200 }}
     >
-      {/* Browser frame */}
-      <div className="relative rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 p-1 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_60px_rgba(255,106,85,0.1)]">
-        {/* Browser header */}
-        <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 rounded-t-xl border-b border-white/5">
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-          </div>
-          <div className="flex-1 mx-4">
-            <div className="bg-zinc-800 rounded-lg px-3 py-1.5 text-[10px] text-white/40 text-center">
-              google.com/search?q=your+service+near+me
+      {/* 3D Container */}
+      <motion.div
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+        }}
+        className="relative"
+      >
+        {/* Dynamic glow effect */}
+        <motion.div
+          className="absolute -inset-4 rounded-3xl opacity-0 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(600px circle at ${glowX}% ${glowY}%, rgba(255,106,85,0.15), rgba(123,99,255,0.1), transparent 40%)`,
+            opacity: isHovered ? 1 : 0,
+          }}
+        />
+
+        {/* Browser frame */}
+        <div className="relative rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 p-1 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_60px_rgba(123,99,255,0.15)] transition-shadow duration-300 hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6),0_0_80px_rgba(255,106,85,0.2)]">
+          {/* Browser header */}
+          <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 rounded-t-xl border-b border-white/5">
+            <div className="flex gap-1.5">
+              <motion.div 
+                className="w-3 h-3 rounded-full bg-red-500/80 cursor-pointer"
+                whileHover={{ scale: 1.2, backgroundColor: 'rgb(239 68 68)' }}
+                whileTap={{ scale: 0.9 }}
+              />
+              <motion.div 
+                className="w-3 h-3 rounded-full bg-yellow-500/80 cursor-pointer"
+                whileHover={{ scale: 1.2, backgroundColor: 'rgb(234 179 8)' }}
+                whileTap={{ scale: 0.9 }}
+              />
+              <motion.div 
+                className="w-3 h-3 rounded-full bg-green-500/80 cursor-pointer"
+                whileHover={{ scale: 1.2, backgroundColor: 'rgb(34 197 94)' }}
+                whileTap={{ scale: 0.9 }}
+              />
             </div>
-          </div>
-        </div>
-        
-        {/* Dashboard content */}
-        <div className="bg-[#0f0b0e] rounded-b-xl p-4 min-h-[320px]">
-          {/* Search Results Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-[10px] text-white/50">Search Results</p>
-              <p className="text-sm font-semibold text-white">Your Business Rankings</p>
+            
+            {/* View tabs */}
+            <div className="flex-1 flex items-center justify-center gap-1">
+              {(['rankings', 'analytics', 'map'] as const).map((view) => (
+                <motion.button
+                  key={view}
+                  onClick={() => setActiveView(view)}
+                  className={`px-3 py-1 rounded-lg text-[10px] font-medium transition-all capitalize ${
+                    activeView === view 
+                      ? 'bg-primary/20 text-primary border border-primary/30' 
+                      : 'text-white/40 hover:text-white/60 hover:bg-white/5'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {view}
+                </motion.button>
+              ))}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-green-400 flex items-center gap-1">
-                <ArrowUpRight className="w-3 h-3" />
-                +15 positions
-              </span>
-            </div>
+
+            {/* Optimize button */}
+            <motion.button
+              onClick={handleOptimize}
+              disabled={isOptimizing}
+              className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold flex items-center gap-1.5 transition-all ${
+                isOptimizing 
+                  ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' 
+                  : rankingPosition === 1
+                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                  : 'bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30'
+              }`}
+              whileHover={!isOptimizing ? { scale: 1.05 } : {}}
+              whileTap={!isOptimizing ? { scale: 0.95 } : {}}
+            >
+              {isOptimizing ? (
+                <>
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                  Optimizing...
+                </>
+              ) : rankingPosition === 1 ? (
+                <>
+                  <CheckCircle2 className="w-3 h-3" />
+                  #1 Rank!
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3 h-3" />
+                  Optimize
+                </>
+              )}
+            </motion.button>
           </div>
           
-          {/* Search Result #1 - Your Business */}
-          <motion.div
-            className="rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 p-3 mb-3"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-[#ff8a75] flex items-center justify-center shrink-0">
-                <Award className="w-5 h-5 text-white" />
+          {/* Content area */}
+          <div className="bg-[#0f0b0e] rounded-b-xl min-h-[340px] overflow-hidden">
+            {/* Rankings View */}
+            {activeView === 'rankings' && (
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-[10px] text-white/50">Google Search Results</p>
+                    <p className="text-sm font-semibold text-white">Your Business Rankings</p>
+                  </div>
+                  <motion.span 
+                    className="text-[10px] text-green-400 flex items-center gap-1"
+                    animate={rankingPosition < 15 ? { scale: [1, 1.1, 1] } : {}}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ArrowUpRight className="w-3 h-3" />
+                    +{15 - rankingPosition} positions
+                  </motion.span>
+                </div>
+                
+                {/* Your Business Result */}
+                <motion.div
+                  className={`rounded-xl p-3 mb-3 transition-all ${
+                    rankingPosition === 1 
+                      ? 'bg-gradient-to-r from-primary/20 to-transparent border-2 border-primary/40'
+                      : 'bg-gradient-to-r from-primary/10 to-transparent border border-primary/20'
+                  }`}
+                  animate={rankingPosition === 1 ? { scale: [1, 1.02, 1] } : {}}
+                  transition={{ duration: 0.5, repeat: rankingPosition === 1 ? 3 : 0 }}
+                >
+                  <div className="flex items-start gap-3">
+                    <motion.div 
+                      className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-[#ff8a75] flex items-center justify-center shrink-0"
+                      animate={{ rotate: rankingPosition === 1 ? [0, 10, -10, 0] : 0 }}
+                      transition={{ duration: 0.5, delay: 1 }}
+                    >
+                      <Award className="w-5 h-5 text-white" />
+                    </motion.div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[11px] font-semibold text-white">Your Business</span>
+                        <div className="flex items-center gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="text-[9px] text-white/40 mb-1">yourwebsite.com</div>
+                      <div className="text-[10px] text-white/70">Top-rated service provider...</div>
+                    </div>
+                    <motion.span 
+                      className="text-[9px] text-primary bg-primary/10 px-2 py-0.5 rounded-full font-medium"
+                      key={rankingPosition}
+                      initial={{ scale: 1.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      #{rankingPosition}
+                    </motion.span>
+                  </div>
+                </motion.div>
+
+                {/* Competitors */}
+                {[2, 3].map((num) => (
+                  <motion.div
+                    key={num}
+                    className="rounded-xl bg-white/5 border border-white/5 p-3 mb-2 opacity-40 hover:opacity-60 transition-opacity cursor-pointer"
+                    whileHover={{ x: 4 }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-zinc-700/50 shrink-0" />
+                      <div className="flex-1">
+                        <div className="h-2.5 bg-zinc-700/50 rounded w-2/3 mb-2" />
+                        <div className="h-2 bg-zinc-700/30 rounded w-1/2 mb-1" />
+                        <div className="h-2 bg-zinc-700/30 rounded w-full" />
+                      </div>
+                      <span className="text-[9px] text-white/30 bg-white/5 px-2 py-0.5 rounded-full">#{num + rankingPosition - 1}</span>
+                    </div>
+                  </motion.div>
+                ))}
+                
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-2 mt-4">
+                  <motion.div 
+                    className="rounded-xl bg-white/5 p-2.5 border border-white/10 cursor-pointer"
+                    whileHover={{ scale: 1.05, borderColor: 'rgba(255,106,85,0.3)' }}
+                  >
+                    <div className="flex items-center gap-1 mb-1">
+                      <Eye className="w-3 h-3 text-primary/60" />
+                      <p className="text-[8px] text-white/50">Views</p>
+                    </div>
+                    <p className="text-base font-bold text-white">{impressions}K</p>
+                  </motion.div>
+                  <motion.div 
+                    className="rounded-xl bg-primary/10 p-2.5 border border-primary/20 cursor-pointer"
+                    whileHover={{ scale: 1.05, borderColor: 'rgba(255,106,85,0.4)' }}
+                  >
+                    <div className="flex items-center gap-1 mb-1">
+                      <MousePointer2 className="w-3 h-3 text-primary/60" />
+                      <p className="text-[8px] text-white/50">Clicks</p>
+                    </div>
+                    <p className="text-base font-bold text-primary">{clicks.toLocaleString()}</p>
+                  </motion.div>
+                  <motion.div 
+                    className="rounded-xl bg-white/5 p-2.5 border border-white/10 cursor-pointer"
+                    whileHover={{ scale: 1.05, borderColor: 'rgba(34,197,94,0.3)' }}
+                  >
+                    <div className="flex items-center gap-1 mb-1">
+                      <TrendingUp className="w-3 h-3 text-green-400/60" />
+                      <p className="text-[8px] text-white/50">CTR</p>
+                    </div>
+                    <p className="text-base font-bold text-green-400">3.4%</p>
+                  </motion.div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[11px] font-semibold text-white">Your Business Name</span>
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+            )}
+
+            {/* Analytics View */}
+            {activeView === 'analytics' && (
+              <div className="p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-3"
+                >
+                  <p className="text-sm font-semibold text-white mb-3">Performance Analytics</p>
+                  
+                  {/* Chart-like visualization */}
+                  <div className="space-y-2">
+                    {[85, 92, 78, 95, 88].map((value, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-[9px] text-white/40 w-8">Week {idx + 1}</span>
+                        <div className="flex-1 h-6 bg-white/5 rounded-lg overflow-hidden">
+                          <motion.div
+                            className="h-full bg-gradient-to-r from-primary to-[#7b63ff]"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${value}%` }}
+                            transition={{ delay: idx * 0.1, duration: 0.6 }}
+                          />
+                        </div>
+                        <span className="text-[9px] text-white/60 w-8">{value}%</span>
+                      </div>
                     ))}
                   </div>
-                </div>
-                <div className="text-[9px] text-white/40 mb-1">yourwebsite.com</div>
-                <div className="text-[10px] text-white/70">Top-rated service provider in your area...</div>
-              </div>
-              <span className="text-[9px] text-primary bg-primary/10 px-2 py-0.5 rounded-full font-medium">#1</span>
-            </div>
-          </motion.div>
 
-          {/* Competitors (faded) */}
-          {[2, 3].map((num) => (
-            <motion.div
-              key={num}
-              className="rounded-xl bg-white/5 border border-white/5 p-3 mb-2 opacity-40"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 0.4, x: 0 }}
-              transition={{ delay: 0.6 + num * 0.1, duration: 0.5 }}
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-zinc-700/50 shrink-0" />
-                <div className="flex-1">
-                  <div className="h-2.5 bg-zinc-700/50 rounded w-2/3 mb-2" />
-                  <div className="h-2 bg-zinc-700/30 rounded w-1/2 mb-1" />
-                  <div className="h-2 bg-zinc-700/30 rounded w-full" />
-                </div>
-                <span className="text-[9px] text-white/30 bg-white/5 px-2 py-0.5 rounded-full">#{num}</span>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <div className="rounded-xl bg-white/5 p-3 border border-white/10">
+                      <p className="text-[9px] text-white/50 mb-1">Avg. Position</p>
+                      <p className="text-xl font-bold text-primary">2.3</p>
+                    </div>
+                    <div className="rounded-xl bg-white/5 p-3 border border-white/10">
+                      <p className="text-[9px] text-white/50 mb-1">Page 1 Keywords</p>
+                      <p className="text-xl font-bold text-green-400">127</p>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          ))}
-          
-          {/* Stats row */}
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            <motion.div 
-              className="rounded-xl bg-white/5 p-3 border border-white/10"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-            >
-              <div className="flex items-center gap-1 mb-1">
-                <Eye className="w-3 h-3 text-primary/60" />
-                <p className="text-[9px] text-white/50">Impressions</p>
+            )}
+
+            {/* Map View */}
+            {activeView === 'map' && (
+              <div className="p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <p className="text-sm font-semibold text-white mb-3">Local Search Coverage</p>
+                  
+                  {/* Simplified map representation */}
+                  <div className="rounded-xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border border-white/10 p-4 h-[240px] relative overflow-hidden">
+                    {/* Map pins */}
+                    {[
+                      { x: 40, y: 35, size: 'large', color: 'primary' },
+                      { x: 25, y: 50, size: 'medium', color: 'primary' },
+                      { x: 60, y: 45, size: 'medium', color: 'primary' },
+                      { x: 45, y: 60, size: 'small', color: 'white' },
+                      { x: 70, y: 30, size: 'small', color: 'white' },
+                    ].map((pin, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="absolute"
+                        style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: idx * 0.15, duration: 0.4 }}
+                        whileHover={{ scale: 1.3 }}
+                      >
+                        <div className={`w-${pin.size === 'large' ? '6' : pin.size === 'medium' ? '4' : '3'} h-${pin.size === 'large' ? '6' : pin.size === 'medium' ? '4' : '3'} rounded-full ${pin.color === 'primary' ? 'bg-primary' : 'bg-white/40'} border-2 border-white/20 shadow-lg cursor-pointer`} />
+                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-${pin.size === 'large' ? '12' : pin.size === 'medium' ? '8' : '6'} h-${pin.size === 'large' ? '12' : pin.size === 'medium' ? '8' : '6'} rounded-full ${pin.color === 'primary' ? 'bg-primary/20' : 'bg-white/10'} animate-ping`} />
+                      </motion.div>
+                    ))}
+                    
+                    <div className="absolute bottom-3 left-3 right-3 bg-zinc-900/80 backdrop-blur-sm rounded-lg p-2 border border-white/10">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-primary" />
+                          <span className="text-[10px] text-white/80">5 locations ranking</span>
+                        </div>
+                        <span className="text-[10px] text-green-400">+2 this week</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-              <p className="text-lg font-bold text-white">247K</p>
-            </motion.div>
-            <motion.div 
-              className="rounded-xl bg-primary/10 p-3 border border-primary/20"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, delay: 0.5 }}
-            >
-              <div className="flex items-center gap-1 mb-1">
-                <MousePointer2 className="w-3 h-3 text-primary/60" />
-                <p className="text-[9px] text-white/50">Clicks</p>
-              </div>
-              <p className="text-lg font-bold text-primary">8,542</p>
-            </motion.div>
-            <motion.div 
-              className="rounded-xl bg-white/5 p-3 border border-white/10"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, delay: 1 }}
-            >
-              <div className="flex items-center gap-1 mb-1">
-                <TrendingUp className="w-3 h-3 text-green-400/60" />
-                <p className="text-[9px] text-white/50">CTR</p>
-              </div>
-              <p className="text-lg font-bold text-green-400">3.4%</p>
-            </motion.div>
+            )}
           </div>
         </div>
-      </div>
+      </motion.div>
       
-      {/* Floating Ranking card */}
+      {/* Floating Ranking badge */}
       <motion.div
-        className="absolute -top-4 -right-4 sm:-right-8 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-primary/30"
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="absolute -top-12 -right-4 sm:-right-12 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-primary/30 cursor-pointer z-10"
+        style={{ x: floatX, y: floatY, transformStyle: 'preserve-3d', transform: 'translateZ(40px)' }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 2, duration: 0.5 }}
+        whileHover={{ scale: 1.1, borderColor: 'rgba(255,106,85,0.5)' }}
+        whileTap={{ scale: 0.95 }}
       >
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center">
+          <motion.div 
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center"
+            animate={{ rotate: rankingPosition === 1 ? [0, 5, -5, 0] : 0 }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+          >
             <TrendingUp className="w-5 h-5 text-primary" />
-          </div>
+          </motion.div>
           <div>
-            <p className="text-[10px] text-white/50">Ranking Position</p>
-            <p className="text-lg font-bold text-primary">#1</p>
+            <p className="text-[10px] text-white/50">Position</p>
+            <motion.p 
+              className="text-lg font-bold text-primary"
+              key={rankingPosition}
+              initial={{ scale: 1.5 }}
+              animate={{ scale: 1 }}
+            >
+              #{rankingPosition}
+            </motion.p>
           </div>
         </div>
       </motion.div>
       
       {/* Floating traffic notification */}
       <motion.div
-        className="absolute -bottom-2 -left-4 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100"
-        initial={{ opacity: 0, scale: 0.8, x: -20 }}
-        animate={{ opacity: 1, scale: 1, x: 0 }}
+        className="absolute -bottom-2 -left-4 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
+        style={{ x: floatXReverse, y: floatYReverse, transformStyle: 'preserve-3d', transform: 'translateZ(30px)' }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 2.5, duration: 0.5 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
       >
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+          <motion.div 
+            className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center"
+            animate={clicks >= 8542 ? { scale: [1, 1.2, 1] } : {}}
+            transition={{ duration: 0.5 }}
+          >
             <Users className="w-4 h-4 text-green-500" />
-          </div>
+          </motion.div>
           <div>
             <p className="text-[10px] font-medium text-gray-900">+247% Traffic</p>
             <p className="text-[9px] text-gray-500">Last 90 days</p>
           </div>
         </div>
+      </motion.div>
+
+      {/* Interaction hint */}
+      <motion.div
+        className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 text-[11px] text-white/40"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 3, duration: 0.5 }}
+      >
+        <MousePointer2 className="w-3 h-3" />
+        <span>Move mouse • Switch tabs • Click Optimize</span>
       </motion.div>
     </motion.div>
   )
@@ -405,9 +711,9 @@ export default function SEOStrategiesPage() {
               </div>
             </motion.div>
 
-            {/* Right - Dashboard mockup */}
+            {/* Right - Interactive Dashboard mockup */}
             <div className="relative lg:pl-8">
-              <SEODashboardMockup />
+              <InteractiveSEOMockup />
             </div>
           </div>
         </Container>

@@ -67,9 +67,9 @@ export function Navbar() {
             <Image
               src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/vcgPZLa7MnNoipCvFFDA/media/48482e69-0d38-4a97-97f8-10e512f222a3.png"
               alt="Elevaris Web Solutions Logo"
-              width={150}
-              height={40}
-              className="h-8 w-auto object-contain"
+              width={180}
+              height={48}
+              className="h-10 w-auto object-contain"
               priority
             />
           </Link>

@@ -53,7 +53,6 @@ export function FAQ({ faq }: FAQProps) {
                         proximity={50}
                         inactiveZone={0.01}
                         borderWidth={1}
-                        movementDuration={0.8}
                         className="rounded-2xl"
                       />
                     </div>

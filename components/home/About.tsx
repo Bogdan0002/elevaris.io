@@ -5,7 +5,6 @@ import { Mail, Phone } from "lucide-react"
 import { Container } from "@/components/site/Container"
 import { SectionHeading } from "@/components/site/SectionHeading"
 import { BlobImage } from "@/components/brand/BlobImage"
-import { GlowCard } from "@/components/brand/GlowCard"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 
 interface AboutProps {
@@ -220,60 +219,66 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
 
             {/* Contact Pills */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="relative">
-                <GlowingEffect
-                  spread={30}
-                  glow={true}
-                  disabled={false}
-                  proximity={50}
-                  inactiveZone={0.01}
-                  borderWidth={1}
-                  className="rounded-2xl"
-                />
-                <GlowCard hover={true} className="rounded-2xl p-4 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 relative z-10 hover:shadow-[0_16px_36px_rgba(255,106,85,0.2)]">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff6a55]/20 to-[#7b63ff]/20 border border-primary/30">
-                    <Mail className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-foreground-muted">Email Us</p>
-                    <a
-                      href={`mailto:${email}`}
-                      className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                    >
-                      {email}
-                    </a>
+              <div className="relative group">
+                {/* Glowing effect */}
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                  <GlowingEffect
+                    spread={30}
+                    glow={true}
+                    disabled={false}
+                    proximity={50}
+                    inactiveZone={0.01}
+                    borderWidth={1}
+                    className="rounded-2xl"
+                  />
+                </div>
+                <div className="relative rounded-2xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] p-4 transition-all duration-300 hover:border-white/20">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 border border-primary/30">
+                      <Mail className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-foreground-muted">Email Us</p>
+                      <a
+                        href={`mailto:${email}`}
+                        className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                      >
+                        {email}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </GlowCard>
               </div>
 
-              <div className="relative">
-                <GlowingEffect
-                  spread={30}
-                  glow={true}
-                  disabled={false}
-                  proximity={50}
-                  inactiveZone={0.01}
-                  borderWidth={1}
-                  className="rounded-2xl"
-                />
-                <GlowCard hover={true} className="rounded-2xl p-4 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 relative z-10 hover:shadow-[0_16px_36px_rgba(255,106,85,0.2)]">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff6a55]/20 to-[#7b63ff]/20 border border-primary/30">
-                    <Phone className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-foreground-muted">Call Us</p>
-                    <a
-                      href={`tel:${phone.replace(/\s/g, "")}`}
-                      className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                    >
-                      {phone}
-                    </a>
+              <div className="relative group">
+                {/* Glowing effect */}
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                  <GlowingEffect
+                    spread={30}
+                    glow={true}
+                    disabled={false}
+                    proximity={50}
+                    inactiveZone={0.01}
+                    borderWidth={1}
+                    className="rounded-2xl"
+                  />
+                </div>
+                <div className="relative rounded-2xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] p-4 transition-all duration-300 hover:border-white/20">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 border border-primary/30">
+                      <Phone className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-foreground-muted">Call Us</p>
+                      <a
+                        href={`tel:${phone.replace(/\s/g, "")}`}
+                        className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                      >
+                        {phone}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </GlowCard>
               </div>
             </div>
           </motion.div>
@@ -282,4 +287,3 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
     </section>
   )
 }
-

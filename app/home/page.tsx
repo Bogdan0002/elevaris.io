@@ -331,7 +331,7 @@ export default function HomePage() {
         <ProcessTimeline process={processData} />
       </SectionMotion>
 
-      <SectionMotion direction="up" delay={0.05}>
+      <SectionMotion direction="up" delay={0.0}>
         <About {...aboutData} />
       </SectionMotion>
 

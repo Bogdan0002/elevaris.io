@@ -33,29 +33,27 @@ export default function ListPreviewsPage() {
   const [search, setSearch] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
 
-  const fetchPreviews = async () => {
+  useEffect(() => {
     if (!isAuthorized || !key) return
     
-    setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (search) params.set('search', search)
-      params.set('key', key)
+    const fetchPreviews = async () => {
+      setLoading(true)
+      try {
+        const params = new URLSearchParams()
+        if (search) params.set('search', search)
+        params.set('key', key)
 
-      const response = await fetch(`/api/previews/list?${params.toString()}`)
-      const data = await response.json()
-      setPreviews(data)
-    } catch (error) {
-      console.error('Failed to fetch previews:', error)
-    } finally {
-      setLoading(false)
+        const response = await fetch(`/api/previews/list?${params.toString()}`)
+        const data = await response.json()
+        setPreviews(data)
+      } catch (error) {
+        console.error('Failed to fetch previews:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }
 
-  useEffect(() => {
-    if (isAuthorized) {
-      fetchPreviews()
-    }
+    fetchPreviews()
   }, [search, isAuthorized, key])
 
   const copyToClipboard = (text: string, type: string) => {

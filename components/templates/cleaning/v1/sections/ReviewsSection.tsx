@@ -50,7 +50,7 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
                   ))}
                 </div>
                 <p className="text-foreground-secondary mb-4 leading-relaxed">
-                  "{review.text}"
+                  &ldquo;{review.text}&rdquo;
                 </p>
                 <p className="text-sm font-semibold text-foreground">
                   — {review.name}

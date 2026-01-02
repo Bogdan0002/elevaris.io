@@ -506,7 +506,7 @@ export default function OpsConsolePage() {
               ) : (
                 <div className="text-center py-8 text-foreground-secondary">
                   <p className="text-sm">
-                    Fill out the form and click "Generate Preview" to create a
+                    Fill out the form and click &ldquo;Generate Preview&rdquo; to create a
                     preview website.
                   </p>
                 </div>

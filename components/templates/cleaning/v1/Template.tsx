@@ -3,7 +3,9 @@
 import { motion } from 'framer-motion'
 import type { CleaningPreviewConfig } from '@/lib/previews/types'
 import { HeroSection } from './sections/HeroSection'
+import { AboutSection } from './sections/AboutSection'
 import { ServicesSection } from './sections/ServicesSection'
+import { GallerySection } from './sections/GallerySection'
 import { WhyUsSection } from './sections/WhyUsSection'
 import { AreasSection } from './sections/AreasSection'
 import { ReviewsSection } from './sections/ReviewsSection'
@@ -21,7 +23,9 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
     <div className="min-h-screen bg-[#0B0B0B] text-foreground">
       <Navbar config={config} />
       <HeroSection config={config} />
+      <AboutSection config={config} />
       <ServicesSection config={config} />
+      <GallerySection config={config} />
       <WhyUsSection config={config} />
       <AreasSection config={config} />
       <ReviewsSection config={config} />

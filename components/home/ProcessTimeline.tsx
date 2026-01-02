@@ -109,7 +109,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
   const arrowActive = activeStep >= totalSteps - 1
 
   return (
-    <section className="process-section py-20">
+    <section className="process-section pt-20 pb-10 lg:pb-16">
       <Container>
         <SectionHeading title="Our Process" highlightWord="Process" />
 
@@ -124,11 +124,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
             />
           </div>
 
-          {/* Mobile timeline rail */}
-          <div className="timeline-mobile absolute left-[3rem] top-0 lg:hidden" style={{ height: "calc(100% - 420px)" }}>
-            <div className="timeline-rail absolute left-0 top-0 h-full w-[2px] rounded-full bg-white/12" />
-            <div className="timeline-fill absolute left-0 top-0 h-full w-[2px] rounded-full bg-gradient-to-b from-[#ff6a55] via-[#7b63ff] to-[#3d52d5] shadow-[0_0_12px_rgba(255,106,85,0.6)]" />
-          </div>
+          {/* Mobile timeline rail - REMOVED */}
 
           {/* Steps */}
           <div className="space-y-10 lg:space-y-14">
@@ -149,11 +145,11 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
                   data-index={index}
                   data-side={side}
                 >
-                  {/* Step number (center on timeline for lg, center on mobile timeline too) */}
+                  {/* Step number */}
                   <div
                     className={cn(
                       "step-number absolute z-20 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold transition-all duration-500",
-                      "left-[3rem] lg:left-1/2 -translate-x-1/2",
+                      "left-4 lg:left-1/2 lg:-translate-x-1/2",
                       isDoneOrActive
                         ? "bg-gradient-to-br from-[#ff6a55] to-[#7b63ff] text-white shadow-[0_0_24px_rgba(255,106,85,0.6)]"
                         : "bg-white/10 text-white/60"
@@ -191,9 +187,9 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
                   {/* Content card */}
                   <div
                     className={cn(
-                      "step-content relative ml-[92px] w-full rounded-2xl p-7 backdrop-blur-[18px] transition-all duration-300",
+                      "step-content relative ml-[76px] w-full rounded-2xl p-6 backdrop-blur-[18px] transition-all duration-300",
                       "bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-white/10 shadow-[0_18px_40px_rgba(0,0,0,0.3)]",
-                      "lg:ml-0 lg:w-[min(470px,42vw)]",
+                      "lg:ml-0 lg:p-7 lg:w-[min(470px,42vw)]",
                       side === "left"
                         ? "lg:mr-[calc(50%+120px)] lg:ml-auto"
                         : "lg:ml-[calc(50%+120px)]"
@@ -262,7 +258,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
           </div>
 
           {/* CTA */}
-          <div className="process-button-container mt-16 lg:mt-24 flex justify-center">
+          <div className="process-button-container mt-16 lg:mt-12 flex justify-center">
             <GlowButton
               variant="secondary"
               size="lg"

@@ -20,8 +20,8 @@ const BentoGrid = ({
     <div
       className={cn(
         "grid w-full auto-rows-[26rem] md:auto-rows-[26rem] grid-cols-1 md:grid-cols-3 gap-4",
-        "[&>*:first-child]:min-h-[22rem] md:[&>*:first-child]:min-h-auto",
-        "[&>*:not(:first-child)]:min-h-[14rem] md:[&>*:not(:first-child)]:min-h-auto",
+        "[&>*:first-child]:min-h-[28rem] md:[&>*:first-child]:min-h-auto",
+        "[&>*:not(:first-child)]:min-h-[12rem] md:[&>*:not(:first-child)]:min-h-auto",
         className,
       )}
     >

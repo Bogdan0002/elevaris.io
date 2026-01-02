@@ -162,3 +162,25 @@ html, body {
 section, main, .container {
   overflow-x: hidden;
 }
+
+/* Prevent text selection globally */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Remove all focus outlines and tap highlights */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

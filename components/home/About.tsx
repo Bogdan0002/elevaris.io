@@ -20,7 +20,7 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
   const titleParts = title.split(new RegExp(`(${highlight})`, "gi"))
 
   return (
-    <section className="py-20">
+    <section className="py-10 md:py-20">
       <Container>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
           {/* Left: Creative Design */}
@@ -39,76 +39,77 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
                 </div>
                 
                 {/* Tech-inspired design */}
-                <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <div className="relative w-full h-full flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative flex items-center justify-center">
                     {/* Center glow */}
                     <motion.div
                       animate={{
-                        scale: [1, 1.3, 1],
-                        opacity: [0.4, 0.7, 0.4],
+                        scale: [1, 1.4, 1],
+                        opacity: [0.3, 0.6, 0.3],
                       }}
                       transition={{
-                        duration: 5,
+                        duration: 6,
                         repeat: Infinity,
                         ease: "easeInOut",
                       }}
-                      className="absolute w-48 h-48 rounded-full bg-gradient-to-br from-primary/50 to-[#7b63ff]/50 blur-[80px]"
+                      className="absolute w-56 h-56 rounded-full bg-gradient-to-br from-primary/40 to-[#7b63ff]/40 blur-[100px]"
                     />
                     
-                    {/* Orbiting circles */}
-                    <div className="relative w-64 h-64">
-                      {[...Array(3)].map((_, i) => (
+                    {/* Orbiting circles - centered */}
+                    <div className="relative flex items-center justify-center">
+                      {[...Array(4)].map((_, i) => (
                         <motion.div
                           key={i}
-                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                          className="absolute"
                           animate={{
                             rotate: 360,
                           }}
                           transition={{
-                            duration: 15 + i * 5,
+                            duration: 20 + i * 8,
                             repeat: Infinity,
                             ease: "linear",
                           }}
                         >
                           <div 
-                            className="rounded-full border border-white/20"
+                            className="rounded-full border-2"
                             style={{
-                              width: `${120 + i * 40}px`,
-                              height: `${120 + i * 40}px`,
+                              width: `${100 + i * 50}px`,
+                              height: `${100 + i * 50}px`,
+                              borderColor: `rgba(255, 106, 85, ${0.15 - i * 0.03})`,
                             }}
                           />
                           <motion.div
-                            className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-gradient-to-r from-primary to-[#7b63ff]"
+                            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-gradient-to-r from-primary to-[#7b63ff] shadow-[0_0_12px_rgba(255,106,85,0.8)]"
                             animate={{
-                              scale: [1, 1.5, 1],
+                              scale: [1, 1.4, 1],
                             }}
                             transition={{
-                              duration: 2,
+                              duration: 2.5,
                               repeat: Infinity,
                               ease: "easeInOut",
-                              delay: i * 0.3,
+                              delay: i * 0.4,
                             }}
                           />
                         </motion.div>
                       ))}
                       
-                      {/* Center icon */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-[#7b63ff] flex items-center justify-center shadow-[0_0_40px_rgba(255,106,85,0.5)]">
-                        <motion.div
-                          animate={{
-                            scale: [1, 1.1, 1],
-                            rotate: [0, 5, 0, -5, 0],
-                          }}
-                          transition={{
-                            duration: 4,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                          className="text-white text-3xl font-bold"
-                        >
-                          E
-                        </motion.div>
-                      </div>
+                      {/* Center pulsing dot */}
+                      <motion.div
+                        className="w-6 h-6 rounded-full bg-gradient-to-br from-primary via-[#ff7a59] to-[#7b63ff]"
+                        animate={{
+                          scale: [1, 1.3, 1],
+                          boxShadow: [
+                            '0 0 20px rgba(255,106,85,0.6)',
+                            '0 0 40px rgba(255,106,85,0.9)',
+                            '0 0 20px rgba(255,106,85,0.6)',
+                          ],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -162,7 +163,7 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
                   borderWidth={1}
                   className="rounded-2xl"
                 />
-                <GlowCard hover={false} className="rounded-2xl p-4 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 relative z-10">
+                <GlowCard hover={true} className="rounded-2xl p-4 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 relative z-10 hover:shadow-[0_16px_36px_rgba(255,106,85,0.2)]">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff6a55]/20 to-[#7b63ff]/20 border border-primary/30">
                     <Mail className="h-5 w-5 text-primary" />
@@ -190,7 +191,7 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
                   borderWidth={1}
                   className="rounded-2xl"
                 />
-                <GlowCard hover={false} className="rounded-2xl p-4 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 relative z-10">
+                <GlowCard hover={true} className="rounded-2xl p-4 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.2)] transition-all duration-300 relative z-10 hover:shadow-[0_16px_36px_rgba(255,106,85,0.2)]">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff6a55]/20 to-[#7b63ff]/20 border border-primary/30">
                     <Phone className="h-5 w-5 text-primary" />

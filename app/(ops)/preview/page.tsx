@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { createPreviewAction } from './actions'
+import { generateContentAction } from './ai-actions'
 import { TEMPLATE_REGISTRY } from '@/lib/templates/registry'
-import { Copy, ExternalLink, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2 } from 'lucide-react'
 
 function OpsConsoleContent() {
   const searchParams = useSearchParams()
@@ -37,6 +38,7 @@ function OpsConsoleContent() {
   })
 
   const [loading, setLoading] = useState(false)
+  const [aiGenerating, setAiGenerating] = useState(false)
   const [result, setResult] = useState<{
     success: boolean
     slug?: string
@@ -46,6 +48,7 @@ function OpsConsoleContent() {
     error?: string
   } | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  const [additionalInfo, setAdditionalInfo] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,6 +96,46 @@ function OpsConsoleContent() {
     }
   }
 
+  const handleAiGenerate = async () => {
+    // Validate required fields for AI generation
+    if (!formData.businessName || !formData.city || !formData.state || !formData.phone) {
+      alert('Please fill in Business Name, City, State, and Phone before generating content.')
+      return
+    }
+
+    setAiGenerating(true)
+    try {
+      const aiResult = await generateContentAction({
+        businessName: formData.businessName,
+        city: formData.city,
+        state: formData.state,
+        phone: formData.phone,
+        placeId: formData.placeId || '', // Optional for AI
+        additionalInfo: additionalInfo,
+      })
+
+      if (aiResult.success && aiResult.content) {
+        // Fill form with AI-generated content
+        setFormData({
+          ...formData,
+          offerText: aiResult.content.offer.shortText,
+          primaryColor: aiResult.content.branding.primaryColor,
+          accentColor: aiResult.content.branding.accentColor,
+          services: aiResult.content.services.join('\n'),
+          areasServed: aiResult.content.areasServed.join('\n'),
+          hours: aiResult.content.hours || '',
+        })
+        alert('Content generated successfully! Review and adjust as needed.')
+      } else {
+        alert(`Failed to generate content: ${aiResult.error || 'Unknown error'}`)
+      }
+    } catch (error) {
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setAiGenerating(false)
+    }
+  }
+
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text)
     setCopied(type)
@@ -131,9 +174,30 @@ function OpsConsoleContent() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Business Info */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-foreground">
-                  Business Information
-                </h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Business Information
+                  </h2>
+                  <Button
+                    type="button"
+                    onClick={handleAiGenerate}
+                    disabled={aiGenerating || !formData.businessName || !formData.city || !formData.state || !formData.phone}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    {aiGenerating ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4" />
+                        AI Generate Content
+                      </>
+                    )}
+                  </Button>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground-secondary mb-2">
                     Business Name *
@@ -207,6 +271,20 @@ function OpsConsoleContent() {
                   />
                   <p className="text-xs text-foreground-muted mt-1">
                     Used to generate Google review button link
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground-secondary mb-2">
+                    Additional Info (Optional - for AI generation)
+                  </label>
+                  <Textarea
+                    value={additionalInfo}
+                    onChange={(e) => setAdditionalInfo(e.target.value)}
+                    placeholder="Any additional context about the business (e.g., 'Family-owned since 2010', 'Specializes in eco-friendly cleaning', etc.)"
+                    rows={3}
+                  />
+                  <p className="text-xs text-foreground-muted mt-1">
+                    This helps AI generate more personalized content
                   </p>
                 </div>
               </div>

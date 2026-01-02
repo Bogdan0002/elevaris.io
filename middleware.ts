@@ -40,11 +40,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url)
   }
 
-  // Handle ops. subdomain - routes should work normally
-  // The (ops) route group handles /preview routes
+  // Handle ops. subdomain - ensure routes work correctly
   if (hostname.startsWith('ops.') || hostname.includes('ops.elevaris.app')) {
-    // No rewrite needed - routes are already under /preview
-    // But ensure we're not blocking it
+    // For ops subdomain, routes should work normally
+    // The (ops) route group already handles /preview routes
+    // If someone visits ops.elevaris.app/ (root), we could redirect to /preview
+    // But for now, just pass through - the route group will handle it
     return NextResponse.next()
   }
 

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { Navbar } from "@/components/site/Navbar"
+import { ConditionalNavbar } from "@/components/site/ConditionalNavbar"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -85,7 +85,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-x-hidden">
       <body className={`${inter.className} overflow-x-hidden`}>
-        <Navbar />
+        <ConditionalNavbar />
         <main className="overflow-x-hidden">{children}</main>
       </body>
     </html>

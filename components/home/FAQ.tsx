@@ -44,16 +44,20 @@ export function FAQ({ faq }: FAQProps) {
                   className="border-none group"
                 >
                   <div className="relative rounded-2xl overflow-hidden">
-                    <GlowingEffect
-                      spread={40}
-                      glow={true}
-                      disabled={false}
-                      proximity={60}
-                      inactiveZone={0.01}
-                      borderWidth={1}
-                      className="rounded-2xl"
-                    />
-                    <div className="relative rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.08),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.08),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] shadow-[0_12px_30px_rgba(0,0,0,0.18)] px-4 py-3 transition duration-300 group-hover:shadow-[0_16px_36px_rgba(0,0,0,0.24)] group-hover:border-white/20">
+                    {/* Glowing effect - same as testimonials */}
+                    <div className="absolute inset-0 z-10 pointer-events-none">
+                      <GlowingEffect
+                        spread={30}
+                        glow={true}
+                        disabled={false}
+                        proximity={50}
+                        inactiveZone={0.01}
+                        borderWidth={1}
+                        movementDuration={0.8}
+                        className="rounded-2xl"
+                      />
+                    </div>
+                    <div className="relative rounded-2xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] shadow-[0_12px_30px_rgba(0,0,0,0.18)] px-4 py-3 transition-all duration-300 group-hover:border-white/20">
                       <div className="relative z-10">
                         <AccordionTrigger className="text-left text-base md:text-lg font-semibold text-foreground hover:no-underline gap-3">
                           <span className="inline-flex h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(255,106,85,0.6)] transition duration-300 group-hover:shadow-[0_0_14px_rgba(255,106,85,0.9)]" />

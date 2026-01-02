@@ -72,11 +72,11 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
               >
                 <GlowCard
                   hover={true}
                   className="h-full p-6 group cursor-pointer"
-                  whileHover={{ y: -5 }}
                 >
                   <div className="flex flex-col h-full">
                     <div className="flex items-start gap-4 mb-4">

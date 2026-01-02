@@ -214,7 +214,7 @@ function InteractiveSupportMockup() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[480px] lg:max-w-[520px] cursor-pointer px-2 sm:px-0"
+      className="relative mx-auto w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[520px] cursor-pointer px-4 sm:px-8"
       style={{ perspective: 1200 }}
     >
       {/* 3D Container */}
@@ -556,7 +556,7 @@ function InteractiveSupportMockup() {
       
       {/* Floating Uptime badge */}
       <motion.div
-        className="absolute -top-12 -right-4 sm:-right-12 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-green-500/30 cursor-pointer z-10"
+        className="absolute -top-8 right-0 sm:-top-12 sm:-right-6 bg-gradient-to-br from-[#181116] to-[#0f0b0e] rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.4)] border border-green-500/30 cursor-pointer z-10"
         style={{ x: floatX, y: floatY, transformStyle: 'preserve-3d', transform: 'translateZ(40px)' }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -588,7 +588,7 @@ function InteractiveSupportMockup() {
       
       {/* Floating response time notification */}
       <motion.div
-        className="absolute -bottom-2 -left-4 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
+        className="absolute bottom-2 left-0 sm:-bottom-2 sm:-left-2 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
         style={{ x: floatXReverse, y: floatYReverse, transformStyle: 'preserve-3d', transform: 'translateZ(30px)' }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -729,11 +729,14 @@ export default function OngoingSupportPage() {
             </motion.div>
 
             {/* Right - Interactive Dashboard mockup */}
-            <div className="relative lg:pl-8 w-full overflow-hidden px-4 sm:px-0">
-              <div className="max-w-full mx-auto">
-                <InteractiveSupportMockup />
-              </div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative lg:pl-6"
+            >
+              <InteractiveSupportMockup />
+            </motion.div>
           </div>
         </Container>
       </section>

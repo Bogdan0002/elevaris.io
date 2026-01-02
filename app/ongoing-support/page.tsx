@@ -680,6 +680,7 @@ export default function OngoingSupportPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
+              className="text-center lg:text-left"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -703,7 +704,7 @@ export default function OngoingSupportPage() {
                 24/7 monitoring, proactive maintenance, and expert support to keep your website secure, fast, and worry-free.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center lg:justify-start">
                 <Link
                   href="/schedule-a-call"
                   className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-primary text-white font-semibold rounded-xl transition-all duration-200 hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_rgba(255,106,85,0.4),inset_0_1px_0_rgba(255,255,255,0.1)] active:scale-[0.98]"

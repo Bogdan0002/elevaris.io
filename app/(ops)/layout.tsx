@@ -1,3 +1,7 @@
+// Force dynamic rendering for all ops routes
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default function OpsLayout({
   children,
 }: {

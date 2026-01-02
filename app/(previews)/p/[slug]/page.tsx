@@ -3,6 +3,10 @@ import { getPreviewBySlug } from '@/lib/previews/repo'
 import { applyDefaults, validateConfigSafe } from '@/lib/previews/helpers'
 import { renderTemplate } from '@/lib/templates/render'
 
+// Force dynamic rendering for preview pages
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface PreviewPageProps {
   params: Promise<{ slug: string }>
 }

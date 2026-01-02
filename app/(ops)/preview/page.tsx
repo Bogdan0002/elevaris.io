@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,7 @@ import { createPreviewAction } from './actions'
 import { TEMPLATE_REGISTRY } from '@/lib/templates/registry'
 import { Copy, ExternalLink, CheckCircle2, AlertCircle } from 'lucide-react'
 
-export default function OpsConsolePage() {
+function OpsConsoleContent() {
   const searchParams = useSearchParams()
   const key = searchParams.get('key')
 
@@ -516,6 +516,18 @@ export default function OpsConsolePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function OpsConsolePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0B]">
+        <div className="text-foreground-secondary">Loading...</div>
+      </div>
+    }>
+      <OpsConsoleContent />
+    </Suspense>
   )
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,7 +19,7 @@ interface PreviewRow {
   }
 }
 
-export default function ListPreviewsPage() {
+function ListPreviewsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const key = searchParams.get('key')
@@ -228,5 +228,17 @@ export default function ListPreviewsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ListPreviewsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0B]">
+        <div className="text-foreground-secondary">Loading...</div>
+      </div>
+    }>
+      <ListPreviewsContent />
+    </Suspense>
   )
 }

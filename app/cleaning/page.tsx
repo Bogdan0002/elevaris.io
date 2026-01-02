@@ -331,7 +331,7 @@ function InteractiveCRMMockup() {
         />
 
         {/* Browser frame */}
-        <div className="relative rounded-2xl bg-gradient-to-b from-zinc-800 to-zinc-900 p-1 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_60px_rgba(123,99,255,0.15)] transition-shadow duration-300 hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6),0_0_80px_rgba(255,106,85,0.2)]">
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-900 p-1 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_60px_rgba(123,99,255,0.15)] transition-shadow duration-300 hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6),0_0_80px_rgba(255,106,85,0.2)]">
           {/* Browser header */}
           <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 rounded-t-xl border-b border-white/5">
             <div className="flex gap-1.5">
@@ -1042,7 +1042,7 @@ export default function CleaningPage() {
             highlightWord="Days"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 max-w-5xl mx-auto">
             {[
               {
                 num: "01",
@@ -1069,19 +1069,37 @@ export default function CleaningPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.15 }}
-                className="relative text-center"
+                className="relative group"
               >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center mx-auto mb-4">
-                  <step.icon className="w-8 h-8 text-primary" />
+                <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden rounded-2xl">
+                  <GlowingEffect
+                    spread={30}
+                    glow={true}
+                    disabled={false}
+                    proximity={50}
+                    inactiveZone={0.01}
+                    borderWidth={1}
+                    className="rounded-2xl"
+                  />
                 </div>
-                <span className="text-sm font-bold text-primary mb-2 block">{step.num}</span>
-                <h3 className="text-xl font-bold text-foreground mb-2">{step.title}</h3>
-                <p className="text-sm text-foreground-secondary leading-relaxed">{step.text}</p>
+                <div className="relative rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.08),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.08),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] p-6 h-full transition-all duration-300 hover:border-white/20 text-center">
+                  {/* Step number badge */}
+                  <span className="inline-flex items-center justify-center text-3xl font-bold bg-gradient-to-br from-primary/40 to-[#7b63ff]/40 bg-clip-text text-transparent mb-4 group-hover:from-primary group-hover:to-[#7b63ff] transition-all duration-300">
+                    {step.num}
+                  </span>
+                  
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 border border-primary/20">
+                    <step.icon className="w-7 h-7 text-primary" />
+                  </div>
+                  
+                  <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
+                  <p className="text-sm text-foreground-secondary leading-relaxed">{step.text}</p>
+                </div>
                 
                 {/* Connector */}
                 {index < 2 && (
-                  <div className="hidden md:block absolute top-8 -right-4 w-8">
-                    <ChevronRight className="w-6 h-6 text-primary/30" />
+                  <div className="hidden md:flex absolute top-1/2 -right-3 -translate-y-1/2 w-6 h-6 items-center justify-center">
+                    <ChevronRight className="w-5 h-5 text-primary/40" />
                   </div>
                 )}
               </motion.div>

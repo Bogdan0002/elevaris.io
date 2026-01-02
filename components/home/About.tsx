@@ -32,10 +32,10 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
             className="relative"
           >
             <div className="relative aspect-[4/3] max-w-lg mx-auto">
-              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.3)]">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-[radial-gradient(circle_at_30%_30%,rgba(255,106,85,0.15),transparent_50%),radial-gradient(circle_at_70%_70%,rgba(123,99,255,0.15),transparent_50%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
                 {/* Animated grid pattern */}
-                <div className="absolute inset-0 opacity-20">
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,106,85,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,106,85,0.1)_1px,transparent_1px)] bg-[size:40px_40px]" />
+                <div className="absolute inset-0 opacity-30">
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,106,85,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(123,99,255,0.08)_1px,transparent_1px)] bg-[size:30px_30px]" />
                 </div>
                 
                 {/* Tech-inspired design */}
@@ -44,77 +44,144 @@ export function About({ title, highlight, text, email, phone }: AboutProps) {
                     {/* Center glow */}
                     <motion.div
                       animate={{
-                        scale: [1, 1.4, 1],
-                        opacity: [0.3, 0.6, 0.3],
+                        scale: [1, 1.3, 1],
+                        opacity: [0.4, 0.7, 0.4],
                       }}
                       transition={{
-                        duration: 6,
+                        duration: 5,
                         repeat: Infinity,
                         ease: "easeInOut",
                       }}
-                      className="absolute w-56 h-56 rounded-full bg-gradient-to-br from-primary/40 to-[#7b63ff]/40 blur-[100px]"
+                      className="absolute w-48 h-48 rounded-full bg-gradient-to-br from-primary/50 to-[#7b63ff]/50 blur-[80px]"
                     />
                     
                     {/* Orbiting circles - centered */}
                     <div className="relative flex items-center justify-center">
-                      {[...Array(4)].map((_, i) => (
+                      {[...Array(3)].map((_, i) => (
                         <motion.div
                           key={i}
                           className="absolute"
                           animate={{
-                            rotate: 360,
+                            rotate: i % 2 === 0 ? 360 : -360,
                           }}
                           transition={{
-                            duration: 20 + i * 8,
+                            duration: 15 + i * 5,
                             repeat: Infinity,
                             ease: "linear",
                           }}
                         >
                           <div 
-                            className="rounded-full border-2"
+                            className="rounded-full border"
                             style={{
-                              width: `${100 + i * 50}px`,
-                              height: `${100 + i * 50}px`,
-                              borderColor: `rgba(255, 106, 85, ${0.15 - i * 0.03})`,
+                              width: `${80 + i * 45}px`,
+                              height: `${80 + i * 45}px`,
+                              borderColor: i === 0 ? 'rgba(255, 106, 85, 0.3)' : i === 1 ? 'rgba(123, 99, 255, 0.25)' : 'rgba(61, 82, 213, 0.2)',
+                              borderWidth: '2px',
+                              borderStyle: i === 1 ? 'dashed' : 'solid',
                             }}
                           />
+                          {/* Orbiting dots */}
                           <motion.div
-                            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-gradient-to-r from-primary to-[#7b63ff] shadow-[0_0_12px_rgba(255,106,85,0.8)]"
+                            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary to-[#7b63ff]"
+                            style={{
+                              width: `${10 - i * 2}px`,
+                              height: `${10 - i * 2}px`,
+                            }}
                             animate={{
-                              scale: [1, 1.4, 1],
+                              scale: [1, 1.5, 1],
+                              boxShadow: [
+                                '0 0 8px rgba(255,106,85,0.6)',
+                                '0 0 16px rgba(255,106,85,0.9)',
+                                '0 0 8px rgba(255,106,85,0.6)',
+                              ],
+                            }}
+                            transition={{
+                              duration: 2,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              delay: i * 0.5,
+                            }}
+                          />
+                          {/* Additional dot on opposite side */}
+                          <motion.div
+                            className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full bg-gradient-to-r from-[#7b63ff] to-[#3d52d5]"
+                            style={{
+                              width: `${8 - i * 2}px`,
+                              height: `${8 - i * 2}px`,
+                            }}
+                            animate={{
+                              scale: [1, 1.3, 1],
                             }}
                             transition={{
                               duration: 2.5,
                               repeat: Infinity,
                               ease: "easeInOut",
-                              delay: i * 0.4,
+                              delay: i * 0.3 + 0.5,
                             }}
                           />
                         </motion.div>
                       ))}
                       
-                      {/* Center pulsing dot */}
+                      {/* Center element - hexagon-like shape */}
                       <motion.div
-                        className="w-6 h-6 rounded-full bg-gradient-to-br from-primary via-[#ff7a59] to-[#7b63ff]"
+                        className="relative w-16 h-16 flex items-center justify-center"
                         animate={{
-                          scale: [1, 1.3, 1],
-                          boxShadow: [
-                            '0 0 20px rgba(255,106,85,0.6)',
-                            '0 0 40px rgba(255,106,85,0.9)',
-                            '0 0 20px rgba(255,106,85,0.6)',
-                          ],
+                          rotate: [0, 360],
                         }}
                         transition={{
-                          duration: 3,
+                          duration: 30,
                           repeat: Infinity,
-                          ease: "easeInOut",
+                          ease: "linear",
                         }}
-                      />
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 rounded-xl rotate-45" />
+                        <motion.div
+                          className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-[#ff7a59] to-[#7b63ff]"
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            rotate: [45, 45, 45],
+                            boxShadow: [
+                              '0 0 20px rgba(255,106,85,0.5)',
+                              '0 0 35px rgba(255,106,85,0.8)',
+                              '0 0 20px rgba(255,106,85,0.5)',
+                            ],
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      </motion.div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="absolute inset-0 rounded-2xl border-2 border-primary/30 shadow-[0_0_20px_rgba(255,106,85,0.3)]" />
+                {/* Floating particles */}
+                {[...Array(6)].map((_, i) => (
+                  <motion.div
+                    key={`particle-${i}`}
+                    className="absolute w-1 h-1 rounded-full bg-primary/60"
+                    style={{
+                      left: `${15 + i * 15}%`,
+                      top: `${20 + (i % 3) * 25}%`,
+                    }}
+                    animate={{
+                      y: [-10, 10, -10],
+                      opacity: [0.3, 0.8, 0.3],
+                    }}
+                    transition={{
+                      duration: 3 + i * 0.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: i * 0.3,
+                    }}
+                  />
+                ))}
+                
+                {/* Corner accents */}
+                <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-primary/40 rounded-tl-lg" />
+                <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-[#7b63ff]/40 rounded-br-lg" />
               </div>
             </div>
           </motion.div>

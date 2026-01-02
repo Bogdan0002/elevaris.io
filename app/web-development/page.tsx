@@ -986,20 +986,18 @@ export default function WebDevelopmentPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05, duration: 0.4 }}
-                className="relative group"
+                className="relative group overflow-hidden rounded-xl"
               >
-                <div className="absolute inset-0 z-10 pointer-events-none">
-                  <GlowingEffect
-                    spread={30}
-                    glow={true}
-                    disabled={false}
-                    proximity={50}
-                    inactiveZone={0.01}
-                    borderWidth={1}
-                    className="rounded-xl"
-                  />
-                </div>
-                <div className="relative p-6 rounded-xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] hover:border-white/20 transition-all duration-300 text-center">
+                <GlowingEffect
+                  spread={30}
+                  glow={true}
+                  disabled={false}
+                  proximity={50}
+                  inactiveZone={0.01}
+                  borderWidth={1}
+                  className="rounded-xl"
+                />
+                <div className="relative p-6 rounded-xl border border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] hover:border-white/20 transition-all duration-300 text-center h-full">
                   <div className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">{tech.name}</div>
                   <div className="text-xs text-foreground-secondary">{tech.description}</div>
                 </div>

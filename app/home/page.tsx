@@ -46,7 +46,7 @@ const servicesData = [
     ],
     cta: "Learn More",
     href: "/web-development",
-    className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-5",
+    className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
     isMain: true,
   },
   {

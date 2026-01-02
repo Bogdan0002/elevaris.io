@@ -245,6 +245,7 @@ function InteractiveSEOMockup() {
   useEffect(() => {
     const timeout = setTimeout(() => handleOptimize(), 1500)
     return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -743,12 +744,12 @@ export default function SEOStrategiesPage() {
               >
                 <div className="absolute inset-0 z-10 pointer-events-none">
                   <GlowingEffect
-                    spread={40}
+                    spread={30}
                     glow={true}
                     disabled={false}
-                    proximity={64}
+                    proximity={50}
                     inactiveZone={0.01}
-                    borderWidth={2}
+                    borderWidth={1}
                     className="rounded-2xl"
                   />
                 </div>
@@ -916,12 +917,12 @@ export default function SEOStrategiesPage() {
           >
             <div className="absolute inset-0 z-10 pointer-events-none">
               <GlowingEffect
-                spread={60}
+                spread={30}
                 glow={true}
                 disabled={false}
-                proximity={80}
+                proximity={50}
                 inactiveZone={0.01}
-                borderWidth={2}
+                borderWidth={1}
                 className="rounded-3xl"
               />
             </div>

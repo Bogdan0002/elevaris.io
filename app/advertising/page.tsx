@@ -266,12 +266,14 @@ function InteractiveAdsMockup() {
         setIsOptimizing(false)
       }
     }, 150)
-  }, [isOptimizing, impressions, clicks, conversions, revenue, roas, activePlatform, platformData])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOptimizing, impressions, clicks, conversions, revenue, roas, activePlatform])
 
   // Auto-optimize on mount
   useEffect(() => {
     const timeout = setTimeout(() => handleOptimize(), 1500)
     return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Reset metrics when switching platforms
@@ -284,6 +286,7 @@ function InteractiveAdsMockup() {
     setIsOptimizing(false)
     const timeout = setTimeout(() => handleOptimize(), 500)
     return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePlatform])
 
   return (
@@ -295,7 +298,7 @@ function InteractiveAdsMockup() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[520px] cursor-pointer"
+      className="relative mx-auto w-full max-w-[480px] lg:max-w-[520px] cursor-pointer px-2 sm:px-0"
       style={{ perspective: 1200 }}
     >
       {/* 3D Container */}
@@ -718,8 +721,8 @@ export default function AdvertisingPage() {
             </motion.div>
 
             {/* Right - Interactive Dashboard mockup */}
-            <div className="relative lg:pl-8 w-full overflow-hidden">
-              <div className="max-w-full">
+            <div className="relative lg:pl-8 w-full overflow-hidden px-4 sm:px-0">
+              <div className="max-w-full mx-auto">
                 <InteractiveAdsMockup />
               </div>
             </div>
@@ -749,12 +752,12 @@ export default function AdvertisingPage() {
               >
                 <div className="absolute inset-0 z-10 pointer-events-none">
                   <GlowingEffect
-                    spread={40}
+                    spread={30}
                     glow={true}
                     disabled={false}
-                    proximity={64}
+                    proximity={50}
                     inactiveZone={0.01}
-                    borderWidth={2}
+                    borderWidth={1}
                     className="rounded-2xl"
                   />
                 </div>
@@ -901,12 +904,12 @@ export default function AdvertisingPage() {
           >
             <div className="absolute inset-0 z-10 pointer-events-none">
               <GlowingEffect
-                spread={60}
+                spread={30}
                 glow={true}
                 disabled={false}
-                proximity={80}
+                proximity={50}
                 inactiveZone={0.01}
-                borderWidth={2}
+                borderWidth={1}
                 className="rounded-3xl"
               />
             </div>

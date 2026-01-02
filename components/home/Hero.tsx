@@ -446,13 +446,13 @@ export function Hero({
         </div>
 
         {/* Floating Cards Below Hero - Evenly Spaced */}
-        <div className="mt-24 grid grid-cols-1 gap-4 sm:grid-cols-3 relative sm:h-[200px] sm:flex sm:justify-between sm:items-start sm:gap-0">
+        <div className="mt-16 sm:mt-24 grid grid-cols-1 gap-3 sm:grid-cols-3 relative sm:h-[200px] sm:flex sm:justify-between sm:items-start sm:gap-0 px-4 sm:px-0">
           {floatingCards.map((card, index) => (
             <FloatingCard
               key={card.title}
               rotation={index === 0 ? -6 : index === 1 ? 4 : -4}
               delay={index * 0.2}
-              className="sm:w-[280px] sm:flex-shrink-0 scale-75 sm:scale-100"
+              className="sm:w-[280px] sm:flex-shrink-0 !scale-[0.85] sm:!scale-100"
             >
               <div className="h-full rounded-2xl p-[1px] bg-gradient-to-r from-[#ff6a55]/60 via-[#ff7a59]/40 to-[#7b63ff]/60">
                 <GlowCard hover={false} className="h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.12),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(123,99,255,0.12),transparent_40%),linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-0 shadow-[0_12px_30px_rgba(0,0,0,0.3)]">

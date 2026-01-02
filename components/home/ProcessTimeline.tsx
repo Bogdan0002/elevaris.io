@@ -109,11 +109,11 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
   const arrowActive = activeStep >= totalSteps - 1
 
   return (
-    <section className="process-section pt-20 pb-10 lg:pb-16">
+    <section className="process-section pt-20 pb-6 lg:pb-10">
       <Container>
         <SectionHeading title="Our Process" highlightWord="Process" />
 
-        <div className="process-container relative mt-10 pb-[320px]">
+        <div className="process-container relative mt-10 pb-[180px] lg:pb-[280px]">
           {/* Timeline rail (desktop) */}
           <div className="timeline absolute left-1/2 top-0 hidden -translate-x-1/2 lg:block" style={{ bottom: "420px" }}>
             <div className="timeline-rail absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 rounded-full bg-white/12" />
@@ -258,7 +258,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
           </div>
 
           {/* CTA */}
-          <div className="process-button-container mt-16 lg:mt-12 flex justify-center">
+          <div className="process-button-container mt-8 lg:mt-10 flex justify-center">
             <GlowButton
               variant="secondary"
               size="lg"

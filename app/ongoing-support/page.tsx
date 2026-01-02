@@ -175,14 +175,14 @@ function InteractiveSupportMockup() {
       if (currentUptime >= 99.9) clearInterval(uptimeInterval)
     }, 20)
     
-    let currentResponse = responseTime
+    let currentResponse = 0
     const responseInterval = setInterval(() => {
       currentResponse += 1
       setResponseTime(Math.min(currentResponse, 2))
       if (currentResponse >= 2) clearInterval(responseInterval)
     }, 100)
     
-    let currentIssues = issuesFixed
+    let currentIssues = 0
     const issuesInterval = setInterval(() => {
       currentIssues += 1
       setIssuesFixed(Math.min(currentIssues, 47))
@@ -214,7 +214,7 @@ function InteractiveSupportMockup() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[520px] cursor-pointer"
+      className="relative mx-auto w-full max-w-[480px] lg:max-w-[520px] cursor-pointer px-2 sm:px-0"
       style={{ perspective: 1200 }}
     >
       {/* 3D Container */}
@@ -729,8 +729,8 @@ export default function OngoingSupportPage() {
             </motion.div>
 
             {/* Right - Interactive Dashboard mockup */}
-            <div className="relative lg:pl-8 w-full overflow-hidden">
-              <div className="max-w-full">
+            <div className="relative lg:pl-8 w-full overflow-hidden px-4 sm:px-0">
+              <div className="max-w-full mx-auto">
                 <InteractiveSupportMockup />
               </div>
             </div>
@@ -760,12 +760,12 @@ export default function OngoingSupportPage() {
               >
                 <div className="absolute inset-0 z-10 pointer-events-none">
                   <GlowingEffect
-                    spread={40}
+                    spread={30}
                     glow={true}
                     disabled={false}
-                    proximity={64}
+                    proximity={50}
                     inactiveZone={0.01}
-                    borderWidth={2}
+                    borderWidth={1}
                     className="rounded-2xl"
                   />
                 </div>
@@ -910,12 +910,12 @@ export default function OngoingSupportPage() {
           >
             <div className="absolute inset-0 z-10 pointer-events-none">
               <GlowingEffect
-                spread={60}
+                spread={30}
                 glow={true}
                 disabled={false}
-                proximity={80}
+                proximity={50}
                 inactiveZone={0.01}
-                borderWidth={2}
+                borderWidth={1}
                 className="rounded-3xl"
               />
             </div>

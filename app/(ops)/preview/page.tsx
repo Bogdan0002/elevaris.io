@@ -16,20 +16,7 @@ export default function OpsConsolePage() {
   // Access gate - check against server-side env var
   // Note: In production, this should be server-side validated
   const OPS_KEY = process.env.NEXT_PUBLIC_OPS_KEY || ''
-
-  if (!key || key !== OPS_KEY) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0B] p-4">
-        <div className="text-center space-y-4">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
-          <h1 className="text-2xl font-bold text-foreground">Unauthorized</h1>
-          <p className="text-foreground-secondary">
-            Access denied. Please provide a valid key.
-          </p>
-        </div>
-      </div>
-    )
-  }
+  const isAuthorized = key && key === OPS_KEY
 
   const [formData, setFormData] = useState({
     templateId: 'cleaning-v1',
@@ -110,6 +97,20 @@ export default function OpsConsolePage() {
     navigator.clipboard.writeText(text)
     setCopied(type)
     setTimeout(() => setCopied(null), 2000)
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0B] p-4">
+        <div className="text-center space-y-4">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
+          <h1 className="text-2xl font-bold text-foreground">Unauthorized</h1>
+          <p className="text-foreground-secondary">
+            Access denied. Please provide a valid key.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

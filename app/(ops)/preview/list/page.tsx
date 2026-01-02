@@ -24,31 +24,18 @@ export default function ListPreviewsPage() {
   const router = useRouter()
   const key = searchParams.get('key')
 
+  // Access gate - check against server-side env var
+  const OPS_KEY = process.env.NEXT_PUBLIC_OPS_KEY || ''
+  const isAuthorized = key && key === OPS_KEY
+
   const [previews, setPreviews] = useState<PreviewRow[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
 
-  // Access gate
-  if (!key || key !== OPS_KEY) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0B] p-4">
-        <div className="text-center space-y-4">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
-          <h1 className="text-2xl font-bold text-foreground">Unauthorized</h1>
-          <p className="text-foreground-secondary">
-            Access denied. Please provide a valid key.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  useEffect(() => {
-    fetchPreviews()
-  }, [search])
-
   const fetchPreviews = async () => {
+    if (!isAuthorized || !key) return
+    
     setLoading(true)
     try {
       const params = new URLSearchParams()
@@ -65,6 +52,12 @@ export default function ListPreviewsPage() {
     }
   }
 
+  useEffect(() => {
+    if (isAuthorized) {
+      fetchPreviews()
+    }
+  }, [search, isAuthorized, key])
+
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text)
     setCopied(type)
@@ -73,6 +66,20 @@ export default function ListPreviewsPage() {
 
   const getPreviewUrl = (slug: string) => `https://p.elevaris.app/${slug}`
   const getReviewUrl = (placeId: string) => getGoogleReviewUrl(placeId)
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0B] p-4">
+        <div className="text-center space-y-4">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
+          <h1 className="text-2xl font-bold text-foreground">Unauthorized</h1>
+          <p className="text-foreground-secondary">
+            Access denied. Please provide a valid key.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#0B0B0B] p-4 md:p-8">
@@ -225,4 +232,3 @@ export default function ListPreviewsPage() {
     </div>
   )
 }
-

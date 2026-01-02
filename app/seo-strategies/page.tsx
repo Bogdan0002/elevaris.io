@@ -257,7 +257,7 @@ function InteractiveSEOMockup() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[520px] cursor-pointer px-4 sm:px-8"
+      className="relative mx-auto w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[520px] cursor-pointer"
       style={{ perspective: 1200 }}
     >
       {/* 3D Container */}
@@ -659,13 +659,13 @@ export default function SEOStrategiesPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(123,99,255,0.08),transparent_50%)] pointer-events-none" />
         
         <Container>
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center justify-items-center lg:justify-items-start">
             {/* Left content */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center lg:text-left"
+              className="w-full text-center lg:text-left"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -715,10 +715,10 @@ export default function SEOStrategiesPage() {
 
             {/* Right - Interactive Dashboard mockup */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative lg:pl-6"
+              className="relative w-full flex justify-center"
             >
               <InteractiveSEOMockup />
             </motion.div>

@@ -133,7 +133,7 @@ export function Navbar() {
                     return (
                       <Accordion key={link.label} type="single" collapsible>
                         <AccordionItem value={link.label} className="border-none">
-                          <AccordionTrigger className="text-foreground py-2">
+                          <AccordionTrigger className="text-foreground py-2 !font-normal">
                             {link.label}
                           </AccordionTrigger>
                           <AccordionContent>

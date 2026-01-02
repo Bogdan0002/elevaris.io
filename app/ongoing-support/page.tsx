@@ -119,6 +119,7 @@ const stats = [
   { value: "99.9%", label: "Uptime" },
   { value: "<2hrs", label: "Response" },
   { value: "24/7", label: "Monitoring" },
+  { value: "100%", label: "Satisfaction" },
 ]
 
 // Interactive Support Dashboard Mockup with 3D Mouse Tracking
@@ -214,7 +215,7 @@ function InteractiveSupportMockup() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[520px] cursor-pointer"
+      className="relative mx-auto w-full max-w-[360px] sm:max-w-[420px] md:max-w-[480px] lg:max-w-[520px] cursor-pointer"
       style={{ perspective: 1200 }}
     >
       {/* 3D Container */}
@@ -588,7 +589,7 @@ function InteractiveSupportMockup() {
       
       {/* Floating response time notification */}
       <motion.div
-        className="absolute bottom-2 left-0 sm:-bottom-2 sm:-left-2 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
+        className="absolute -bottom-2 -left-4 sm:-bottom-2 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
         style={{ x: floatXReverse, y: floatYReverse, transformStyle: 'preserve-3d', transform: 'translateZ(30px)' }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -674,7 +675,7 @@ export default function OngoingSupportPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(123,99,255,0.08),transparent_50%)] pointer-events-none" />
         
         <Container>
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center justify-items-center lg:justify-items-start">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-8 items-center justify-items-center lg:justify-items-start w-full">
             {/* Left content */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -722,7 +723,7 @@ export default function OngoingSupportPage() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-white/10">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-white/10">
                 {stats.map((stat, index) => (
                   <AnimatedCounter key={index} value={stat.value} label={stat.label} />
                 ))}

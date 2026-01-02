@@ -192,4 +192,3 @@ const BentoCard = ({
 }
 
 export { BentoCard, BentoGrid }
-

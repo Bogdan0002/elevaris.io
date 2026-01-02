@@ -5,6 +5,8 @@ import { Navbar } from "@/components/site/Navbar"
 
 const inter = Inter({ subsets: ["latin"] })
 
+
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://elevaris.app'),
   title: {

@@ -161,6 +161,70 @@ const footerData = {
   credit: "Developed by ELEVARIS",
 }
 
+// Map Pin Marker Component with breathing animation
+function MapPinMarker({ pin, idx }: { pin: { x: number; y: number; color: string; label: string; ranking: string }, idx: number }) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [isTapped, setIsTapped] = useState(false)
+  
+  const handleTap = () => {
+    setIsTapped(!isTapped)
+  }
+  
+  return (
+    <motion.div
+      className="absolute group cursor-pointer"
+      style={{ left: `${pin.x}%`, top: `${pin.y}%`, transform: 'translate(-50%, -100%)' }}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: idx * 0.15, duration: 0.4 }}
+      whileHover={{ scale: 1.15, zIndex: 20 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      onTap={handleTap}
+    >
+      {/* Breathing pin marker */}
+      <motion.div
+        className="relative z-10"
+        animate={{
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: 2 + idx * 0.2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        <MapPin 
+          className={`w-6 h-6 ${
+            pin.color === 'primary' ? 'text-primary' : 'text-[#7b63ff]'
+          } drop-shadow-lg`}
+          style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}
+        />
+      </motion.div>
+      
+      {/* Label card - visible on hover (desktop) or tap (mobile) */}
+      <motion.div
+        className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 rounded-lg px-2 py-1 shadow-lg border border-white/10 pointer-events-none z-20"
+        animate={{ 
+          opacity: isHovered || isTapped ? 1 : 0, 
+          y: isHovered || isTapped ? 0 : -5 
+        }}
+        transition={{ duration: 0.2 }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="text-[9px] font-semibold text-white">{pin.label}</span>
+          <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-medium ${
+            pin.color === 'primary' ? 'bg-primary/20 text-primary' : 'bg-[#7b63ff]/20 text-[#7b63ff]'
+          }`}>
+            {pin.ranking}
+          </span>
+        </div>
+        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-800 border-l border-t border-white/10 rotate-45" />
+      </motion.div>
+    </motion.div>
+  )
+}
+
 // SEO Dashboard Mockup Component
 // Interactive SEO Dashboard Mockup with 3D Mouse Tracking
 function InteractiveSEOMockup() {
@@ -257,7 +321,7 @@ function InteractiveSEOMockup() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative mx-auto w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[520px] cursor-pointer"
+      className="relative mx-auto w-full max-w-[360px] sm:max-w-[420px] md:max-w-[480px] lg:max-w-[520px] cursor-pointer"
       style={{ perspective: 1200 }}
     >
       {/* 3D Container */}
@@ -520,37 +584,62 @@ function InteractiveSEOMockup() {
                 >
                   <p className="text-sm font-semibold text-white mb-3">Local Search Coverage</p>
                   
-                  {/* Simplified map representation */}
-                  <div className="rounded-xl bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border border-white/10 p-4 h-[240px] relative overflow-hidden">
-                    {/* Map pins */}
+                  {/* Dark styled map */}
+                  <div className="rounded-xl border border-white/10 p-0 h-[240px] relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
+                    {/* Map background pattern - roads and areas */}
+                    <svg className="absolute inset-0 w-full h-full opacity-40" viewBox="0 0 400 240" preserveAspectRatio="none">
+                      {/* Roads */}
+                      <path d="M 0 80 Q 100 60, 200 80 T 400 80" stroke="#475569" strokeWidth="2" fill="none" />
+                      <path d="M 0 120 Q 150 100, 300 120 T 400 120" stroke="#475569" strokeWidth="2" fill="none" />
+                      <path d="M 0 160 Q 120 140, 240 160 T 400 160" stroke="#475569" strokeWidth="2" fill="none" />
+                      <path d="M 80 0 Q 80 50, 80 100 T 80 240" stroke="#475569" strokeWidth="2" fill="none" />
+                      <path d="M 200 0 Q 200 60, 200 120 T 200 240" stroke="#475569" strokeWidth="2" fill="none" />
+                      <path d="M 320 0 Q 320 70, 320 140 T 320 240" stroke="#475569" strokeWidth="2" fill="none" />
+                      
+                      {/* Area blocks */}
+                      <rect x="20" y="20" width="80" height="60" fill="#334155" opacity="0.5" rx="4" />
+                      <rect x="120" y="100" width="100" height="80" fill="#334155" opacity="0.5" rx="4" />
+                      <rect x="240" y="40" width="90" height="70" fill="#334155" opacity="0.5" rx="4" />
+                      <rect x="280" y="140" width="100" height="60" fill="#334155" opacity="0.5" rx="4" />
+                    </svg>
+                    
+                    {/* Map pins with breathing animation */}
                     {[
-                      { x: 40, y: 35, size: 'large', color: 'primary' },
-                      { x: 25, y: 50, size: 'medium', color: 'primary' },
-                      { x: 60, y: 45, size: 'medium', color: 'primary' },
-                      { x: 45, y: 60, size: 'small', color: 'white' },
-                      { x: 70, y: 30, size: 'small', color: 'white' },
+                      { x: 40, y: 25, color: 'primary', label: 'Downtown', ranking: '#1' },
+                      { x: 25, y: 40, color: 'primary', label: 'North Side', ranking: '#3' },
+                      { x: 60, y: 35, color: 'primary', label: 'East District', ranking: '#2' },
+                      { x: 45, y: 50, color: 'secondary', label: 'West End', ranking: '#5' },
+                      { x: 70, y: 20, color: 'secondary', label: 'South Park', ranking: '#7' },
                     ].map((pin, idx) => (
-                      <motion.div
-                        key={idx}
-                        className="absolute"
-                        style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: idx * 0.15, duration: 0.4 }}
-                        whileHover={{ scale: 1.3 }}
-                      >
-                        <div className={`w-${pin.size === 'large' ? '6' : pin.size === 'medium' ? '4' : '3'} h-${pin.size === 'large' ? '6' : pin.size === 'medium' ? '4' : '3'} rounded-full ${pin.color === 'primary' ? 'bg-primary' : 'bg-white/40'} border-2 border-white/20 shadow-lg cursor-pointer`} />
-                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-${pin.size === 'large' ? '12' : pin.size === 'medium' ? '8' : '6'} h-${pin.size === 'large' ? '12' : pin.size === 'medium' ? '8' : '6'} rounded-full ${pin.color === 'primary' ? 'bg-primary/20' : 'bg-white/10'} animate-ping`} />
-                      </motion.div>
+                      <MapPinMarker key={idx} pin={pin} idx={idx} />
                     ))}
                     
-                    <div className="absolute bottom-3 left-3 right-3 bg-zinc-900/80 backdrop-blur-sm rounded-lg p-2 border border-white/10">
+                    {/* Map controls overlay */}
+                    <div className="absolute top-2 right-2 flex flex-col gap-1.5 z-10">
+                      <button className="w-7 h-7 bg-zinc-800/90 hover:bg-zinc-700 rounded-md shadow-lg flex items-center justify-center text-white text-xs font-semibold border border-white/10 backdrop-blur-sm">
+                        +
+                      </button>
+                      <button className="w-7 h-7 bg-zinc-800/90 hover:bg-zinc-700 rounded-md shadow-lg flex items-center justify-center text-white text-xs font-semibold border border-white/10 backdrop-blur-sm">
+                        −
+                      </button>
+                    </div>
+                    
+                    {/* Location info card */}
+                    <div className="absolute bottom-3 left-3 right-3 bg-zinc-900/95 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 shadow-lg z-10">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-primary" />
-                          <span className="text-[10px] text-white/80">5 locations ranking</span>
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-[#7b63ff]/20 flex items-center justify-center">
+                            <MapPin className="w-4 h-4 text-primary" />
+                          </div>
+                          <div>
+                            <span className="text-[10px] font-semibold text-white block">5 locations ranking</span>
+                            <span className="text-[9px] text-white/60">Local SEO coverage</span>
+                          </div>
                         </div>
-                        <span className="text-[10px] text-green-400">+2 this week</span>
+                        <div className="flex items-center gap-1.5 bg-green-500/20 px-2 py-1 rounded-md border border-green-500/30">
+                          <TrendingUp className="w-3 h-3 text-green-400" />
+                          <span className="text-[10px] font-semibold text-green-400">+2 this week</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -595,7 +684,7 @@ function InteractiveSEOMockup() {
       
       {/* Floating traffic notification */}
       <motion.div
-        className="absolute bottom-2 left-0 sm:-bottom-2 sm:-left-2 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
+        className="absolute -bottom-2 -left-4 sm:-bottom-2 sm:-left-8 bg-white rounded-2xl p-3 shadow-[0_10px_40px_rgba(0,0,0,0.3)] border border-gray-100 cursor-pointer z-10"
         style={{ x: floatXReverse, y: floatYReverse, transformStyle: 'preserve-3d', transform: 'translateZ(30px)' }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -659,7 +748,7 @@ export default function SEOStrategiesPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(123,99,255,0.08),transparent_50%)] pointer-events-none" />
         
         <Container>
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center justify-items-center lg:justify-items-start">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-8 items-center justify-items-center lg:justify-items-start w-full">
             {/* Left content */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}

@@ -130,12 +130,12 @@ function ProjectCard({
         {/* Glowing effect wrapper */}
         <div className="absolute inset-0 z-10 pointer-events-none">
           <GlowingEffect
-            spread={40}
+            spread={30}
             glow={true}
             disabled={false}
-            proximity={64}
+            proximity={50}
             inactiveZone={0.01}
-            borderWidth={2}
+            borderWidth={1}
             className="rounded-2xl"
           />
         </div>

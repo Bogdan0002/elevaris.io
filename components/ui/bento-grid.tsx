@@ -20,8 +20,8 @@ const BentoGrid = ({
     <div
       className={cn(
         "grid w-full auto-rows-[26rem] md:auto-rows-[26rem] grid-cols-1 md:grid-cols-3 gap-4",
-        "[&>*:first-child]:min-h-[18rem] md:[&>*:first-child]:min-h-auto",
-        "[&>*:not(:first-child)]:min-h-[16rem] md:[&>*:not(:first-child)]:min-h-auto",
+        "[&>*:first-child]:min-h-[22rem] md:[&>*:first-child]:min-h-auto",
+        "[&>*:not(:first-child)]:min-h-[14rem] md:[&>*:not(:first-child)]:min-h-auto",
         className,
       )}
     >
@@ -69,12 +69,12 @@ const BentoCard = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <GlowingEffect
-        spread={40}
+        spread={30}
         glow={true}
         disabled={false}
-        proximity={64}
+        proximity={50}
         inactiveZone={0.01}
-        borderWidth={2}
+        borderWidth={1}
         className="rounded-2xl"
       />
       <div className="absolute inset-0">{background}</div>
@@ -170,12 +170,12 @@ const BentoCard = ({
       >
         <div className="relative inline-block">
           <GlowingEffect
-            spread={40}
+            spread={30}
             glow={true}
             disabled={false}
-            proximity={64}
+            proximity={50}
             inactiveZone={0.01}
-            borderWidth={2}
+            borderWidth={1}
             className="rounded-2xl"
           />
           <Button variant="ghost" asChild size="sm" className="relative pointer-events-auto text-primary hover:text-primary hover:bg-primary/10 rounded-2xl">

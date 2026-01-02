@@ -149,11 +149,11 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
                   data-index={index}
                   data-side={side}
                 >
-                  {/* Step number (center on timeline for lg, left for mobile) */}
+                  {/* Step number (center on timeline for lg, center on mobile timeline too) */}
                   <div
                     className={cn(
                       "step-number absolute z-20 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold transition-all duration-500",
-                      "left-6 lg:left-1/2 lg:-translate-x-1/2",
+                      "left-[3rem] lg:left-1/2 -translate-x-1/2",
                       isDoneOrActive
                         ? "bg-gradient-to-br from-[#ff6a55] to-[#7b63ff] text-white shadow-[0_0_24px_rgba(255,106,85,0.6)]"
                         : "bg-white/10 text-white/60"
@@ -200,12 +200,12 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
                     )}
                   >
                     <GlowingEffect
-                      spread={40}
+                      spread={30}
                       glow={true}
                       disabled={false}
-                      proximity={64}
+                      proximity={50}
                       inactiveZone={0.01}
-                      borderWidth={2}
+                      borderWidth={1}
                       className="rounded-2xl"
                     />
                     <h3 className="step-title mb-3 text-xl font-semibold text-white">
@@ -262,7 +262,7 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
           </div>
 
           {/* CTA */}
-          <div className="process-button-container mt-32 lg:mt-40 flex justify-center">
+          <div className="process-button-container mt-16 lg:mt-24 flex justify-center">
             <GlowButton
               variant="secondary"
               size="lg"

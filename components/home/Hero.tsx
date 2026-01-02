@@ -353,7 +353,7 @@ export function Hero({
     : ""
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.08),transparent_40%),radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.4),transparent_50%),linear-gradient(135deg,#0b0809_0%,#090707_60%,#0f0b0c_100%)]">
+    <section className="relative min-h-[110vh] md:min-h-screen flex items-center pt-32 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,106,85,0.08),transparent_40%),radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.4),transparent_50%),linear-gradient(135deg,#0b0809_0%,#090707_60%,#0f0b0c_100%)]">
       {/* Sparkles Background for entire hero section */}
       <div className="absolute inset-0 -z-0 overflow-hidden">
         <SparklesCore

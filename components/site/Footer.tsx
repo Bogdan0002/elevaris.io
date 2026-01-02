@@ -5,6 +5,7 @@ import { Container } from "@/components/site/Container"
 interface FooterProps {
   aboutText: string
   quickLinks: Array<{ label: string; href: string }>
+  services?: Array<{ label: string; href: string }>
   contactTitle: string
   email: string
   phone: string
@@ -15,6 +16,7 @@ interface FooterProps {
 export function Footer({
   aboutText,
   quickLinks,
+  services = [],
   contactTitle,
   email,
   phone,
@@ -24,7 +26,7 @@ export function Footer({
   return (
     <footer className="border-t border-border bg-background-soft/50">
       <Container className="py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className={`grid grid-cols-1 gap-8 md:grid-cols-2 ${services && services.length > 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
           {/* About */}
           <div className="text-center md:text-left">
             <Link href="/home" className="inline-block mb-4">
@@ -59,6 +61,27 @@ export function Footer({
               ))}
             </ul>
           </div>
+
+          {/* Services */}
+          {services && services.length > 0 && (
+            <div className="text-center md:text-left">
+              <h3 className="mb-4 text-lg font-semibold text-foreground">
+                Services
+              </h3>
+              <ul className="flex flex-col gap-2 items-center md:items-start">
+                {services.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-foreground-secondary hover:bg-gradient-to-r hover:from-[#ff6a55] hover:to-[#7b63ff] hover:bg-clip-text hover:text-transparent transition-all"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Contact */}
           <div className="text-center md:text-left">

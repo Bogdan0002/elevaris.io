@@ -45,12 +45,12 @@ export function FAQ({ faq }: FAQProps) {
                 >
                   <div className="relative rounded-2xl">
                     <GlowingEffect
-                      spread={40}
+                      spread={30}
                       glow={true}
                       disabled={false}
-                      proximity={64}
+                      proximity={50}
                       inactiveZone={0.01}
-                      borderWidth={2}
+                      borderWidth={1}
                       className="rounded-2xl"
                     />
                     <div className="relative rounded-2xl border border-white/8 bg-[#0f0d11]/80 backdrop-blur-lg shadow-[0_12px_30px_rgba(0,0,0,0.18)] px-4 py-3 transition duration-300 group-hover:shadow-[0_16px_36px_rgba(0,0,0,0.24)]">

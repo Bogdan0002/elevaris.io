@@ -199,39 +199,39 @@ const aboutData = {
 const testimonialsData = [
   {
     quote:
-      "Elevaris transformed our outdated website into a modern, conversion-optimized platform. Our online bookings increased by 180% in just two months. The team understood our business needs and delivered beyond expectations.",
+      "We went from manually tracking everything in spreadsheets to having all our leads, messages, and follow-ups in one place. Game changer for our team. The automated responses alone save us 10+ hours a week.",
     name: "Michael Rodriguez",
-    role: "Owner, Premium Auto Detailing",
+    role: "Owner, Elite Detailing Co.",
   },
   {
     quote:
-      "As a construction company, we needed a website that showcased our projects professionally. Elevaris delivered a stunning site with an intuitive portfolio system. We've seen a 240% increase in qualified leads since launch.",
+      "Best decision we made this year. The website looks professional, but what really impressed us was how easy it is to manage everything. We're booking more jobs and spending less time on admin work.",
     name: "Sarah Thompson",
-    role: "Operations Manager, Thompson Construction",
+    role: "Thompson Construction",
   },
   {
     quote:
-      "Working with Elevaris was seamless from start to finish. They built us a custom CRM-connected website that automated our entire lead management process. Our response time went from hours to minutes.",
+      "Finally, a website that actually works for us. Clients can book consultations online, we get instant notifications, and nothing falls through the cracks anymore. Worth every penny.",
     name: "James Chen",
-    role: "Founder, Chen & Associates Law Firm",
+    role: "Chen & Associates",
   },
   {
     quote:
-      "The ongoing support and maintenance have been exceptional. Whenever we need updates or have questions, the team responds immediately. Our website stays fast, secure, and up-to-date without any effort on our part.",
+      "We were skeptical at first, but the results speak for themselves. More leads, faster follow-ups, and way better organization. The team made the whole process painless.",
     name: "Amanda Foster",
-    role: "Marketing Director, Foster Medical Group",
+    role: "Foster Medical Group",
   },
   {
     quote:
-      "Elevaris didn't just build us a website—they created a complete digital ecosystem. The integration with our CRM, automated follow-ups, and review management system has saved us 15+ hours per week.",
+      "The automated follow-up system is brilliant. We used to lose deals because we'd forget to follow up. Now it's all handled automatically, and we're closing more business as a result.",
     name: "Robert Martinez",
-    role: "CEO, Martinez Real Estate Group",
+    role: "Martinez Real Estate",
   },
   {
     quote:
-      "The ROI has been incredible. Within 3 months of launching our new website, we recovered our entire investment and more. The SEO optimization they implemented has us ranking #1 for all our key services.",
+      "Simple, effective, and affordable. Our old website was just sitting there doing nothing. Now we're getting quality leads every week and the CRM makes it easy to convert them into customers.",
     name: "Emily Parker",
-    role: "Owner, Parker's Home Services",
+    role: "Parker's Home Services",
   },
 ]
 
@@ -294,15 +294,18 @@ const footerData = {
     "Elevaris Web Solutions helps small businesses grow online with modern, personalized websites. Our team combines design, technology, and strategy to create user-friendly solutions backed by ongoing support.",
   quickLinks: [
     { label: "Home", href: "/home" },
+    { label: "Contact Us", href: "/contact-us" },
+    { label: "Schedule a Call", href: "/schedule-a-call" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms and Conditions", href: "/terms-and-conditions" },
+  ],
+  services: [
     { label: "UX/UI Design", href: "/ux-ui-design" },
     { label: "Web Development", href: "/web-development" },
     { label: "SEO Strategies", href: "/seo-strategies" },
     { label: "Advertising", href: "/advertising" },
     { label: "Ongoing Support", href: "/ongoing-support" },
-    { label: "Contact Us", href: "/contact-us" },
-    { label: "Schedule a Call", href: "/schedule-a-call" },
-    { label: "Privacy Policy", href: "/privacy-policy" },
-    { label: "Terms and Conditions", href: "/terms-and-conditions" },
+    { label: "Cleaning Growth", href: "/cleaning" },
   ],
   contactTitle: "Contact US",
   email: "info@elevaris.app",

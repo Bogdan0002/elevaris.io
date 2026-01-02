@@ -722,7 +722,7 @@ export default function OngoingSupportPage() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-white/10">
                 {stats.map((stat, index) => (
                   <AnimatedCounter key={index} value={stat.value} label={stat.label} />
                 ))}

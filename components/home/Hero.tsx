@@ -319,7 +319,7 @@ function InteractiveHeroMockup() {
           ))}
         </div>
         <p className="text-[9px] text-gray-600 max-w-[100px]">&ldquo;Game changer for our business!&rdquo;</p>
-        <p className="text-[8px] text-gray-400 mt-1">— Mike's Cleaning Co.</p>
+        <p className="text-[8px] text-gray-400 mt-1">— Mike&apos;s Cleaning Co.</p>
       </motion.div>
 
       {/* Interaction hint - mobile optimized */}

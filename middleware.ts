@@ -42,10 +42,13 @@ export function middleware(request: NextRequest) {
 
   // Handle ops. subdomain - ensure routes work correctly
   if (hostname.startsWith('ops.') || hostname.includes('ops.elevaris.app')) {
-    // For ops subdomain, routes should work normally
-    // The (ops) route group already handles /preview routes
-    // If someone visits ops.elevaris.app/ (root), we could redirect to /preview
-    // But for now, just pass through - the route group will handle it
+    // If visiting root of ops subdomain, redirect to /preview
+    if (pathname === '/') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/preview'
+      return NextResponse.redirect(url)
+    }
+    // For other paths, pass through - the (ops) route group will handle it
     return NextResponse.next()
   }
 

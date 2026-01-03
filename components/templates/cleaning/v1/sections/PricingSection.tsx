@@ -55,11 +55,11 @@ const pricingTiers = [
 ]
 
 export function PricingSection({ config }: PricingSectionProps) {
-  const primaryColor = config.branding.primaryColor || '#FF6A55'
-  const accentColor = config.branding.accentColor || '#7B63FF'
+  const primaryColor = config.branding.primaryColor || '#00A8E8'
+  const accentColor = config.branding.accentColor || '#00C896'
 
   return (
-    <section id="pricing" className="py-20">
+    <section id="pricing" className="py-20 bg-slate-50">
       <Container>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -69,7 +69,7 @@ export function PricingSection({ config }: PricingSectionProps) {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Pricing Plans</h2>
-          <p className="text-lg text-foreground-secondary">
+          <p className="text-lg text-slate-600">
             Choose the plan that fits your business needs
           </p>
         </motion.div>
@@ -84,13 +84,20 @@ export function PricingSection({ config }: PricingSectionProps) {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className={`relative rounded-2xl border p-8 ${
                 tier.popular
-                  ? 'border-primary/50 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] scale-105'
-                  : 'border-white/10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)]'
-              }`}
+                  ? `border-2 scale-105 shadow-xl`
+                  : 'border-slate-200 shadow-md'
+              } bg-white`}
+              style={
+                tier.popular
+                  ? {
+                      borderColor: primaryColor,
+                    }
+                  : {}
+              }
             >
               {tier.popular && (
                 <div
-                  className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-semibold text-white"
+                  className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-semibold text-white shadow-lg"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   }}
@@ -99,28 +106,28 @@ export function PricingSection({ config }: PricingSectionProps) {
                 </div>
               )}
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-2">{tier.name}</h3>
+                <h3 className="text-2xl font-bold mb-2 text-slate-900">{tier.name}</h3>
                 <div className="mb-2">
-                  <span className="text-4xl font-bold">{tier.price}</span>
-                  <span className="text-foreground-secondary">/mo</span>
+                  <span className="text-4xl font-bold text-slate-900">{tier.price}</span>
+                  <span className="text-slate-600">/mo</span>
                 </div>
-                <div className="text-sm text-foreground-secondary">
+                <div className="text-sm text-slate-500">
                   + {tier.setup} setup
                 </div>
               </div>
               <ul className="space-y-3 mb-8">
                 {tier.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground-secondary">{feature}</span>
+                    <Check className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: primaryColor }} />
+                    <span className="text-slate-700">{feature}</span>
                   </li>
                 ))}
               </ul>
               <button
                 className={`w-full py-3 rounded-lg font-semibold transition-all ${
                   tier.popular
-                    ? 'text-white hover:scale-105'
-                    : 'border border-white/20 bg-white/5 hover:bg-white/10'
+                    ? 'text-white hover:scale-105 shadow-lg'
+                    : 'border-2 border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                 }`}
                 style={
                   tier.popular

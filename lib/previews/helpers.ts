@@ -2,9 +2,10 @@ import type { CleaningPreviewConfig } from './types'
 
 /**
  * Default branding colors if not provided
+ * Cleaning industry: Fresh, clean, professional colors
  */
-const DEFAULT_PRIMARY_COLOR = '#FF6A55'
-const DEFAULT_ACCENT_COLOR = '#7B63FF'
+const DEFAULT_PRIMARY_COLOR = '#00A8E8' // Bright professional blue
+const DEFAULT_ACCENT_COLOR = '#00C896' // Fresh teal/green
 
 /**
  * Default sample reviews if none provided

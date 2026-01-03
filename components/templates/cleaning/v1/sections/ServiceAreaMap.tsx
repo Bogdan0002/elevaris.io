@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { MapPin, Navigation2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import type { CleaningPreviewConfig } from '@/lib/previews/types'
 
 interface ServiceAreaMapProps {
@@ -12,6 +13,16 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
   const areas = config.areasServed || []
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   // Create positions for pins - distributed around the center
   // Using a more spread out pattern to avoid label overlaps
@@ -26,7 +37,9 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
     }
   }
 
-  const pinPositions = areas.slice(0, 8).map((_, index) => getPosition(index, Math.min(areas.length, 8)))
+  // Show fewer pins on mobile to reduce crowding
+  const maxPins = isMobile ? 4 : 8
+  const pinPositions = areas.slice(0, maxPins).map((_, index) => getPosition(index, Math.min(areas.length, maxPins)))
 
   return (
     <div 
@@ -77,71 +90,37 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         }}
       />
 
-      {/* Outer ring - pulsing with improved visibility */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2"
+      {/* Map-like road network pattern */}
+      <svg className="absolute inset-0 w-full h-full opacity-20" style={{ zIndex: 1 }}>
+        <defs>
+          <pattern id="roadPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M0 50 L100 50" stroke={primaryColor} strokeWidth="1" opacity="0.3" />
+            <path d="M50 0 L50 100" stroke={primaryColor} strokeWidth="1" opacity="0.3" />
+            <path d="M0 0 L100 100" stroke={accentColor} strokeWidth="0.5" opacity="0.2" />
+            <path d="M100 0 L0 100" stroke={accentColor} strokeWidth="0.5" opacity="0.2" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#roadPattern)" />
+      </svg>
+
+      {/* Subtle map-like terrain areas */}
+      <div 
+        className="absolute inset-0 opacity-10"
         style={{
-          width: '88%',
-          height: '88%',
-          borderColor: `${primaryColor}30`,
-        }}
-        animate={{
-          scale: [0.96, 1.02, 0.96],
-          opacity: [0.4, 0.6, 0.4],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: 'easeInOut',
+          background: `
+            radial-gradient(ellipse 40% 30% at 20% 30%, ${primaryColor}40 0%, transparent 50%),
+            radial-gradient(ellipse 35% 25% at 80% 70%, ${accentColor}30 0%, transparent 50%),
+            radial-gradient(ellipse 30% 20% at 50% 50%, ${primaryColor}20 0%, transparent 40%)
+          `,
         }}
       />
 
-      {/* Middle ring with enhanced gradient */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          width: '65%',
-          height: '65%',
-          background: `radial-gradient(circle, ${primaryColor}20 0%, ${accentColor}10 40%, transparent 70%)`,
-        }}
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.6, 0.8, 0.6],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 0.5,
-        }}
-      />
-
-      {/* Inner ring */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2"
-        style={{
-          width: '35%',
-          height: '35%',
-          borderColor: `${accentColor}30`,
-        }}
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.4, 0.6, 0.4],
-        }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 1,
-        }}
-      />
-
-      {/* Animated connection lines from center to pins */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+      {/* Animated connection lines from center to pins - hidden on mobile */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none hidden md:block" style={{ zIndex: 2 }}>
         <defs>
           <linearGradient id="lineGradientMap" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={primaryColor} stopOpacity="0.4" />
-            <stop offset="100%" stopColor={accentColor} stopOpacity="0.2" />
+            <stop offset="0%" stopColor={primaryColor} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={accentColor} stopOpacity="0.15" />
           </linearGradient>
         </defs>
         {pinPositions.map((pos, i) => (
@@ -152,10 +131,10 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
             x2={`${pos.x}%`}
             y2={`${pos.y}%`}
             stroke="url(#lineGradientMap)"
-            strokeWidth="1.5"
-            strokeDasharray="4 4"
+            strokeWidth="1"
+            strokeDasharray="3 3"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.6 }}
+            animate={{ pathLength: 1, opacity: 0.4 }}
             transition={{ duration: 0.8, delay: pos.delay + 0.3 }}
           />
         ))}
@@ -249,9 +228,9 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
               />
             </div>
             
-            {/* Area label - positioned based on quadrant to avoid overlap with better z-index */}
+            {/* Area label - hidden on mobile to reduce crowding */}
             <motion.div
-              className="absolute whitespace-nowrap z-30"
+              className="absolute whitespace-nowrap z-30 hidden md:block"
               style={{
                 // Position label based on which side of center the pin is
                 left: pos.x > 50 ? 'auto' : '50%',
@@ -309,9 +288,9 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </div>
       </motion.div>
 
-      {/* Legend - bottom left */}
+      {/* Legend - bottom left - hidden on mobile */}
       <motion.div
-        className="absolute bottom-4 left-4 z-40"
+        className="absolute bottom-4 left-4 z-40 hidden md:block"
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.4 }}
@@ -342,22 +321,22 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </div>
       </motion.div>
 
-      {/* Area count badge - bottom right */}
+      {/* Area count badge - bottom right - smaller on mobile */}
       <motion.div
-        className="absolute bottom-4 right-4 z-40"
+        className="absolute bottom-2 md:bottom-4 right-2 md:right-4 z-40"
         initial={{ opacity: 0, x: 10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.5 }}
       >
         <div 
-          className="px-3 py-2 rounded-xl shadow-lg"
+          className="px-2 py-1.5 md:px-3 md:py-2 rounded-lg md:rounded-xl shadow-lg"
           style={{
             background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
           }}
         >
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-white" />
-            <span className="text-white text-xs font-bold">
+          <div className="flex items-center gap-1.5 md:gap-2">
+            <MapPin className="w-3 h-3 md:w-4 md:h-4 text-white" />
+            <span className="text-white text-[10px] md:text-xs font-bold">
               {areas.length} Areas
             </span>
           </div>

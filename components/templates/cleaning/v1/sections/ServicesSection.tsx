@@ -209,19 +209,23 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                 className="group relative"
               >
                 <motion.div
-                  className="relative h-full bg-white rounded-3xl p-8 border border-slate-100 overflow-hidden shadow-lg shadow-slate-200/30 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500"
+                  className="relative h-full bg-white rounded-3xl p-8 border border-slate-100 overflow-hidden"
                   style={{
-                    borderColor: 'rgba(148, 163, 184, 0.2)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)',
                   }}
-                  whileHover={{ y: -12, scale: 1.02 }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  whileHover={{ 
+                    y: -8,
+                    boxShadow: `0 25px 50px -12px ${primaryColor}15, 0 0 0 1px ${primaryColor}15`
+                  }}
+                  transition={{ duration: 0.3 }}
                 >
                   {/* Animated gradient overlay on hover */}
                   <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100"
                     style={{
                       background: `linear-gradient(135deg, ${primaryColor}05, ${accentColor}05)`,
                     }}
+                    transition={{ duration: 0.3 }}
                   />
 
                   {/* Badge */}
@@ -243,27 +247,40 @@ export function ServicesSection({ config }: ServicesSectionProps) {
 
                   {/* Icon with animated background */}
                   <motion.div
-                    className="relative w-20 h-20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+                    className="relative w-20 h-20 rounded-2xl flex items-center justify-center mb-6"
                     style={{
                       background: `linear-gradient(135deg, ${primaryColor}15, ${accentColor}10)`,
                     }}
+                    animate={{
+                      background: `linear-gradient(135deg, ${primaryColor}15, ${accentColor}10)`,
+                      scale: 1,
+                      rotate: 0,
+                    }}
                     whileHover={{
                       background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                      scale: 1.1,
+                      rotate: 5,
                     }}
+                    transition={{ duration: 0.3 }}
                   >
                     <Icon 
-                      className="w-10 h-10 transition-colors duration-300" 
+                      className="w-10 h-10 relative z-10 transition-colors duration-300" 
                       style={{ color: primaryColor }}
                     />
                     <motion.div
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100"
+                      className="absolute inset-0 rounded-2xl opacity-0"
                       style={{
                         background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                       }}
+                      animate={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
                       transition={{ duration: 0.3 }}
                     />
                     <Icon 
-                      className="w-10 h-10 absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100 text-white" 
+                      className="w-10 h-10 absolute z-10 opacity-0 text-white" 
+                      animate={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
                     />
                   </motion.div>
 
@@ -318,38 +335,25 @@ export function ServicesSection({ config }: ServicesSectionProps) {
 
                   {/* Bottom accent line */}
                   <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-1 rounded-b-3xl"
+                    className="absolute bottom-0 left-0 right-0 h-1"
                     style={{
                       background: `linear-gradient(90deg, ${primaryColor}, ${accentColor})`,
                     }}
                     initial={{ scaleX: 0, originX: 0 }}
+                    animate={{ scaleX: 0 }}
                     whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.3 }}
                   />
 
-                  {/* Corner decoration */}
-                  <div 
-                    className="absolute top-0 right-0 w-40 h-40 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
-                    style={{
-                      background: `radial-gradient(circle at top right, ${primaryColor}, transparent 70%)`,
-                    }}
-                  />
-
-                  {/* Subtle shine effect */}
+                  {/* Corner glow */}
                   <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                    className="absolute -top-20 -right-20 w-40 h-40 rounded-full"
                     style={{
-                      background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
+                      background: `radial-gradient(circle, ${primaryColor}15, transparent 70%)`,
                     }}
-                    animate={{
-                      x: ['-100%', '200%'],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      repeatDelay: 3,
-                      ease: 'easeInOut',
-                    }}
+                    animate={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                   />
                 </motion.div>
               </motion.div>

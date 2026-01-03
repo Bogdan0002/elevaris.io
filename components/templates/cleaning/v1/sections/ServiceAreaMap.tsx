@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin } from 'lucide-react'
+import { MapPin, Navigation2 } from 'lucide-react'
 import type { CleaningPreviewConfig } from '@/lib/previews/types'
 
 interface ServiceAreaMapProps {
@@ -13,49 +13,64 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
   const accentColor = config.branding.accentColor || '#10B981'
   const areas = config.areasServed || []
   
-  // Create a grid of animated pins based on service areas
-  const pinPositions = areas.map((_, index) => ({
-    // Distribute pins in a circular pattern around center
-    x: 50 + Math.cos((index / areas.length) * Math.PI * 2) * (25 + Math.random() * 15),
-    y: 50 + Math.sin((index / areas.length) * Math.PI * 2) * (20 + Math.random() * 15),
-    delay: index * 0.1,
-  }))
+  // Create positions for pins - distributed around the center
+  // Using a more spread out pattern to avoid label overlaps
+  const getPosition = (index: number, total: number) => {
+    const angle = (index / total) * Math.PI * 2 - Math.PI / 2 // Start from top
+    const radiusX = 32 // Horizontal spread
+    const radiusY = 28 // Vertical spread (slightly less for better fit)
+    return {
+      x: 50 + Math.cos(angle) * radiusX,
+      y: 50 + Math.sin(angle) * radiusY,
+      delay: index * 0.12,
+    }
+  }
+
+  const pinPositions = areas.slice(0, 8).map((_, index) => getPosition(index, Math.min(areas.length, 8)))
 
   return (
     <div 
-      className="w-full h-full relative overflow-hidden"
+      className="w-full h-full relative overflow-hidden rounded-3xl"
       style={{
         background: `
-          radial-gradient(circle at 50% 50%, ${primaryColor}15 0%, transparent 50%),
-          radial-gradient(circle at 30% 30%, ${accentColor}10 0%, transparent 40%),
-          radial-gradient(circle at 70% 70%, ${primaryColor}08 0%, transparent 40%),
-          linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)
+          radial-gradient(circle at 50% 50%, ${primaryColor}12 0%, transparent 40%),
+          radial-gradient(circle at 20% 30%, ${accentColor}08 0%, transparent 35%),
+          radial-gradient(circle at 80% 70%, ${primaryColor}06 0%, transparent 35%),
+          linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)
         `,
       }}
     >
       {/* Animated grid background */}
-      <div 
-        className="absolute inset-0 opacity-30"
+      <motion.div 
+        className="absolute inset-0 opacity-20"
         style={{
           backgroundImage: `
-            linear-gradient(to right, ${primaryColor}15 1px, transparent 1px),
-            linear-gradient(to bottom, ${primaryColor}15 1px, transparent 1px)
+            linear-gradient(to right, ${primaryColor}20 1px, transparent 1px),
+            linear-gradient(to bottom, ${primaryColor}20 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px',
+          backgroundSize: '30px 30px',
+        }}
+        animate={{
+          backgroundPosition: ['0px 0px', '30px 30px'],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: 'linear',
         }}
       />
 
-      {/* Pulsing center circle */}
+      {/* Outer ring - pulsing */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border"
         style={{
-          width: '60%',
-          height: '60%',
-          background: `radial-gradient(circle, ${primaryColor}20 0%, transparent 70%)`,
+          width: '85%',
+          height: '85%',
+          borderColor: `${primaryColor}20`,
         }}
         animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.5, 0.8, 0.5],
+          scale: [0.95, 1, 0.95],
+          opacity: [0.3, 0.5, 0.3],
         }}
         transition={{
           duration: 4,
@@ -64,32 +79,52 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         }}
       />
 
-      {/* Secondary pulse */}
+      {/* Middle ring */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
-          width: '80%',
-          height: '80%',
-          borderColor: `${primaryColor}30`,
+          width: '60%',
+          height: '60%',
+          background: `radial-gradient(circle, ${primaryColor}15 0%, transparent 70%)`,
         }}
         animate={{
-          scale: [0.8, 1, 0.8],
-          opacity: [0.3, 0.6, 0.3],
+          scale: [1, 1.08, 1],
+          opacity: [0.5, 0.7, 0.5],
         }}
         transition={{
-          duration: 5,
+          duration: 3,
           repeat: Infinity,
           ease: 'easeInOut',
           delay: 0.5,
         }}
       />
 
-      {/* Animated connection lines */}
-      <svg className="absolute inset-0 w-full h-full">
+      {/* Inner ring */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2"
+        style={{
+          width: '35%',
+          height: '35%',
+          borderColor: `${accentColor}30`,
+        }}
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.4, 0.6, 0.4],
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 1,
+        }}
+      />
+
+      {/* Animated connection lines from center to pins */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none">
         <defs>
-          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={primaryColor} stopOpacity="0.3" />
-            <stop offset="100%" stopColor={accentColor} stopOpacity="0.3" />
+          <linearGradient id="lineGradientMap" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={primaryColor} stopOpacity="0.4" />
+            <stop offset="100%" stopColor={accentColor} stopOpacity="0.2" />
           </linearGradient>
         </defs>
         {pinPositions.map((pos, i) => (
@@ -99,51 +134,69 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
             y1="50%"
             x2={`${pos.x}%`}
             y2={`${pos.y}%`}
-            stroke="url(#lineGradient)"
-            strokeWidth="1"
+            stroke="url(#lineGradientMap)"
+            strokeWidth="1.5"
+            strokeDasharray="4 4"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 1, delay: pos.delay }}
+            animate={{ pathLength: 1, opacity: 0.6 }}
+            transition={{ duration: 0.8, delay: pos.delay + 0.3 }}
           />
         ))}
       </svg>
 
-      {/* Center pin - main location */}
+      {/* Center pin - main HQ location */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, type: 'spring' }}
+        transition={{ duration: 0.5, type: 'spring', delay: 0.2 }}
       >
-        <div 
-          className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
-          style={{
-            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-            boxShadow: `0 4px 20px ${primaryColor}40`,
-          }}
-        >
-          <MapPin className="w-7 h-7 text-white" />
-        </div>
+        {/* Pulse rings */}
         <motion.div
-          className="absolute -inset-2 rounded-full border-2"
-          style={{ borderColor: primaryColor }}
+          className="absolute -inset-4 rounded-full"
+          style={{ backgroundColor: `${primaryColor}20` }}
           animate={{
-            scale: [1, 1.5, 1],
-            opacity: [0.8, 0, 0.8],
+            scale: [1, 2, 1],
+            opacity: [0.6, 0, 0.6],
           }}
           transition={{
-            duration: 2,
+            duration: 2.5,
             repeat: Infinity,
             ease: 'easeOut',
           }}
         />
+        <motion.div
+          className="absolute -inset-2 rounded-full"
+          style={{ backgroundColor: `${primaryColor}30` }}
+          animate={{
+            scale: [1, 1.8, 1],
+            opacity: [0.8, 0, 0.8],
+          }}
+          transition={{
+            duration: 2.5,
+            repeat: Infinity,
+            ease: 'easeOut',
+            delay: 0.3,
+          }}
+        />
+        
+        {/* Main HQ pin */}
+        <div 
+          className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl relative z-10"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+            boxShadow: `0 8px 32px ${primaryColor}50`,
+          }}
+        >
+          <Navigation2 className="w-7 h-7 text-white" />
+        </div>
       </motion.div>
 
       {/* Service area pins */}
       {pinPositions.map((pos, index) => (
         <motion.div
           key={index}
-          className="absolute z-10"
+          className="absolute z-20"
           style={{
             left: `${pos.x}%`,
             top: `${pos.y}%`,
@@ -151,39 +204,57 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
           }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, delay: pos.delay + 0.3, type: 'spring' }}
+          transition={{ duration: 0.4, delay: pos.delay + 0.5, type: 'spring' }}
         >
           <motion.div
             className="relative"
-            animate={{ y: [0, -3, 0] }}
+            animate={{ y: [0, -4, 0] }}
             transition={{
-              duration: 2,
+              duration: 2.5,
               repeat: Infinity,
-              delay: index * 0.2,
+              delay: index * 0.15,
               ease: 'easeInOut',
             }}
           >
+            {/* Pin */}
             <div 
-              className="w-8 h-8 rounded-full flex items-center justify-center shadow-md"
+              className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-2 bg-white"
               style={{
-                background: 'white',
-                border: `2px solid ${primaryColor}`,
+                borderColor: primaryColor,
+                boxShadow: `0 4px 12px ${primaryColor}25`,
               }}
             >
               <div 
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: primaryColor }}
+                className="w-4 h-4 rounded-full"
+                style={{ 
+                  background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                }}
               />
             </div>
             
-            {/* Area label */}
+            {/* Area label - positioned based on quadrant to avoid overlap */}
             <motion.div
-              className="absolute left-1/2 -translate-x-1/2 mt-1 px-2 py-1 rounded-lg bg-white shadow-sm border border-slate-100 whitespace-nowrap"
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: pos.delay + 0.5 }}
+              className="absolute whitespace-nowrap"
+              style={{
+                // Position label based on which side of center the pin is
+                left: pos.x > 50 ? 'auto' : '50%',
+                right: pos.x > 50 ? '50%' : 'auto',
+                top: pos.y > 50 ? 'auto' : '100%',
+                bottom: pos.y > 50 ? '100%' : 'auto',
+                transform: `translate(${pos.x > 50 ? '60%' : '-60%'}, ${pos.y > 50 ? '-8px' : '8px'})`,
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: pos.delay + 0.8 }}
             >
-              <span className="text-[10px] font-medium text-slate-700">
+              <span 
+                className="px-2.5 py-1 rounded-lg text-[11px] font-semibold shadow-sm border"
+                style={{
+                  backgroundColor: 'white',
+                  borderColor: `${primaryColor}20`,
+                  color: '#374151',
+                }}
+              >
                 {areas[index]}
               </span>
             </motion.div>
@@ -191,45 +262,85 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </motion.div>
       ))}
 
-      {/* City name label */}
+      {/* City/HQ label - positioned at top center to avoid overlap */}
       <motion.div
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-white shadow-lg border border-slate-100"
-        initial={{ opacity: 0, y: 20 }}
+        className="absolute top-4 left-1/2 -translate-x-1/2 z-40"
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
+        transition={{ delay: 1.2 }}
       >
-        <div className="flex items-center gap-2">
-          <div 
-            className="w-2 h-2 rounded-full"
-            style={{ backgroundColor: accentColor }}
-          />
-          <span className="text-sm font-semibold text-slate-800">
-            {config.business.city}, {config.business.state}
-          </span>
+        <div 
+          className="px-4 py-2.5 rounded-xl shadow-lg border backdrop-blur-sm"
+          style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            borderColor: `${primaryColor}20`,
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <div 
+              className="w-3 h-3 rounded-full"
+              style={{ 
+                background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+              }}
+            />
+            <span className="text-sm font-bold text-slate-800">
+              {config.business.city}, {config.business.state}
+            </span>
+          </div>
         </div>
       </motion.div>
 
-      {/* Legend */}
+      {/* Legend - bottom left */}
       <motion.div
-        className="absolute top-4 right-4 px-3 py-2 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm border border-slate-100"
-        initial={{ opacity: 0, x: 20 }}
+        className="absolute bottom-4 left-4 z-40"
+        initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.2 }}
+        transition={{ delay: 1.4 }}
       >
-        <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1">
-            <div 
-              className="w-3 h-3 rounded-full"
-              style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
-            />
-            <span className="text-slate-600">HQ</span>
+        <div 
+          className="px-3 py-2 rounded-xl shadow-sm border backdrop-blur-sm"
+          style={{
+            background: 'rgba(255, 255, 255, 0.9)',
+            borderColor: `${primaryColor}15`,
+          }}
+        >
+          <div className="flex flex-col gap-1.5 text-[10px]">
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
+              />
+              <span className="text-slate-600 font-medium">Headquarters</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full border-2 bg-white"
+                style={{ borderColor: primaryColor }}
+              />
+              <span className="text-slate-600 font-medium">Service Area</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <div 
-              className="w-3 h-3 rounded-full border-2"
-              style={{ borderColor: primaryColor }}
-            />
-            <span className="text-slate-600">Service Area</span>
+        </div>
+      </motion.div>
+
+      {/* Area count badge - bottom right */}
+      <motion.div
+        className="absolute bottom-4 right-4 z-40"
+        initial={{ opacity: 0, x: 10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 1.5 }}
+      >
+        <div 
+          className="px-3 py-2 rounded-xl shadow-lg"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-white" />
+            <span className="text-white text-xs font-bold">
+              {areas.length} Areas
+            </span>
           </div>
         </div>
       </motion.div>

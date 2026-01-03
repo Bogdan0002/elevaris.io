@@ -9,7 +9,8 @@ import { createPreviewAction } from './actions'
 import { generateContentAction } from './ai-actions'
 import { generateFromDescriptionAction } from './ai-description-action'
 import { TEMPLATE_REGISTRY } from '@/lib/templates/registry'
-import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2 } from 'lucide-react'
+import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2, Clock, List } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 function OpsConsoleContent() {
   const searchParams = useSearchParams()
@@ -58,6 +59,34 @@ function OpsConsoleContent() {
     error?: string
   } | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  const [recentPreviews, setRecentPreviews] = useState<Array<{
+    id: string
+    slug: string
+    config: any
+    created_at: string
+  }>>([])
+  const [loadingRecent, setLoadingRecent] = useState(false)
+  const router = useRouter()
+
+  // Fetch recent previews on mount
+  useEffect(() => {
+    if (!isAuthorized || !key) return
+    
+    const fetchRecent = async () => {
+      setLoadingRecent(true)
+      try {
+        const response = await fetch(`/api/previews/list?limit=5&key=${key}`)
+        const data = await response.json()
+        setRecentPreviews(data)
+      } catch (error) {
+        console.error('Failed to fetch recent previews:', error)
+      } finally {
+        setLoadingRecent(false)
+      }
+    }
+    
+    fetchRecent()
+  }, [isAuthorized, key])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -105,6 +134,20 @@ function OpsConsoleContent() {
       })
 
       setResult(response)
+      
+      // Refresh recent previews after successful creation
+      if (response.success) {
+        const fetchRecent = async () => {
+          try {
+            const res = await fetch(`/api/previews/list?limit=5&key=${key}`)
+            const data = await res.json()
+            setRecentPreviews(data)
+          } catch (error) {
+            console.error('Failed to refresh recent previews:', error)
+          }
+        }
+        fetchRecent()
+      }
     } catch (error) {
       setResult({
         success: false,
@@ -218,8 +261,97 @@ function OpsConsoleContent() {
                 Paste company details and let AI generate everything
               </p>
             </div>
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/preview/list?key=${key}`)}
+              className="border-[#FF6A55]/30 hover:bg-[#FF6A55]/10 text-[#FF6A55]"
+            >
+              <List className="h-4 w-4 mr-2" />
+              View All Previews
+            </Button>
           </div>
         </div>
+
+        {/* Recent Previews Section */}
+        {recentPreviews.length > 0 && (
+          <div className="mb-8">
+            <div className="bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-[#FF6A55]/30 rounded-2xl shadow-lg shadow-[#FF6A55]/10 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-[#FF6A55]" />
+                  <h2 className="text-lg font-semibold text-white">Recent Previews</h2>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push(`/preview/list?key=${key}`)}
+                  className="border-[#FF6A55]/30 hover:bg-[#FF6A55]/10 text-[#FF6A55]"
+                >
+                  <List className="h-4 w-4 mr-1" />
+                  View All
+                </Button>
+              </div>
+              {loadingRecent ? (
+                <div className="text-center py-4 text-[#9A9A9A]">Loading...</div>
+              ) : (
+                <div className="space-y-2">
+                  {recentPreviews.map((preview: any) => {
+                    const previewUrl = `https://p.elevaris.app/${preview.slug}`
+                    const placeId = preview.config?.placeId || ''
+                    const reviewUrl = placeId ? `https://search.google.com/local/writereview?placeid=${placeId}` : ''
+                    const date = new Date(preview.created_at).toLocaleDateString()
+                    const businessName = preview.config?.business?.name || preview.slug
+                    const city = preview.config?.business?.city || ''
+                    const state = preview.config?.business?.state || ''
+                    
+                    return (
+                      <div
+                        key={preview.id}
+                        className="flex items-center justify-between p-3 bg-[#111111] rounded-lg border border-[#FF6A55]/20 hover:border-[#FF6A55]/40 transition-all"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-white truncate">
+                            {businessName}
+                          </div>
+                          <div className="text-sm text-[#9A9A9A]">
+                            {city && state ? `${city}, ${state}` : preview.slug}
+                            {' • '}
+                            {date}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(previewUrl, '_blank')}
+                            className="border-[#FF6A55]/30 hover:bg-[#FF6A55]/10 text-[#FF6A55]"
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            Open
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              copyToClipboard(previewUrl, `preview-${preview.id}`)
+                            }}
+                            className="border-[#FF6A55]/30 hover:bg-[#FF6A55]/10 text-[#FF6A55]"
+                          >
+                            {copied === `preview-${preview.id}` ? (
+                              <CheckCircle2 className="h-3 w-3 text-green-400" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: Form */}

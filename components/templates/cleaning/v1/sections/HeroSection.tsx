@@ -86,8 +86,8 @@ export function HeroSection({ config }: HeroSectionProps) {
   })
   
   const y = useTransform(scrollYProgress, [0, 1], [0, 200])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95])
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.7], [1, 0.95])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -499,7 +499,7 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.2}
-          className="bottom-[25%] right-4 2xl:right-[5%]"
+          className="bottom-[35%] right-4 2xl:right-[5%]"
           style={{ transform: 'rotate(3deg)' }}
         >
           <div 

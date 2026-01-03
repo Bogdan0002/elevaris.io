@@ -73,7 +73,7 @@ export function Navbar({ config }: NavbarProps) {
               >
                 {/* Logo icon */}
                 <div 
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   }}
@@ -83,7 +83,7 @@ export function Navbar({ config }: NavbarProps) {
                   </span>
                 </div>
                 <span 
-                  className="hidden sm:inline"
+                  className="inline-block truncate max-w-[140px] sm:max-w-none"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                     WebkitBackgroundClip: 'text',

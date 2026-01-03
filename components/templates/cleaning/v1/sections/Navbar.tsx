@@ -52,7 +52,7 @@ export function Navbar({ config }: NavbarProps) {
           opacity: hidden ? 0 : 1 
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="fixed top-0 left-0 right-0 z-50 px-4 pt-4"
+        className="fixed top-10 left-0 right-0 z-40 px-4 pt-2"
       >
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -121,35 +121,19 @@ export function Navbar({ config }: NavbarProps) {
                 ))}
               </div>
 
-              {/* CTA Buttons */}
-              <div className="hidden lg:flex items-center gap-3">
-                <motion.a
-                  href="#contact"
-                  className="px-4 py-2 rounded-lg text-sm font-medium border transition-colors"
-                  style={{
-                    borderColor: `${primaryColor}40`,
-                    color: primaryColor,
-                  }}
-                  whileHover={{ 
-                    backgroundColor: `${primaryColor}08`,
-                    borderColor: primaryColor,
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Get Quote
-                </motion.a>
+              {/* CTA Button - simplified for better fit */}
+              <div className="hidden lg:flex items-center gap-2">
                 <motion.a
                   href={`tel:${config.business.phone.replace(/\s/g, '')}`}
-                  className="px-5 py-2.5 rounded-lg font-semibold text-white text-sm flex items-center gap-2 transition-all"
+                  className="px-4 py-2 rounded-lg font-semibold text-white text-sm flex items-center gap-2 transition-all whitespace-nowrap"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Phone className="h-4 w-4" />
-                  <span className="hidden xl:inline">{config.business.phone}</span>
-                  <span className="xl:hidden">Call Now</span>
+                  <Phone className="h-4 w-4 flex-shrink-0" />
+                  <span>Call Now</span>
                 </motion.a>
               </div>
 

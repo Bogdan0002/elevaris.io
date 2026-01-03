@@ -281,20 +281,36 @@ function OpsConsoleContent() {
                 <label className="block text-sm font-medium text-white mb-2">
                   Template *
                 </label>
-                <select
-                  required
-                  value={formData.templateId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, templateId: e.target.value })
-                  }
-                  className="flex h-12 w-full rounded-md border border-[#FF6A55]/30 bg-[#111111] text-white px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A55]/50 focus-visible:border-[#FF6A55] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {TEMPLATE_REGISTRY.map((template) => (
-                    <option key={template.id} value={template.id} className="bg-[#111111]">
-                      {template.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    required
+                    value={formData.templateId}
+                    onChange={(e) =>
+                      setFormData({ ...formData, templateId: e.target.value })
+                    }
+                    className="appearance-none flex h-12 w-full rounded-md border border-[#FF6A55]/30 bg-[#111111] text-white px-4 py-2 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A55]/50 focus-visible:border-[#FF6A55] disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:border-[#FF6A55]/50 cursor-pointer"
+                  >
+                    {TEMPLATE_REGISTRY.map((template) => (
+                      <option key={template.id} value={template.id} className="bg-[#111111] text-white">
+                        {template.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg
+                      className="h-5 w-5 text-[#FF6A55]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
                 <p className="text-xs text-[#9A9A9A] mt-1.5">
                   Choose the template design for your preview
                 </p>
@@ -520,12 +536,12 @@ function OpsConsoleContent() {
               </div>
 
               {/* Optional Fields */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-                <h2 className="text-xl font-semibold text-slate-900 pb-4 border-b border-slate-200">
+              <div className="bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-[#FF6A55]/30 rounded-2xl shadow-lg shadow-[#FF6A55]/10 p-6 space-y-4">
+                <h2 className="text-xl font-semibold text-white pb-4 border-b border-[#FF6A55]/20">
                   Optional
                 </h2>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Hours
                   </label>
                   <Input
@@ -534,12 +550,12 @@ function OpsConsoleContent() {
                       setFormData({ ...formData, hours: e.target.value })
                     }
                     placeholder="Mon-Fri: 8am-6pm, Sat: 9am-5pm"
-                    className="bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="bg-[#111111] border-[#FF6A55]/30 text-white placeholder:text-[#9A9A9A] focus:border-[#FF6A55] focus:ring-[#FF6A55]/50"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Latitude
                     </label>
                     <Input
@@ -550,11 +566,11 @@ function OpsConsoleContent() {
                         setFormData({ ...formData, lat: e.target.value })
                       }
                       placeholder="34.0522"
-                      className="bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                      className="bg-[#111111] border-[#FF6A55]/30 text-white placeholder:text-[#9A9A9A] focus:border-[#FF6A55] focus:ring-[#FF6A55]/50"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Longitude
                     </label>
                     <Input
@@ -565,11 +581,11 @@ function OpsConsoleContent() {
                         setFormData({ ...formData, lng: e.target.value })
                       }
                       placeholder="-118.2437"
-                      className="bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                      className="bg-[#111111] border-[#FF6A55]/30 text-white placeholder:text-[#9A9A9A] focus:border-[#FF6A55] focus:ring-[#FF6A55]/50"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Radius (miles)
                     </label>
                     <Input
@@ -580,7 +596,7 @@ function OpsConsoleContent() {
                         setFormData({ ...formData, radiusMiles: e.target.value })
                       }
                       placeholder="15"
-                      className="bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                      className="bg-[#111111] border-[#FF6A55]/30 text-white placeholder:text-[#9A9A9A] focus:border-[#FF6A55] focus:ring-[#FF6A55]/50"
                     />
                   </div>
                 </div>

@@ -43,7 +43,7 @@ export function AboutSection({ config }: AboutSectionProps) {
   const [hoveredStat, setHoveredStat] = useState<number | null>(null)
 
   const stats = [
-    { label: 'Years Experience', value: 10, suffix: '+', icon: Award },
+    { label: 'Years Experience', value: 3, suffix: '+', icon: Award },
     { label: 'Happy Customers', value: 500, suffix: '+', icon: Users },
     { label: 'Satisfaction Rate', value: 98, suffix: '%', icon: Heart },
     { label: 'Cleanings Done', value: 2500, suffix: '+', icon: TrendingUp },

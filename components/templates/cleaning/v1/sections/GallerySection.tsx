@@ -8,15 +8,14 @@ import {
   Sparkles, 
   ZoomIn, 
   X, 
-  ChevronLeft, 
-  ChevronRight,
   Camera,
   Home,
   Building2,
   Bath,
   UtensilsCrossed,
   Sofa,
-  Bed
+  Bed,
+  ArrowRight
 } from 'lucide-react'
 
 interface GallerySectionProps {
@@ -26,63 +25,49 @@ interface GallerySectionProps {
   }
 }
 
-// Placeholder gallery categories with icons
-const galleryCategories = [
-  { name: 'All', icon: ImageIcon },
-  { name: 'Residential', icon: Home },
-  { name: 'Commercial', icon: Building2 },
-  { name: 'Deep Clean', icon: Sparkles },
-]
-
-// Placeholder gallery items with descriptive content
+// Bento grid gallery items with different sizes
 const galleryItems = [
   { 
     id: 1, 
-    category: 'Residential', 
     label: 'Living Room Transformation',
-    description: 'Complete living room deep clean',
+    description: 'Complete living room deep clean with attention to every detail',
     icon: Sofa,
-    aspectRatio: 'aspect-[4/3]',
+    size: 'large', // Takes 2 columns
   },
   { 
     id: 2, 
-    category: 'Commercial', 
-    label: 'Office Space Cleaning',
-    description: 'Professional office maintenance',
-    icon: Building2,
-    aspectRatio: 'aspect-square',
+    label: 'Kitchen Deep Clean',
+    description: 'Spotless surfaces & appliances',
+    icon: UtensilsCrossed,
+    size: 'small',
   },
   { 
     id: 3, 
-    category: 'Deep Clean', 
-    label: 'Kitchen Deep Clean',
-    description: 'Appliances & surfaces spotless',
-    icon: UtensilsCrossed,
-    aspectRatio: 'aspect-[4/3]',
+    label: 'Bathroom Refresh',
+    description: 'Sanitized & sparkling',
+    icon: Bath,
+    size: 'small',
   },
   { 
     id: 4, 
-    category: 'Residential', 
-    label: 'Bathroom Restoration',
-    description: 'Sanitized & sparkling clean',
-    icon: Bath,
-    aspectRatio: 'aspect-square',
+    label: 'Office Space',
+    description: 'Professional commercial cleaning for productive workspaces',
+    icon: Building2,
+    size: 'medium', // Takes full width on mobile, half on desktop
   },
   { 
     id: 5, 
-    category: 'Residential', 
-    label: 'Bedroom Refresh',
-    description: 'Fresh & dust-free space',
+    label: 'Bedroom Sanctuary',
+    description: 'Fresh & dust-free for better sleep',
     icon: Bed,
-    aspectRatio: 'aspect-[4/3]',
+    size: 'medium',
   },
   { 
     id: 6, 
-    category: 'Commercial', 
-    label: 'Restaurant Cleaning',
-    description: 'Health code compliant',
-    icon: UtensilsCrossed,
-    aspectRatio: 'aspect-square',
+    label: 'Whole Home',
+    description: 'Complete residential cleaning service',
+    icon: Home,
+    size: 'tall', // Takes 2 rows
   },
 ]
 
@@ -92,31 +77,8 @@ export function GallerySection({ config }: GallerySectionProps) {
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
-  const [activeCategory, setActiveCategory] = useState('All')
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
-
-  const filteredItems = activeCategory === 'All' 
-    ? galleryItems 
-    : galleryItems.filter(item => item.category === activeCategory)
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08 },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.25, 0.4, 0.25, 1] },
-    },
-  }
 
   return (
     <section 
@@ -134,17 +96,6 @@ export function GallerySection({ config }: GallerySectionProps) {
             white
           `,
         }}
-      />
-      
-      {/* Animated background elements */}
-      <motion.div
-        className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl opacity-20"
-        style={{ background: primaryColor }}
-        animate={{ 
-          scale: [1, 1.2, 1],
-          x: [-20, 20, -20],
-        }}
-        transition={{ duration: 15, repeat: Infinity }}
       />
 
       <Container className="relative z-10">
@@ -188,194 +139,152 @@ export function GallerySection({ config }: GallerySectionProps) {
           </p>
         </motion.div>
 
-        {/* Category filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-2 mb-12"
-        >
-          {galleryCategories.map((category) => {
-            const Icon = category.icon
-            const isActive = activeCategory === category.name
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 auto-rows-[180px] md:auto-rows-[200px]">
+          {galleryItems.map((item, index) => {
+            const Icon = item.icon
+            const isHovered = hoveredId === item.id
+            
+            // Determine grid span based on size
+            const gridClass = {
+              large: 'col-span-2 row-span-1 md:row-span-2',
+              medium: 'col-span-2 md:col-span-2 row-span-1',
+              small: 'col-span-1 row-span-1',
+              tall: 'col-span-2 md:col-span-1 row-span-1 md:row-span-2',
+            }[item.size]
+            
             return (
-              <motion.button
-                key={category.name}
-                onClick={() => setActiveCategory(category.name)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
-                  isActive
-                    ? 'text-white shadow-lg'
-                    : 'text-slate-600 bg-slate-100 hover:bg-slate-200'
-                }`}
-                style={
-                  isActive
-                    ? { 
-                        background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                        boxShadow: `0 4px 15px ${primaryColor}30`,
-                      }
-                    : {}
-                }
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                className={`group relative ${gridClass}`}
+                onMouseEnter={() => setHoveredId(item.id)}
+                onMouseLeave={() => setHoveredId(null)}
               >
-                <Icon className="w-4 h-4" />
-                {category.name}
-              </motion.button>
-            )
-          })}
-        </motion.div>
-
-        {/* Gallery grid - Masonry-like layout */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, index) => {
-              const Icon = item.icon
-              const isHovered = hoveredId === item.id
-              
-              return (
                 <motion.div
-                  key={item.id}
-                  variants={itemVariants}
-                  layout
-                  className="group relative"
-                  onMouseEnter={() => setHoveredId(item.id)}
-                  onMouseLeave={() => setHoveredId(null)}
+                  className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer border border-slate-100"
+                  whileHover={{ y: -5 }}
+                  onClick={() => setSelectedImage(item.id)}
+                  style={{
+                    boxShadow: isHovered 
+                      ? `0 20px 40px ${primaryColor}15`
+                      : '0 4px 6px rgba(0, 0, 0, 0.03)',
+                  }}
                 >
-                  <motion.div
-                    className={`relative ${item.aspectRatio} rounded-2xl overflow-hidden cursor-pointer`}
-                    whileHover={{ y: -8 }}
-                    onClick={() => setSelectedImage(item.id)}
+                  {/* Background gradient */}
+                  <motion.div 
+                    className="absolute inset-0 transition-all duration-500"
                     style={{
-                      boxShadow: isHovered 
-                        ? `0 20px 40px ${primaryColor}15`
-                        : '0 4px 6px rgba(0, 0, 0, 0.05)',
+                      background: isHovered 
+                        ? `linear-gradient(135deg, ${primaryColor}15, ${accentColor}15)`
+                        : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
                     }}
-                  >
-                    {/* Placeholder content with gradient background */}
-                    <div 
-                      className="absolute inset-0 flex flex-col items-center justify-center p-6 transition-all duration-300"
+                  />
+                  
+                  {/* Content */}
+                  <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between">
+                    {/* Icon */}
+                    <motion.div
+                      className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-300"
                       style={{
                         background: isHovered 
-                          ? `linear-gradient(135deg, ${primaryColor}15, ${accentColor}15)`
-                          : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+                          ? `linear-gradient(135deg, ${primaryColor}, ${accentColor})`
+                          : `linear-gradient(135deg, ${primaryColor}15, ${accentColor}10)`,
+                      }}
+                      animate={{ 
+                        scale: isHovered ? 1.1 : 1,
+                        rotate: isHovered ? 5 : 0,
                       }}
                     >
-                      <motion.div
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300"
-                        style={{
-                          background: isHovered 
-                            ? `linear-gradient(135deg, ${primaryColor}, ${accentColor})`
-                            : `linear-gradient(135deg, ${primaryColor}15, ${accentColor}10)`,
-                        }}
-                        animate={{ 
-                          scale: isHovered ? 1.1 : 1,
-                          rotate: isHovered ? 5 : 0,
-                        }}
-                      >
-                        <Icon
-                          className="w-8 h-8 transition-colors duration-300"
-                          style={{ color: isHovered ? 'white' : primaryColor }}
-                        />
-                      </motion.div>
-                      
-                      <p className={`text-sm font-semibold text-center transition-colors duration-300 ${
-                        isHovered ? 'text-slate-800' : 'text-slate-600'
+                      <Icon
+                        className="w-6 h-6 md:w-7 md:h-7 transition-colors duration-300"
+                        style={{ color: isHovered ? 'white' : primaryColor }}
+                      />
+                    </motion.div>
+                    
+                    {/* Text */}
+                    <div>
+                      <p className={`font-bold text-sm md:text-base transition-colors duration-300 ${
+                        isHovered ? 'text-slate-900' : 'text-slate-700'
                       }`}>
                         {item.label}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1 text-center">
-                        {item.description}
-                      </p>
-                      
-                      <motion.span 
-                        className="mt-3 text-xs px-3 py-1.5 rounded-full font-medium"
-                        style={{
-                          backgroundColor: isHovered ? `${primaryColor}20` : `${primaryColor}10`,
-                          color: primaryColor,
-                        }}
-                      >
-                        {item.category}
-                      </motion.span>
-
-                      {/* Photo placeholder indicator */}
-                      <motion.div
-                        className="absolute bottom-4 right-4 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/80 backdrop-blur-sm border border-slate-200/50"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: isHovered ? 1 : 0.6, y: isHovered ? 0 : 5 }}
-                      >
-                        <Camera className="w-3 h-3 text-slate-400" />
-                        <span className="text-[10px] text-slate-500 font-medium">Your photo here</span>
-                      </motion.div>
+                      {(item.size === 'large' || item.size === 'tall' || item.size === 'medium') && (
+                        <p className="text-xs md:text-sm text-slate-500 mt-1 line-clamp-2">
+                          {item.description}
+                        </p>
+                      )}
                     </div>
+                  </div>
 
-                    {/* Hover overlay with zoom icon */}
+                  {/* Hover overlay */}
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor}90, ${accentColor}90)`,
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isHovered ? 1 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <motion.div
-                      className="absolute inset-0 flex items-center justify-center"
-                      style={{
-                        background: `linear-gradient(135deg, ${primaryColor}90, ${accentColor}90)`,
-                      }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: isHovered ? 1 : 0 }}
-                      transition={{ duration: 0.2 }}
+                      className="flex flex-col items-center gap-2"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: isHovered ? 1 : 0 }}
+                      transition={{ duration: 0.2, delay: 0.1 }}
                     >
-                      <motion.div
-                        className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: isHovered ? 1 : 0 }}
-                        transition={{ duration: 0.2, delay: 0.1 }}
-                      >
+                      <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                         <ZoomIn className="w-6 h-6 text-white" />
-                      </motion.div>
+                      </div>
+                      <span className="text-white text-sm font-medium">View</span>
                     </motion.div>
+                  </motion.div>
 
-                    {/* Border accent */}
-                    <motion.div
-                      className="absolute inset-0 rounded-2xl border-2 pointer-events-none"
-                      style={{ borderColor: primaryColor }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: isHovered ? 1 : 0 }}
-                    />
+                  {/* Photo placeholder indicator */}
+                  <motion.div
+                    className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/80 backdrop-blur-sm border border-slate-200/50"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isHovered ? 0 : 0.7 }}
+                  >
+                    <Camera className="w-3 h-3 text-slate-400" />
+                    <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">Your photo</span>
                   </motion.div>
                 </motion.div>
-              )
-            })}
-          </AnimatePresence>
-        </motion.div>
+              </motion.div>
+            )
+          })}
+        </div>
 
-        {/* Note about gallery */}
+        {/* CTA */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.5 }}
           className="text-center mt-12"
         >
-          <div 
-            className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl border"
+          <motion.a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white"
             style={{
-              backgroundColor: `${primaryColor}05`,
-              borderColor: `${primaryColor}20`,
+              background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
             }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${primaryColor}20, ${accentColor}15)` }}
-            >
-              <Camera className="w-5 h-5" style={{ color: primaryColor }} />
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold text-slate-800">Gallery Placeholder</p>
-              <p className="text-xs text-slate-500">Your actual work photos will be showcased here</p>
-            </div>
-          </div>
+            <span>Get Your Space Transformed</span>
+            <ArrowRight className="w-5 h-5" />
+          </motion.a>
+          
+          <p className="text-sm text-slate-500 mt-4 flex items-center justify-center gap-2">
+            <Camera className="w-4 h-4" style={{ color: primaryColor }} />
+            Your actual work photos will be showcased here
+          </p>
         </motion.div>
       </Container>
 
-      {/* Lightbox (placeholder) */}
+      {/* Lightbox */}
       <AnimatePresence>
         {selectedImage !== null && (
           <motion.div

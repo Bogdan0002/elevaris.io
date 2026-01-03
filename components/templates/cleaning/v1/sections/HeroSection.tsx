@@ -479,10 +479,10 @@ export function HeroSection({ config }: HeroSectionProps) {
           </motion.div>
         </motion.div>
 
-        {/* Floating badges */}
+        {/* Floating badges - positioned outside content area */}
         <FloatingBadge
           delay={2}
-          className="top-1/4 -left-4 xl:left-0"
+          className="top-[20%] left-4 2xl:left-[5%]"
           style={{ transform: 'rotate(-3deg)' }}
         >
           <div 
@@ -499,7 +499,7 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.2}
-          className="bottom-1/3 -right-4 xl:right-0"
+          className="bottom-[25%] right-4 2xl:right-[5%]"
           style={{ transform: 'rotate(3deg)' }}
         >
           <div 
@@ -518,7 +518,7 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.4}
-          className="top-1/3 -right-8 xl:-right-4"
+          className="top-[35%] right-4 2xl:right-[3%]"
           style={{ transform: 'rotate(2deg)' }}
         >
           <div className="flex items-center gap-0.5">

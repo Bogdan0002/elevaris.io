@@ -57,7 +57,7 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
       icon: Award,
       title: 'Experienced Team',
       description: `${config.business.name}'s professionals bring years of expertise to every cleaning job.`,
-      highlight: '10+ Years',
+      highlight: '3+ Years',
       stat: 10,
       statSuffix: '+',
     },

@@ -237,17 +237,6 @@ export function ContactSection({ config }: ContactSectionProps) {
               <Phone className="w-5 h-5" />
               Call Now for Instant Quote
             </motion.a>
-
-            {/* Response time badge */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.7 }}
-              className="flex items-center justify-center gap-2 text-sm text-slate-600"
-            >
-              <Zap className="w-4 h-4" style={{ color: accentColor }} />
-              <span>Average response time: <strong>Under 1 hour</strong></span>
-            </motion.div>
           </motion.div>
 
           {/* Contact form */}
@@ -442,7 +431,13 @@ export function ContactSection({ config }: ContactSectionProps) {
                     )}
                   </motion.button>
 
-                  <p className="text-xs text-center text-slate-500">
+                  {/* Response time badge */}
+                  <div className="flex items-center justify-center gap-2 text-sm text-slate-600 pt-2">
+                    <Zap className="w-4 h-4" style={{ color: accentColor }} />
+                    <span>Average response time: <strong>Under 1 hour</strong></span>
+                  </div>
+
+                  <p className="text-xs text-center text-slate-500 pt-3">
                     By submitting, you agree to receive communications from {config.business.name}.
                     <br />
                     <span className="text-slate-400 flex items-center justify-center gap-1 mt-1">

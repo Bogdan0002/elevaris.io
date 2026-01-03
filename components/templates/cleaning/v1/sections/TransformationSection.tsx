@@ -66,44 +66,46 @@ function BeforeAfterSlider({
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
     >
-      {/* Before image placeholder */}
+      {/* Before image placeholder - full background */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center"
+        className="absolute inset-0"
         style={{
-          background: `linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)`,
+          background: `linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)`,
         }}
       >
-        <div className="text-center p-6">
+        {/* Before content - positioned on the left side */}
+        <div className="absolute left-8 top-1/2 -translate-y-1/2 text-left">
           <div 
-            className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-            style={{ backgroundColor: `${primaryColor}15` }}
+            className="w-14 h-14 rounded-2xl mb-3 flex items-center justify-center"
+            style={{ backgroundColor: `rgba(0,0,0,0.1)` }}
           >
-            <Camera className="w-8 h-8" style={{ color: primaryColor }} />
+            <Camera className="w-7 h-7 text-slate-500" />
           </div>
-          <p className="text-slate-500 font-medium">Before Photo</p>
-          <p className="text-xs text-slate-400 mt-1">{label}</p>
+          <p className="text-slate-600 font-bold text-lg">Before</p>
+          <p className="text-xs text-slate-500 mt-1">{label}</p>
         </div>
       </div>
 
-      {/* After image placeholder */}
+      {/* After image placeholder - clips to reveal */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center"
+        className="absolute inset-0"
         style={{
           clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
-          background: `linear-gradient(135deg, ${primaryColor}15 0%, ${accentColor}15 100%)`,
+          background: `linear-gradient(135deg, ${primaryColor}30 0%, ${accentColor}30 100%)`,
         }}
       >
-        <div className="text-center p-6">
+        {/* After content - positioned on the right side */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 text-right">
           <div 
-            className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            className="w-14 h-14 rounded-2xl mb-3 flex items-center justify-center ml-auto"
             style={{ 
               background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
             }}
           >
-            <Sparkles className="w-8 h-8 text-white" />
+            <Sparkles className="w-7 h-7 text-white" />
           </div>
-          <p className="font-semibold" style={{ color: primaryColor }}>After Photo</p>
-          <p className="text-xs text-slate-500 mt-1">Sparkling Clean!</p>
+          <p className="font-bold text-lg" style={{ color: primaryColor }}>After</p>
+          <p className="text-xs text-slate-600 mt-1">Sparkling Clean!</p>
         </div>
       </div>
 
@@ -363,57 +365,48 @@ export function TransformationSection({ config }: TransformationSectionProps) {
           </motion.div>
         </div>
 
-        {/* Mini gallery */}
+        {/* Mini gallery - clean tab design */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <p className="text-slate-600 font-medium">More Transformations</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex flex-wrap justify-center gap-3">
             {transformations.map((item, index) => (
               <motion.button
                 key={index}
                 onClick={() => setActiveSlide(index)}
-                className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all ${
-                  index === activeSlide 
-                    ? 'ring-2 ring-offset-2' 
-                    : 'hover:border-slate-300'
-                }`}
+                className="relative px-5 py-3 rounded-xl font-medium text-sm transition-all"
                 style={{
-                  borderColor: index === activeSlide ? primaryColor : 'transparent',
-                  ['--tw-ring-color' as string]: primaryColor,
+                  backgroundColor: index === activeSlide ? primaryColor : '#f1f5f9',
+                  color: index === activeSlide ? 'white' : '#64748b',
                 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                layout
               >
-                <div 
-                  className="absolute inset-0 flex items-center justify-center"
-                  style={{
-                    background: index === activeSlide 
-                      ? `linear-gradient(135deg, ${primaryColor}20, ${accentColor}20)`
-                      : 'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
+                <motion.span
+                  initial={false}
+                  animate={{ 
+                    opacity: 1,
                   }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <div className="text-center">
-                    <Camera 
-                      className="w-6 h-6 mx-auto mb-1" 
-                      style={{ 
-                        color: index === activeSlide ? primaryColor : '#94a3b8' 
-                      }} 
-                    />
-                    <p className="text-xs font-medium text-slate-600">{item.room}</p>
-                  </div>
-                </div>
-                
+                  {item.room}
+                </motion.span>
                 {index === activeSlide && (
                   <motion.div
-                    className="absolute inset-0 border-2 rounded-xl"
-                    style={{ borderColor: primaryColor }}
-                    layoutId="activeBorder"
+                    className="absolute inset-0 rounded-xl"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                      zIndex: -1,
+                    }}
+                    layoutId="activeTab"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
                   />
                 )}
               </motion.button>

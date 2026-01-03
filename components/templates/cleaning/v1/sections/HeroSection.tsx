@@ -61,7 +61,7 @@ function FloatingBadge({
 }) {
   return (
     <motion.div
-      className={`absolute hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white shadow-xl shadow-slate-200/50 border border-slate-100 ${className}`}
+      className={`absolute hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white shadow-xl shadow-slate-200/50 border border-slate-100 z-20 ${className}`}
       style={style}
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -479,11 +479,11 @@ export function HeroSection({ config }: HeroSectionProps) {
           </motion.div>
         </motion.div>
 
-        {/* Floating badges - positioned outside content area */}
+        {/* Floating badges - positioned more sideways to avoid covering H1 */}
         <FloatingBadge
           delay={2}
-          className="top-[20%] left-4 2xl:left-[5%]"
-          style={{ transform: 'rotate(-3deg)' }}
+          className="top-[25%] -left-2 md:left-0 2xl:left-[-2%]"
+          style={{ transform: 'rotate(-4deg)' }}
         >
           <div 
             className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -499,8 +499,8 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.2}
-          className="bottom-[35%] right-4 2xl:right-[5%]"
-          style={{ transform: 'rotate(3deg)' }}
+          className="bottom-[35%] -right-2 md:right-0 2xl:right-[-2%]"
+          style={{ transform: 'rotate(4deg)' }}
         >
           <div 
             className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -518,8 +518,8 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.4}
-          className="top-[35%] right-4 2xl:right-[3%]"
-          style={{ transform: 'rotate(2deg)' }}
+          className="top-[40%] -right-2 md:right-0 2xl:right-[-1%]"
+          style={{ transform: 'rotate(3deg)' }}
         >
           <div className="flex items-center gap-0.5">
             {[...Array(5)].map((_, i) => (

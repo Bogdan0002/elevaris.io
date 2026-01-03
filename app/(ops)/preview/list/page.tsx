@@ -102,12 +102,12 @@ function ListPreviewsContent() {
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-muted" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#9A9A9A] z-10" />
             <Input
               placeholder="Search by name, city, or slug..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-10 bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border-[#FF6A55]/30 text-white placeholder:text-[#9A9A9A] focus:border-[#FF6A55] focus:ring-[#FF6A55]/50 focus-visible:ring-[#FF6A55]/50"
             />
           </div>
         </div>

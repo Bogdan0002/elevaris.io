@@ -40,37 +40,54 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         `,
       }}
     >
-      {/* Animated grid background */}
+      {/* Animated grid background with improved visibility */}
       <motion.div 
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-15"
         style={{
           backgroundImage: `
-            linear-gradient(to right, ${primaryColor}20 1px, transparent 1px),
-            linear-gradient(to bottom, ${primaryColor}20 1px, transparent 1px)
+            linear-gradient(to right, ${primaryColor}25 1px, transparent 1px),
+            linear-gradient(to bottom, ${primaryColor}25 1px, transparent 1px)
           `,
-          backgroundSize: '30px 30px',
+          backgroundSize: '40px 40px',
         }}
         animate={{
-          backgroundPosition: ['0px 0px', '30px 30px'],
+          backgroundPosition: ['0px 0px', '40px 40px'],
         }}
         transition={{
-          duration: 20,
+          duration: 25,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      />
+      
+      {/* Additional subtle pattern overlay */}
+      <motion.div
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, ${accentColor}40 1px, transparent 0)`,
+          backgroundSize: '20px 20px',
+        }}
+        animate={{
+          backgroundPosition: ['0px 0px', '20px 20px'],
+        }}
+        transition={{
+          duration: 15,
           repeat: Infinity,
           ease: 'linear',
         }}
       />
 
-      {/* Outer ring - pulsing */}
+      {/* Outer ring - pulsing with improved visibility */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2"
         style={{
-          width: '85%',
-          height: '85%',
-          borderColor: `${primaryColor}20`,
+          width: '88%',
+          height: '88%',
+          borderColor: `${primaryColor}30`,
         }}
         animate={{
-          scale: [0.95, 1, 0.95],
-          opacity: [0.3, 0.5, 0.3],
+          scale: [0.96, 1.02, 0.96],
+          opacity: [0.4, 0.6, 0.4],
         }}
         transition={{
           duration: 4,
@@ -79,20 +96,20 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         }}
       />
 
-      {/* Middle ring */}
+      {/* Middle ring with enhanced gradient */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
-          width: '60%',
-          height: '60%',
-          background: `radial-gradient(circle, ${primaryColor}15 0%, transparent 70%)`,
+          width: '65%',
+          height: '65%',
+          background: `radial-gradient(circle, ${primaryColor}20 0%, ${accentColor}10 40%, transparent 70%)`,
         }}
         animate={{
-          scale: [1, 1.08, 1],
-          opacity: [0.5, 0.7, 0.5],
+          scale: [1, 1.1, 1],
+          opacity: [0.6, 0.8, 0.6],
         }}
         transition={{
-          duration: 3,
+          duration: 3.5,
           repeat: Infinity,
           ease: 'easeInOut',
           delay: 0.5,
@@ -232,27 +249,27 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
               />
             </div>
             
-            {/* Area label - positioned based on quadrant to avoid overlap */}
+            {/* Area label - positioned based on quadrant to avoid overlap with better z-index */}
             <motion.div
-              className="absolute whitespace-nowrap"
+              className="absolute whitespace-nowrap z-30"
               style={{
                 // Position label based on which side of center the pin is
                 left: pos.x > 50 ? 'auto' : '50%',
                 right: pos.x > 50 ? '50%' : 'auto',
                 top: pos.y > 50 ? 'auto' : '100%',
                 bottom: pos.y > 50 ? '100%' : 'auto',
-                transform: `translate(${pos.x > 50 ? '60%' : '-60%'}, ${pos.y > 50 ? '-8px' : '8px'})`,
+                transform: `translate(${pos.x > 50 ? '60%' : '-60%'}, ${pos.y > 50 ? '-10px' : '10px'})`,
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: pos.delay + 0.8 }}
             >
               <span 
-                className="px-2.5 py-1 rounded-lg text-[11px] font-semibold shadow-sm border"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md border backdrop-blur-sm"
                 style={{
-                  backgroundColor: 'white',
-                  borderColor: `${primaryColor}20`,
-                  color: '#374151',
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderColor: `${primaryColor}30`,
+                  color: '#1e293b',
                 }}
               >
                 {areas[index]}
@@ -262,28 +279,30 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </motion.div>
       ))}
 
-      {/* City/HQ label - positioned at top center to avoid overlap */}
+      {/* City/HQ label - positioned at top center with higher z-index and better visibility */}
       <motion.div
-        className="absolute top-4 left-1/2 -translate-x-1/2 z-40"
+        className="absolute top-6 left-1/2 -translate-x-1/2 z-50"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
       >
         <div 
-          className="px-4 py-2.5 rounded-xl shadow-lg border backdrop-blur-sm"
+          className="px-5 py-3 rounded-xl shadow-xl border-2 backdrop-blur-md"
           style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            borderColor: `${primaryColor}20`,
+            background: 'rgba(255, 255, 255, 0.98)',
+            borderColor: `${primaryColor}40`,
+            boxShadow: `0 8px 24px ${primaryColor}20`,
           }}
         >
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <div 
-              className="w-3 h-3 rounded-full"
+              className="w-4 h-4 rounded-full shadow-sm"
               style={{ 
                 background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                boxShadow: `0 2px 8px ${primaryColor}40`,
               }}
             />
-            <span className="text-sm font-bold text-slate-800">
+            <span className="text-base font-bold text-slate-900">
               {config.business.city}, {config.business.state}
             </span>
           </div>

@@ -1,9 +1,8 @@
 'use client'
 
 /**
- * TEST PAGE for Mako Bros Window Cleaning
- * This is a static test version before creating the actual database preview
- * Access at: /p/mako-bros-window-cleaning-test
+ * MAKO BROS WINDOW CLEANING - Static Preview Page
+ * Access at: /p/mako-bros-window-cleaning
  */
 
 import type { CleaningPreviewConfig } from '@/lib/previews/types'
@@ -25,7 +24,7 @@ const MAKO_BROS_CONFIG: Partial<CleaningPreviewConfig> = {
   placeId: 'ChIJMakoBrosPlaceID',
   
   offer: {
-    shortText: 'Professional Window Cleaning - Get Your Sharky Shine Today!',
+    shortText: 'Crystal Clear. Shark Sharp. Locally trusted, professionally driven.',
   },
   
   branding: {
@@ -35,13 +34,9 @@ const MAKO_BROS_CONFIG: Partial<CleaningPreviewConfig> = {
   
   services: [
     'Residential Window Cleaning',
-    'Commercial Window Cleaning',
     'Pressure Washing',
-    '2-Story Window Cleaning',
-    'Hard Water Stain Removal',
-    'Driveway & Sidewalk Cleaning',
-    'Fence Cleaning',
-    'Roof Drainage Cleaning',
+    'Soft Washing',
+    'Exterior Window Cleaning',
   ],
   
   areasServed: [
@@ -84,7 +79,7 @@ const MAKO_BROS_CONFIG: Partial<CleaningPreviewConfig> = {
   ],
 }
 
-export default function MakoBrosTestPage() {
+export default function MakoBrosPage() {
   // Apply defaults to ensure all required fields are populated
   const config = applyDefaults(MAKO_BROS_CONFIG)
   

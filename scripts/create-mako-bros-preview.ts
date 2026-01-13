@@ -22,7 +22,7 @@ const makoBrosConfig: CleaningPreviewConfig = {
   placeId: 'ChIJMako123456789',
   
   offer: {
-    shortText: 'Professional Window Cleaning - Get Your Sharky Shine Today!',
+    shortText: 'Crystal Clear. Shark Sharp. Locally trusted, professionally driven.',
   },
   
   branding: {
@@ -32,13 +32,9 @@ const makoBrosConfig: CleaningPreviewConfig = {
   
   services: [
     'Residential Window Cleaning',
-    'Commercial Window Cleaning',
     'Pressure Washing',
-    '2-Story Window Cleaning',
-    'Hard Water Stain Removal',
-    'Driveway & Sidewalk Cleaning',
-    'Fence Cleaning',
-    'Roof Drainage Cleaning',
+    'Soft Washing',
+    'Exterior Window Cleaning',
   ],
   
   areasServed: [

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Mako Bros Preview</title>
+  <style>
+    body { 
+      font-family: system-ui; 
+      max-width: 800px; 
+      margin: 50px auto; 
+      padding: 20px;
+      background: #0B0B0B;
+      color: #fff;
+    }
+    button { 
+      background: #1B8CA8; 
+      color: white; 
+      padding: 12px 24px; 
+      border: none; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 16px;
+      font-weight: 600;
+    }
+    button:hover { background: #0D3B52; }
+    pre { 
+      background: #1a1a1a; 
+      padding: 20px; 
+      border-radius: 8px; 
+      overflow-x: auto;
+      border: 1px solid #333;
+    }
+    .success { color: #4ade80; }
+    .error { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>🦈 Create Mako Bros Window Cleaning Preview</h1>
+  <p>Click the button below to create the preview in your database:</p>
+  
+  <button onclick="createPreview()">Create Preview</button>
+  
+  <div id="result" style="margin-top: 30px;"></div>
+
+  <script>
+    const config = {
+      slug: 'mako-bros-window-cleaning',
+      niche: 'cleaning',
+      templateId: 'cleaning-v1',
+      
+      business: {
+        name: 'Mako Bros Window Cleaning',
+        city: 'Orlando',
+        state: 'FL',
+        phone: '+1 407-883-2877',
+      },
+      
+      placeId: 'ChIJMakoBrosPlaceID',
+      
+      offer: {
+        shortText: 'Professional Window Cleaning - Get Your Sharky Shine Today!',
+      },
+      
+      branding: {
+        primaryColor: '#1B8CA8',
+        accentColor: '#0D3B52',
+      },
+      
+      services: [
+        'Residential Window Cleaning',
+        'Commercial Window Cleaning',
+        'Pressure Washing',
+        '2-Story Window Cleaning',
+        'Hard Water Stain Removal',
+        'Driveway & Sidewalk Cleaning',
+        'Fence Cleaning',
+        'Roof Drainage Cleaning',
+      ],
+      
+      areasServed: [
+        'Orlando',
+        'Winter Park',
+        'Maitland',
+        'Altamonte Springs',
+        'Lake Mary',
+        'Apopka',
+        'Oviedo',
+        'Windermere',
+        'Dr. Phillips',
+        'College Park',
+      ],
+      
+      hours: 'Mon-Sat: 8am-7pm',
+      
+      map: {
+        lat: 28.5383,
+        lng: -81.3792,
+        radiusMiles: 25,
+      },
+      
+      sampleReviews: [
+        {
+          name: 'Nina Ahumada',
+          text: 'Did a great job with window cleaning and pressure washing house, sidewalk, driveway, and fences. Highly recommend based on quality work, attention to detail, and reasonable price.',
+          stars: 5,
+        },
+        {
+          name: 'Jaudon Marlette',
+          text: 'Great job getting pollen and roof drainage off my 2nd story windows. They came out the same day I called and did a great job and great price. Highly recommend them to do your windows and pressure washing.',
+          stars: 5,
+        },
+        {
+          name: 'T P',
+          text: 'They did great job. Took the time to get rid of some stubborn hard water stains and shined up the exterior windows. Highly recommend.',
+          stars: 5,
+        },
+      ],
+    };
+
+    async function createPreview() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p>Creating preview...</p>';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/previews/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(config),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          resultDiv.innerHTML = `
+            <h2 class="success">✅ Preview Created Successfully!</h2>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+            <p><strong>Access it at:</strong> <a href="${data.url}" target="_blank" style="color: #1B8CA8;">${data.url}</a></p>
+            <p><strong>Local dev:</strong> <a href="http://localhost:3000/p/${config.slug}" target="_blank" style="color: #1B8CA8;">http://localhost:3000/p/${config.slug}</a></p>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <h2 class="error">❌ Error Creating Preview</h2>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <h2 class="error">❌ Error</h2>
+          <pre>${error.message}</pre>
+          <p>Make sure your dev server is running at http://localhost:3000</p>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
+

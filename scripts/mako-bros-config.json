@@ -1,0 +1,65 @@
+{
+  "slug": "mako-bros-window-cleaning",
+  "niche": "cleaning",
+  "templateId": "cleaning-v1",
+  "business": {
+    "name": "Mako Bros Window Cleaning",
+    "city": "Orlando",
+    "state": "FL",
+    "phone": "+1 407-883-2877"
+  },
+  "placeId": "ChIJMakoBrosPlaceID",
+  "offer": {
+    "shortText": "Professional Window Cleaning - Get Your Sharky Shine Today!"
+  },
+  "branding": {
+    "primaryColor": "#1B8CA8",
+    "accentColor": "#0D3B52"
+  },
+  "services": [
+    "Residential Window Cleaning",
+    "Commercial Window Cleaning",
+    "Pressure Washing",
+    "2-Story Window Cleaning",
+    "Hard Water Stain Removal",
+    "Driveway & Sidewalk Cleaning",
+    "Fence Cleaning",
+    "Roof Drainage Cleaning"
+  ],
+  "areasServed": [
+    "Orlando",
+    "Winter Park",
+    "Maitland",
+    "Altamonte Springs",
+    "Lake Mary",
+    "Apopka",
+    "Oviedo",
+    "Windermere",
+    "Dr. Phillips",
+    "College Park"
+  ],
+  "hours": "Mon-Sat: 8am-7pm",
+  "map": {
+    "lat": 28.5383,
+    "lng": -81.3792,
+    "radiusMiles": 25
+  },
+  "sampleReviews": [
+    {
+      "name": "Nina Ahumada",
+      "text": "Did a great job with window cleaning and pressure washing house, sidewalk, driveway, and fences. Highly recommend based on quality work, attention to detail, and reasonable price.",
+      "stars": 5
+    },
+    {
+      "name": "Jaudon Marlette",
+      "text": "Great job getting pollen and roof drainage off my 2nd story windows. They came out the same day I called and did a great job and great price. Highly recommend them to do your windows and pressure washing.",
+      "stars": 5
+    },
+    {
+      "name": "T P",
+      "text": "They did great job. Took the time to get rid of some stubborn hard water stains and shined up the exterior windows. Highly recommend.",
+      "stars": 5
+    }
+  ]
+}
+

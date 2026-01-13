@@ -267,22 +267,24 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                       className="w-10 h-10 relative z-10 transition-colors duration-300" 
                       style={{ color: primaryColor }}
                     />
-                    <motion.div
-                      className="absolute inset-0 rounded-2xl opacity-0"
-                      style={{
-                        background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                      }}
-                      animate={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                    <Icon 
-                      className="w-10 h-10 absolute z-10 opacity-0 text-white" 
-                      animate={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
+                  <motion.div
+                    className="absolute inset-0 rounded-2xl opacity-0"
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                    }}
+                    animate={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <motion.div
+                    className="absolute z-10"
+                    animate={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Icon className="w-10 h-10 text-white" />
                   </motion.div>
+                </motion.div>
 
                   {/* Content */}
                   <div className="relative z-10">

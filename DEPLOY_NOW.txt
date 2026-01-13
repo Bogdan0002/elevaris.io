@@ -1,0 +1,31 @@
+✅ PRODUCTION READY - DEPLOY NOW
+
+Fixed Issues:
+1. ✅ Fixed ServicesSection.tsx - Lucide icon Framer Motion props error
+2. ✅ Fixed Tailwind CSS warnings - replaced ease-[cubic-bezier] with ease-out
+3. ✅ Created vercel.json for subdomain routing
+4. ✅ Updated .gitignore
+5. ✅ All linter errors resolved
+
+Deploy Command:
+git add .
+git commit -m "Production ready: Fixed build errors, added Mako Bros preview"
+git push origin main
+
+After Deploy:
+1. Verify: https://p.elevaris.app/mako-bros-window-cleaning-test
+2. Create permanent preview using scripts/create-mako-bros.html
+3. Access: https://p.elevaris.app/mako-bros-window-cleaning
+
+Environment Variables Needed in Vercel:
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+- SUPABASE_SERVICE_ROLE_KEY
+- NEXT_PUBLIC_MAPBOX_TOKEN
+
+DNS Settings:
+- p.elevaris.app → CNAME cname.vercel-dns.com
+- ops.elevaris.app → CNAME cname.vercel-dns.com
+
+All ready! Push to deploy. 🚀
+

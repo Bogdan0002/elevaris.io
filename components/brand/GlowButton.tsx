@@ -22,7 +22,7 @@ export function GlowButton({
   const baseStyles = cn(
     "relative inline-flex items-center justify-center gap-2",
     "font-medium tracking-[-0.01em]",
-    "transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)]",
+    "transition-all duration-150 ease-out",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background/95",
     "disabled:opacity-40 disabled:pointer-events-none disabled:cursor-not-allowed",
     "transform-gpu will-change-transform",

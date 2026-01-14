@@ -1,40 +1,17 @@
 'use server'
 
-import { generateFromDescription } from '@/lib/ai/generateFromDescription'
+import { generateFromDescription, type StructuredCompanyData } from '@/lib/ai/generateFromDescription'
+import type { BusinessNiche } from '@/lib/previews/types'
 
 export interface GenerateFromDescriptionInput {
   description: string
   placeId?: string
+  niche?: BusinessNiche
 }
 
 export interface GenerateFromDescriptionResult {
   success: boolean
-  data?: {
-    business: {
-      name: string
-      city: string
-      state: string
-      phone: string
-    }
-    offer: {
-      shortText: string
-    }
-    branding: {
-      primaryColor: string
-      accentColor: string
-    }
-    services: Array<{
-      name: string
-      description: string
-    }>
-    areasServed: string[]
-    hours?: string
-    sampleReviews?: Array<{
-      name: string
-      text: string
-      stars: number
-    }>
-  }
+  data?: StructuredCompanyData
   error?: string
 }
 
@@ -45,6 +22,7 @@ export async function generateFromDescriptionAction(
     const generated = await generateFromDescription({
       description: input.description,
       placeId: input.placeId,
+      niche: input.niche,
     })
 
     return {
@@ -59,4 +37,3 @@ export async function generateFromDescriptionAction(
     }
   }
 }
-

@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { createPreviewAction } from './actions'
 import { generateContentAction } from './ai-actions'
 import { generateFromDescriptionAction } from './ai-description-action'
-import { TEMPLATE_REGISTRY } from '@/lib/templates/registry'
-import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2, Clock, List } from 'lucide-react'
+import { TEMPLATE_REGISTRY, getAllNiches, getNicheDisplayName } from '@/lib/templates/registry'
+import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2, Clock, List, Building2 } from 'lucide-react'
+import type { BusinessNiche } from '@/lib/previews/types'
 import { useRouter } from 'next/navigation'
 
 function OpsConsoleContent() {
@@ -29,22 +30,29 @@ function OpsConsoleContent() {
   const isOpsSubdomain = hostname.startsWith('ops.')
 
   const [companyDescription, setCompanyDescription] = useState('')
+  const [selectedNiche, setSelectedNiche] = useState<BusinessNiche>('cleaning')
   const [formData, setFormData] = useState({
     templateId: 'cleaning-v1',
+    niche: 'cleaning' as BusinessNiche,
     businessName: '',
     city: '',
     state: '',
     phone: '',
     placeId: '',
     offerText: '',
-    primaryColor: '#FF6A55',
-    accentColor: '#7B63FF',
+    offerBadge: '',
+    primaryColor: '#0EA5E9',
+    accentColor: '#10B981',
     services: '',
     areasServed: '',
     hours: '',
     lat: '',
     lng: '',
     radiusMiles: '15',
+    // New fields for enhanced content
+    heroHeadline: '',
+    heroSubheadline: '',
+    aboutStory: '',
   })
 
   const [loading, setLoading] = useState(false)
@@ -170,24 +178,31 @@ function OpsConsoleContent() {
       const aiResult = await generateFromDescriptionAction({
         description: companyDescription,
         placeId: formData.placeId || undefined,
+        niche: selectedNiche,
       })
 
       if (aiResult.success && aiResult.data) {
         const data = aiResult.data
-        // Auto-fill form with generated data
+        // Auto-fill form with generated data (now includes more fields)
         setFormData({
           ...formData,
+          niche: data.niche,
           businessName: data.business.name,
           city: data.business.city,
           state: data.business.state,
           phone: data.business.phone,
           offerText: data.offer.shortText,
+          offerBadge: data.offer.badge || '',
           primaryColor: data.branding.primaryColor,
           accentColor: data.branding.accentColor,
-          services: data.services.map(s => `${s.name}\n${s.description}`).join('\n\n'),
+          services: data.services.map(s => `${s.name}\n${s.description}${s.features?.length ? '\n• ' + s.features.join('\n• ') : ''}`).join('\n\n'),
           areasServed: data.areasServed.join('\n'),
           hours: data.hours || '',
+          heroHeadline: data.heroHeadline || '',
+          heroSubheadline: data.heroSubheadline || '',
+          aboutStory: data.aboutStory || '',
         })
+        setSelectedNiche(data.niche)
         setFormGenerated(true)
       } else {
         setResult({
@@ -291,10 +306,40 @@ function OpsConsoleContent() {
                     </p>
                   </div>
                 </div>
+
+                {/* Niche Selector */}
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2 flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-[#FF6A55]" />
+                    Industry / Niche (optional)
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={selectedNiche}
+                      onChange={(e) => setSelectedNiche(e.target.value as BusinessNiche)}
+                      className="appearance-none flex h-11 w-full rounded-lg border border-[#FF6A55]/30 bg-[#111111] text-white px-4 py-2 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6A55]/50 focus-visible:border-[#FF6A55] transition-all hover:border-[#FF6A55]/50 cursor-pointer"
+                    >
+                      {getAllNiches().map((niche) => (
+                        <option key={niche} value={niche} className="bg-[#111111] text-white">
+                          {getNicheDisplayName(niche)}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg className="h-4 w-4 text-[#FF6A55]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#9A9A9A] mt-1.5">
+                    AI will auto-detect if not selected, but selecting helps generate better content
+                  </p>
+                </div>
+
                 <Textarea
                   value={companyDescription}
                   onChange={(e) => setCompanyDescription(e.target.value)}
-                  placeholder="Example: Elite Cleaning Services is a family-owned cleaning business in Los Angeles, CA. We offer residential and commercial cleaning, deep cleaning, move-in/move-out services, window cleaning, and carpet cleaning. We serve Los Angeles, Beverly Hills, Santa Monica, West Hollywood, and surrounding areas. Phone: +1 555-123-4567. We specialize in eco-friendly cleaning products and have been in business since 2010. Hours: Mon-Fri 8am-6pm, Sat 9am-5pm."
+                  placeholder="Example: Mako Bros Window Cleaning is a professional window cleaning company in Orlando, FL. We specialize in residential window cleaning, pressure washing, and soft washing. We serve Orlando, Winter Park, Maitland, and surrounding areas. Phone: +1 407-883-2877. We're locally trusted and professionally driven. Hours: Mon-Sat 8am-7pm."
                   rows={12}
                   className="bg-[#111111] border-[#FF6A55]/30 text-white placeholder:text-[#9A9A9A] focus:border-[#FF6A55] focus:ring-[#FF6A55]/50"
                 />

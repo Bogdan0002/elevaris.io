@@ -85,10 +85,11 @@ export function HeroSection({ config }: HeroSectionProps) {
     offset: ['start start', 'end start']
   })
   
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200])
-  // More gradual fade on mobile - keep visible longer so reviews are readable
-  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.85], [1, 0.95])
+  const y = useTransform(scrollYProgress, [0, 1], [0, 150])
+  // Much more gradual fade - content stays visible much longer while scrolling
+  // This ensures users can read all the content before it fades
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 0.95], [1, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.95], [1, 0.98])
 
   const containerVariants = {
     hidden: { opacity: 0 },

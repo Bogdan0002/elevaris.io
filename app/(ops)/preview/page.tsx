@@ -31,6 +31,7 @@ function OpsConsoleContent() {
 
   const [companyDescription, setCompanyDescription] = useState('')
   const [selectedNiche, setSelectedNiche] = useState<BusinessNiche>('cleaning')
+  const [generatedReviews, setGeneratedReviews] = useState<Array<{name: string; text: string; stars: number}>>([])
   const [formData, setFormData] = useState({
     templateId: 'cleaning-v1',
     niche: 'cleaning' as BusinessNiche,
@@ -139,6 +140,7 @@ function OpsConsoleContent() {
         radiusMiles: formData.radiusMiles
           ? parseFloat(formData.radiusMiles)
           : undefined,
+        sampleReviews: generatedReviews.length > 0 ? generatedReviews : undefined,
       })
 
       setResult(response)
@@ -202,6 +204,14 @@ function OpsConsoleContent() {
           heroSubheadline: data.heroSubheadline || '',
           aboutStory: data.aboutStory || '',
         })
+        // Store generated reviews
+        if (data.sampleReviews && data.sampleReviews.length > 0) {
+          setGeneratedReviews(data.sampleReviews.map(r => ({
+            name: r.name,
+            text: r.text,
+            stars: r.stars,
+          })))
+        }
         setSelectedNiche(data.niche)
         setFormGenerated(true)
       } else {

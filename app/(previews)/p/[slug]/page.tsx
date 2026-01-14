@@ -13,13 +13,18 @@ interface PreviewPageProps {
 
 export default async function PreviewPage({ params }: PreviewPageProps) {
   const { slug } = await params
+  
+  console.log('[PreviewPage] Attempting to load preview with slug:', slug)
 
   // Fetch config from database
   const previewRow = await getPreviewBySlug(slug)
 
   if (!previewRow) {
+    console.error('[PreviewPage] Preview not found for slug:', slug)
     notFound()
   }
+  
+  console.log('[PreviewPage] Found preview:', previewRow.id, previewRow.slug)
 
   // Apply defaults to ensure template never crashes
   const config = applyDefaults(previewRow.config)

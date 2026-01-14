@@ -1,6 +1,7 @@
 import OpenAI from 'openai'
 import type { BusinessNiche, ServiceItem } from '@/lib/previews/types'
 import { NICHE_DISPLAY_NAMES, getDefaultServices, getColorPalettes } from '@/lib/previews/niche-defaults'
+import { getDefaultOffer, isValidOffer } from '@/lib/previews/niche-offers'
 
 // Initialize OpenAI client
 function getOpenAIClient(): OpenAI {
@@ -92,9 +93,15 @@ STEP 2: GENERATE COMPREHENSIVE CONTENT
    - email: Email if mentioned
    - website: Website if mentioned
 
-2. **Offer** - Create a compelling, specific tagline/offer:
-   - shortText: Catchy tagline (e.g., "Crystal Clear. Shark Sharp." or "Your Home, Our Priority")
-   - badge: Optional badge text (e.g., "LIMITED TIME", "NEW", "TRUSTED")
+2. **Offer** - Create a compelling promotional offer:
+   - shortText: A REAL promotional offer that drives action. If no specific offer is mentioned in the description, generate one like:
+     * "20% Off Your First Service"
+     * "Free Estimate + 15% Off First Visit"
+     * "$50 Off Your First Cleaning"
+     * "Book Today, Save 25%"
+     * "First-Time Customer Special: 20% Off"
+   - The offer should be specific to the niche and include a discount percentage or dollar amount
+   - badge: Optional badge text (e.g., "LIMITED TIME", "NEW CUSTOMER", "SPECIAL OFFER")
 
 3. **Branding Colors** - Choose professional, industry-appropriate colors:
    - primaryColor: Hex code
@@ -219,6 +226,13 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`
     const defaultColors = getColorPalettes(niche)[0] || { primary: '#0EA5E9', accent: '#10B981' }
     const defaultServices = getDefaultServices(niche)
 
+    // Get a default offer for the niche in case AI doesn't generate a good one
+    const defaultOffer = getDefaultOffer(niche)
+    
+    // Check if AI-generated offer is valid (contains promotional language)
+    const aiOffer = generated.offer?.shortText || ''
+    const useDefaultOffer = !isValidOffer(aiOffer)
+    
     const result: StructuredCompanyData = {
       niche,
       business: {
@@ -230,8 +244,8 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`
         website: generated.business?.website,
       },
       offer: {
-        shortText: generated.offer?.shortText || 'Professional services you can trust',
-        badge: generated.offer?.badge,
+        shortText: useDefaultOffer ? defaultOffer.shortText : aiOffer,
+        badge: useDefaultOffer ? defaultOffer.badge : generated.offer?.badge,
       },
       branding: {
         primaryColor: validateHexColor(generated.branding?.primaryColor) || defaultColors.primary,

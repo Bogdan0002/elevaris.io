@@ -1,6 +1,6 @@
 'use server'
 
-import { createPreview } from '@/lib/previews/repo'
+import { createPreview, getPreviewBySlug } from '@/lib/previews/repo'
 import { slugify } from '@/lib/utils/slugify'
 import { applyDefaults } from '@/lib/previews/helpers'
 import { getGoogleReviewUrl } from '@/lib/previews/helpers'
@@ -24,6 +24,12 @@ interface CreatePreviewInput {
   lat?: number
   lng?: number
   radiusMiles?: number
+  // New fields for reviews
+  sampleReviews?: Array<{
+    name: string
+    text: string
+    stars: number
+  }>
 }
 
 export async function createPreviewAction(input: CreatePreviewInput) {
@@ -70,16 +76,39 @@ export async function createPreviewAction(input: CreatePreviewInput) {
               radiusMiles: input.radiusMiles || 15,
             }
           : undefined,
+      sampleReviews: input.sampleReviews,
     }
 
     // Apply defaults
     const configWithDefaults = applyDefaults(config)
 
+    console.log('[CreatePreview] Creating preview with slug:', slug)
+    console.log('[CreatePreview] Config:', JSON.stringify(configWithDefaults, null, 2))
+
     // Validate
-    cleaningPreviewConfigSchema.parse(configWithDefaults)
+    const validationResult = cleaningPreviewConfigSchema.safeParse(configWithDefaults)
+    if (!validationResult.success) {
+      console.error('[CreatePreview] Validation failed:', validationResult.error.errors)
+      return {
+        success: false,
+        error: `Validation failed: ${validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+      }
+    }
 
     // Create in database
     const preview = await createPreview(configWithDefaults)
+    console.log('[CreatePreview] Preview created successfully:', preview.id, preview.slug)
+    
+    // Verify the preview was created
+    const verifyPreview = await getPreviewBySlug(slug)
+    if (!verifyPreview) {
+      console.error('[CreatePreview] Preview verification failed - not found in database')
+      return {
+        success: false,
+        error: 'Preview was created but could not be verified in database',
+      }
+    }
+    console.log('[CreatePreview] Preview verified in database')
 
     // Generate URLs
     const previewUrl = `https://p.elevaris.app/${slug}`

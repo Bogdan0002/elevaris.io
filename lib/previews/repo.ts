@@ -127,3 +127,35 @@ export async function listPreviews(options?: {
   return (data || []) as ClientPreviewRow[]
 }
 
+/**
+ * Delete a preview by slug
+ */
+export async function deletePreview(slug: string): Promise<boolean> {
+  const { error } = await supabaseServer
+    .from('client_previews')
+    .delete()
+    .eq('slug', slug)
+
+  if (error) {
+    throw new Error(`Failed to delete preview: ${error.message}`)
+  }
+
+  return true
+}
+
+/**
+ * Delete a preview by ID
+ */
+export async function deletePreviewById(id: string): Promise<boolean> {
+  const { error } = await supabaseServer
+    .from('client_previews')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    throw new Error(`Failed to delete preview: ${error.message}`)
+  }
+
+  return true
+}
+

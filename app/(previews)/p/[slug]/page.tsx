@@ -15,9 +15,22 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
   const { slug } = await params
   
   console.log('[PreviewPage] Attempting to load preview with slug:', slug)
+  console.log('[PreviewPage] Environment check - SUPABASE_URL exists:', !!process.env.SUPABASE_URL)
+  console.log('[PreviewPage] Environment check - SUPABASE_SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
 
   // Fetch config from database
-  const previewRow = await getPreviewBySlug(slug)
+  let previewRow
+  try {
+    previewRow = await getPreviewBySlug(slug)
+    console.log('[PreviewPage] Database query completed, result:', previewRow ? 'found' : 'not found')
+  } catch (error) {
+    console.error('[PreviewPage] Database error:', error)
+    // Return a more helpful error page in development
+    if (process.env.NODE_ENV === 'development') {
+      throw error
+    }
+    notFound()
+  }
 
   if (!previewRow) {
     console.error('[PreviewPage] Preview not found for slug:', slug)

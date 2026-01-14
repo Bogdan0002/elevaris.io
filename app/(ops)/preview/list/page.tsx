@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Copy, ExternalLink, CheckCircle2, AlertCircle, Search } from 'lucide-react'
+import { Copy, ExternalLink, CheckCircle2, AlertCircle, Search, Trash2, X } from 'lucide-react'
 import { getGoogleReviewUrl } from '@/lib/previews/helpers'
 
 interface PreviewRow {
@@ -32,6 +32,8 @@ function ListPreviewsContent() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isAuthorized || !key) return
@@ -64,6 +66,37 @@ function ListPreviewsContent() {
 
   const getPreviewUrl = (slug: string) => `https://p.elevaris.app/${slug}`
   const getReviewUrl = (placeId: string) => getGoogleReviewUrl(placeId)
+
+  const handleDelete = async (preview: PreviewRow) => {
+    if (deleteConfirm !== preview.id) {
+      setDeleteConfirm(preview.id)
+      return
+    }
+
+    setDeleting(preview.id)
+    try {
+      const response = await fetch(`/api/previews/delete?key=${key}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: preview.slug }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        // Remove from local state
+        setPreviews(prev => prev.filter(p => p.id !== preview.id))
+      } else {
+        alert(`Failed to delete: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Delete error:', error)
+      alert('Failed to delete preview')
+    } finally {
+      setDeleting(null)
+      setDeleteConfirm(null)
+    }
+  }
 
   if (!isAuthorized) {
     return (
@@ -216,6 +249,44 @@ function ListPreviewsContent() {
                                 <Copy className="h-4 w-4" />
                               )}
                             </Button>
+                            {/* Delete button with confirmation */}
+                            {deleteConfirm === preview.id ? (
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDelete(preview)}
+                                  disabled={deleting === preview.id}
+                                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                  title="Confirm Delete"
+                                >
+                                  {deleting === preview.id ? (
+                                    <span className="animate-spin">⏳</span>
+                                  ) : (
+                                    <CheckCircle2 className="h-4 w-4" />
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setDeleteConfirm(null)}
+                                  className="text-gray-400 hover:text-gray-300"
+                                  title="Cancel"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDelete(preview)}
+                                className="text-red-400/60 hover:text-red-400 hover:bg-red-500/10"
+                                title="Delete Preview"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
                         </td>
                       </tr>

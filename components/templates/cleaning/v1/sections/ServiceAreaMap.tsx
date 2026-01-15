@@ -250,38 +250,30 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </motion.div>
       ))}
 
-      {/* City/HQ label - hidden on mobile */}
+      {/* Centered label */}
       <motion.div
-        className="absolute top-6 left-1/2 -translate-x-1/2 z-50 hidden md:block"
+        className="absolute top-6 left-1/2 -translate-x-1/2 z-40"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2 }}
+        transition={{ delay: 1.1 }}
       >
         <div 
-          className="px-5 py-3 rounded-xl shadow-xl border-2 backdrop-blur-md"
+          className="px-4 py-2 rounded-full shadow-lg border backdrop-blur-md"
           style={{
             background: 'rgba(255, 255, 255, 0.98)',
-            borderColor: `${primaryColor}40`,
-            boxShadow: `0 8px 24px ${primaryColor}20`,
+            borderColor: `${primaryColor}30`,
+            boxShadow: `0 6px 18px ${primaryColor}18`,
           }}
         >
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-4 h-4 rounded-full shadow-sm"
-              style={{ 
-                background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                boxShadow: `0 2px 8px ${primaryColor}40`,
-              }}
-            />
-            <span className="text-base font-bold text-slate-900">
-              {config.business.city}, {config.business.state}
-            </span>
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-900">
+            <span className="inline-flex h-2.5 w-2.5 rounded-full" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }} />
+            {config.business.city}, {config.business.state}
           </div>
         </div>
       </motion.div>
 
-      {/* Mobile badge */}
-      <div className="absolute bottom-4 right-4 z-40 md:hidden">
+      {/* Centered area count */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-40">
         <div
           className="px-3 py-2 rounded-full text-xs font-semibold shadow-lg border backdrop-blur-sm"
           style={{

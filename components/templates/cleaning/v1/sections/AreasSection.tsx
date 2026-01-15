@@ -137,21 +137,21 @@ export function AreasSection({ config }: AreasSectionProps) {
 
               {/* Areas list */}
               <div className="mb-6">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3 text-center">
                   Areas Served
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {config.areasServed.slice(0, 12).map((area) => (
+                <div className="grid grid-cols-2 gap-2">
+                  {config.areasServed.slice(0, 10).map((area) => (
                     <span
                       key={area}
-                      className="px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700"
+                      className="px-3 py-2 rounded-xl text-[11px] font-semibold border border-slate-200 bg-white text-slate-700 text-center"
                     >
                       {area}
                     </span>
                   ))}
-                  {config.areasServed.length > 12 && (
-                    <span className="px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 bg-white text-slate-500">
-                      +{config.areasServed.length - 12} more
+                  {config.areasServed.length > 10 && (
+                    <span className="px-3 py-2 rounded-xl text-[11px] font-semibold border border-slate-200 bg-slate-50 text-slate-500 text-center">
+                      +{config.areasServed.length - 10} more
                     </span>
                   )}
                 </div>

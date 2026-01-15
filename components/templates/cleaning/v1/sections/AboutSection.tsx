@@ -6,6 +6,7 @@ import { Container } from '@/components/site/Container'
 import { CheckCircle2, Users, Award, Heart, TrendingUp, Shield, Leaf, ArrowRight, Sparkles, Building } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
 import { getNicheHeadlines } from '@/lib/previews/defaults'
+import { getDefaultImages } from '@/lib/previews/niche-defaults'
 import { getNicheDisplayName } from '@/lib/templates/registry'
 
 interface AboutSectionProps {
@@ -47,6 +48,8 @@ export function AboutSection({ config }: AboutSectionProps) {
   const niche = config.niche || 'cleaning'
   const nicheHeadlines = getNicheHeadlines(niche)
   const nicheLabel = getNicheDisplayName(niche)
+  const defaultImages = getDefaultImages(niche)
+  const aboutImage = config.about?.image || defaultImages.about
   const aboutFallback = `${config.business.name} delivers trusted ${nicheLabel.toLowerCase()} services across ${config.business.city}, ${config.business.state}. Our team combines experience, attention to detail, and a commitment to quality on every project.`
 
   const stats = [
@@ -185,13 +188,24 @@ export function AboutSection({ config }: AboutSectionProps) {
             </motion.a>
           </motion.div>
 
-          {/* Right: Stats card */}
+          {/* Right: Image + Stats card */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.4, 0.25, 1] }}
             className="relative"
           >
+            <div className="relative mb-8 overflow-hidden rounded-3xl border border-slate-200/60 shadow-xl">
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `url(${aboutImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div className="relative aspect-[4/3] w-full bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            </div>
             {/* Main stats card */}
             <div 
               className="relative bg-white rounded-3xl p-8 sm:p-10 shadow-2xl shadow-slate-200/50 border border-slate-100"

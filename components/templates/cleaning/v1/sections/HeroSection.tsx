@@ -20,6 +20,7 @@ import {
   Calendar
 } from 'lucide-react'
 import { getTrustBadges, getNicheHeadlines } from '@/lib/previews/defaults'
+import { getDefaultImages } from '@/lib/previews/niche-defaults'
 import { getNicheDisplayName } from '@/lib/templates/registry'
 import type { PreviewConfig } from '@/lib/previews/types'
 
@@ -78,11 +79,13 @@ export function HeroSection({ config }: HeroSectionProps) {
   const trustItems = getTrustBadges(niche)
   const nicheHeadlines = getNicheHeadlines(niche)
   const nicheLabel = getNicheDisplayName(niche)
+  const defaultImages = getDefaultImages(niche)
   const headline = config.hero?.headline || nicheHeadlines.heroHeadline
   const subheadline =
     config.hero?.subheadline ||
     nicheHeadlines.heroSubheadline ||
     `${config.business.name} provides trusted ${nicheLabel.toLowerCase()} services.`
+  const heroImage = config.hero?.backgroundImage || defaultImages.hero
 
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
@@ -321,6 +324,24 @@ export function HeroSection({ config }: HeroSectionProps) {
             >
               {subheadline}
             </motion.p>
+
+            {/* Hero Image */}
+            <motion.div
+              variants={itemVariants}
+              className="relative mx-auto mb-10 w-full max-w-4xl"
+            >
+              <div
+                className="relative overflow-hidden rounded-3xl border border-slate-200/60 shadow-2xl"
+                style={{
+                  backgroundImage: `url(${heroImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                <div className="relative aspect-[16/9] w-full" />
+              </div>
+            </motion.div>
 
             {/* Trust indicators row */}
             <motion.div 

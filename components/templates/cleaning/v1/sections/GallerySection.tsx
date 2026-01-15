@@ -4,6 +4,9 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { Container } from '@/components/site/Container'
 import type { PreviewConfig } from '@/lib/previews/types'
+import { getDefaultImages } from '@/lib/previews/niche-defaults'
+import { getNicheDisplayName } from '@/lib/templates/registry'
+import Image from 'next/image'
 import { 
   Image as ImageIcon, 
   Sparkles, 
@@ -23,60 +26,43 @@ interface GallerySectionProps {
   config: PreviewConfig
 }
 
-// Bento grid gallery items with different sizes
-const galleryItems = [
-  { 
-    id: 1, 
-    label: 'Living Room Transformation',
-    description: 'Complete living room deep clean with attention to every detail',
-    icon: Sofa,
-    size: 'large', // Takes 2 columns
-  },
-  { 
-    id: 2, 
-    label: 'Kitchen Deep Clean',
-    description: 'Spotless surfaces & appliances',
-    icon: UtensilsCrossed,
-    size: 'small',
-  },
-  { 
-    id: 3, 
-    label: 'Bathroom Refresh',
-    description: 'Sanitized & sparkling',
-    icon: Bath,
-    size: 'small',
-  },
-  { 
-    id: 4, 
-    label: 'Office Space',
-    description: 'Professional service for productive workspaces',
-    icon: Building2,
-    size: 'medium', // Takes full width on mobile, half on desktop
-  },
-  { 
-    id: 5, 
-    label: 'Bedroom Sanctuary',
-    description: 'Fresh & dust-free for better sleep',
-    icon: Bed,
-    size: 'medium',
-  },
-  { 
-    id: 6, 
-    label: 'Whole Home',
-    description: 'Complete residential service',
-    icon: Home,
-    size: 'tall', // Takes 2 rows
-  },
-]
-
 export function GallerySection({ config }: GallerySectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const niche = config.niche || 'cleaning'
+  const nicheLabel = getNicheDisplayName(niche)
+  const defaultImages = getDefaultImages(niche)
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
+
+  const gallerySources = Array.isArray(config.gallery?.images) && config.gallery?.images.length
+    ? (config.gallery.images as Array<string | { url: string; alt?: string; caption?: string }>)
+    : defaultImages.gallery
+
+  const sizeCycle = ['large', 'small', 'small', 'medium', 'medium', 'tall'] as const
+  const iconCycle = [Sofa, UtensilsCrossed, Bath, Building2, Bed, Home, Camera]
+  const galleryItems = gallerySources.map((item, index) => {
+    const isString = typeof item === 'string'
+    const url = isString ? item : item.url
+    const label = isString
+      ? `${nicheLabel} Project ${index + 1}`
+      : item.alt || `${nicheLabel} Project ${index + 1}`
+    const description = isString
+      ? `Showcasing a recent ${nicheLabel.toLowerCase()} transformation.`
+      : item.caption || `Showcasing a recent ${nicheLabel.toLowerCase()} transformation.`
+
+    return {
+      id: index + 1,
+      label,
+      description,
+      icon: iconCycle[index % iconCycle.length],
+      size: sizeCycle[index % sizeCycle.length],
+      url,
+    }
+  })
 
   return (
     <section 
@@ -171,13 +157,19 @@ export function GallerySection({ config }: GallerySectionProps) {
                       : '0 4px 6px rgba(0, 0, 0, 0.03)',
                   }}
                 >
-                  {/* Background gradient */}
-                  <motion.div 
-                    className="absolute inset-0 transition-all duration-500"
+                  {/* Background image */}
+                  <div
+                    className="absolute inset-0"
                     style={{
-                      background: isHovered 
-                        ? `linear-gradient(135deg, ${primaryColor}15, ${accentColor}15)`
-                        : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+                      backgroundImage: `url(${item.url})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: `linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.4) 100%)`,
                     }}
                   />
                   
@@ -204,13 +196,11 @@ export function GallerySection({ config }: GallerySectionProps) {
                     
                     {/* Text */}
                     <div>
-                      <p className={`font-bold text-sm md:text-base transition-colors duration-300 ${
-                        isHovered ? 'text-slate-900' : 'text-slate-700'
-                      }`}>
+                      <p className="font-bold text-sm md:text-base text-white drop-shadow-sm">
                         {item.label}
                       </p>
                       {(item.size === 'large' || item.size === 'tall' || item.size === 'medium') && (
-                        <p className="text-xs md:text-sm text-slate-500 mt-1 line-clamp-2">
+                        <p className="text-xs md:text-sm text-white/80 mt-1 line-clamp-2">
                           {item.description}
                         </p>
                       )}
@@ -240,14 +230,14 @@ export function GallerySection({ config }: GallerySectionProps) {
                     </motion.div>
                   </motion.div>
 
-                  {/* Photo placeholder indicator */}
+                  {/* Photo indicator */}
                   <motion.div
                     className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/80 backdrop-blur-sm border border-slate-200/50"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: isHovered ? 0 : 0.7 }}
+                    animate={{ opacity: isHovered ? 0 : 0.8 }}
                   >
-                    <Camera className="w-3 h-3 text-slate-400" />
-                    <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">Your photo</span>
+                    <Camera className="w-3 h-3 text-slate-500" />
+                    <span className="text-[10px] text-slate-600 font-medium hidden sm:inline">Stock photo</span>
                   </motion.div>
                 </motion.div>
               </motion.div>
@@ -277,7 +267,7 @@ export function GallerySection({ config }: GallerySectionProps) {
           
           <p className="text-sm text-slate-500 mt-4 flex items-center justify-center gap-2">
             <Camera className="w-4 h-4" style={{ color: primaryColor }} />
-            Your actual work photos will be showcased here
+            Stock photos shown — replace with your real work
           </p>
         </motion.div>
       </Container>
@@ -302,30 +292,31 @@ export function GallerySection({ config }: GallerySectionProps) {
             </motion.button>
             
             <motion.div 
-              className="max-w-4xl w-full aspect-[4/3] rounded-3xl overflow-hidden flex items-center justify-center"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor}20, ${accentColor}20)`,
-              }}
+              className="max-w-5xl w-full rounded-3xl overflow-hidden bg-black/30"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-center text-white p-8">
-                <div 
-                  className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
-                  style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
-                >
-                  <ImageIcon className="w-10 h-10" />
-                </div>
-                <p className="text-xl font-semibold mb-2">Image Preview</p>
-                <p className="text-white/70">
-                  {galleryItems.find(i => i.id === selectedImage)?.label}
-                </p>
-                <p className="text-sm text-white/50 mt-4">
-                  Your actual photos will display here in full size
-                </p>
-              </div>
+              {(() => {
+                const selected = galleryItems.find(i => i.id === selectedImage)
+                if (!selected) return null
+                return (
+                  <div className="relative h-[70vh] w-full">
+                    <Image
+                      src={selected.url}
+                      alt={selected.label}
+                      fill
+                      unoptimized
+                      style={{ objectFit: 'cover' }}
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
+                      <p className="text-white text-xl font-semibold">{selected.label}</p>
+                      <p className="text-white/70 text-sm mt-1">{selected.description}</p>
+                    </div>
+                  </div>
+                )
+              })()}
             </motion.div>
           </motion.div>
         )}

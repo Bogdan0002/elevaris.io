@@ -69,6 +69,7 @@ const heroConfigSchema = z.object({
  */
 const aboutConfigSchema = z.object({
   story: z.string().optional(),
+  image: z.string().url().optional(),
   yearFounded: z.number().min(1900).max(2030).optional(),
   teamSize: z.string().optional(),
   certifications: z.array(z.string()).optional(),

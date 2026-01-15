@@ -101,6 +101,7 @@ export interface HeroConfig {
 
 export interface AboutConfig {
   story?: string // Company story/about text
+  image?: string // URL to about section image
   yearFounded?: number
   teamSize?: string // e.g., "10-20 professionals"
   certifications?: string[]

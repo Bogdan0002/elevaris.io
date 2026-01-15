@@ -963,8 +963,30 @@ export function getDefaultContent(niche: BusinessNiche): NicheContent {
 /**
  * Get default images for a niche
  */
+const FALLBACK_IMAGES: NicheImages = {
+  hero: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80',
+  services: [
+    'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
+    'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&q=80',
+    'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80',
+  ],
+  gallery: [
+    'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80',
+    'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=800&q=80',
+    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=800&q=80',
+    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
+  ],
+  about: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
+}
+
 export function getDefaultImages(niche: BusinessNiche): NicheImages {
-  return NICHE_STOCK_IMAGES[niche] || NICHE_STOCK_IMAGES['cleaning']
+  const nicheImages = NICHE_STOCK_IMAGES[niche] || NICHE_STOCK_IMAGES['cleaning']
+  return {
+    hero: nicheImages.hero || FALLBACK_IMAGES.hero,
+    services: nicheImages.services?.length ? nicheImages.services : FALLBACK_IMAGES.services,
+    gallery: nicheImages.gallery?.length ? nicheImages.gallery : FALLBACK_IMAGES.gallery,
+    about: nicheImages.about || FALLBACK_IMAGES.about,
+  }
 }
 
 /**

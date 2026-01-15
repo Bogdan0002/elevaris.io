@@ -171,6 +171,12 @@ export function applyPreviewDefaults(config: Partial<PreviewConfig>): PreviewCon
   const defaultColors = getNicheDefaultColors(niche)
   const defaultServices = getDefaultServices(niche)
   const defaultTrustBadges = getDefaultTrustBadges(niche)
+  const normalizedServices = config.services?.length
+    ? normalizeServices(config.services, niche)
+    : defaultServices
+  const servicesWithMinimum = normalizedServices.length >= 2
+    ? normalizedServices
+    : [...normalizedServices, ...defaultServices].slice(0, 2)
   
   return {
     slug: config.slug || '',
@@ -199,9 +205,7 @@ export function applyPreviewDefaults(config: Partial<PreviewConfig>): PreviewCon
       fontFamily: config.branding?.fontFamily || 'modern',
       style: config.branding?.style || 'clean',
     },
-    services: config.services?.length 
-      ? normalizeServices(config.services, niche)
-      : defaultServices,
+    services: servicesWithMinimum,
     areasServed: config.areasServed?.length 
       ? config.areasServed.slice(0, 15)
       : config.business?.city 

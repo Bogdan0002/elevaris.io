@@ -245,32 +245,7 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
               />
             </div>
             
-            {/* Area label - hidden on mobile to reduce crowding */}
-            <motion.div
-              className="absolute whitespace-nowrap z-30 hidden md:block"
-              style={{
-                left: labelPositions[index]?.alignRight ? 'auto' : '50%',
-                right: labelPositions[index]?.alignRight ? '50%' : 'auto',
-                top: '50%',
-                transform: labelPositions[index]?.alignRight
-                  ? `translate(${labelPositions[index]?.offsetX}px, ${labelPositions[index]?.offsetY}px)`
-                  : `translate(-50%, ${labelPositions[index]?.offsetY}px)`,
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: pos.delay + 0.8 }}
-            >
-              <span 
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md border backdrop-blur-sm"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  borderColor: `${primaryColor}30`,
-                  color: '#1e293b',
-                }}
-              >
-                {formatAreaLabel(areas[index] || '')}
-              </span>
-            </motion.div>
+            {/* Labels removed to avoid overlap; areas listed in the side panel */}
           </motion.div>
         </motion.div>
       ))}

@@ -135,6 +135,28 @@ export function AreasSection({ config }: AreasSectionProps) {
                 ))}
               </div>
 
+              {/* Areas list */}
+              <div className="mb-6">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">
+                  Areas Served
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {config.areasServed.slice(0, 12).map((area) => (
+                    <span
+                      key={area}
+                      className="px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700"
+                    >
+                      {area}
+                    </span>
+                  ))}
+                  {config.areasServed.length > 12 && (
+                    <span className="px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 bg-white text-slate-500">
+                      +{config.areasServed.length - 12} more
+                    </span>
+                  )}
+                </div>
+              </div>
+
               {/* CTA */}
               <div className="pt-4 border-t border-slate-100">
                 <p className="text-sm text-slate-600 mb-4">

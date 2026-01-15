@@ -135,12 +135,12 @@ export function AreasSection({ config }: AreasSectionProps) {
                 ))}
               </div>
 
-              {/* Areas list */}
+              {/* Areas list (stacked on mobile) */}
               <div className="mb-6">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3 text-center">
                   Areas Served
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="hidden sm:grid sm:grid-cols-2 sm:gap-2">
                   {config.areasServed.slice(0, 10).map((area) => (
                     <span
                       key={area}
@@ -153,6 +153,27 @@ export function AreasSection({ config }: AreasSectionProps) {
                     <span className="px-3 py-2 rounded-xl text-[11px] font-semibold border border-slate-200 bg-slate-50 text-slate-500 text-center">
                       +{config.areasServed.length - 10} more
                     </span>
+                  )}
+                </div>
+
+                {/* Mobile stacked cards */}
+                <div className="sm:hidden space-y-2">
+                  {config.areasServed.slice(0, 6).map((area, index) => (
+                    <motion.div
+                      key={area}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm flex items-center justify-between"
+                    >
+                      <span className="text-xs font-semibold text-slate-700">{area}</span>
+                      <span className="text-[10px] font-semibold text-slate-500">Service Area</span>
+                    </motion.div>
+                  ))}
+                  {config.areasServed.length > 6 && (
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold text-slate-500 text-center">
+                      +{config.areasServed.length - 6} more nearby
+                    </div>
                   )}
                 </div>
               </div>

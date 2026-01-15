@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { MapPin, Navigation2 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import type { PreviewConfig } from '@/lib/previews/types'
 
 interface ServiceAreaMapProps {
@@ -27,19 +27,36 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
   // Create positions for pins - distributed around the center
   // Using a more spread out pattern to avoid label overlaps
   const getPosition = (index: number, total: number) => {
-    const angle = (index / total) * Math.PI * 2 - Math.PI / 2 // Start from top
-    const radiusX = 32 // Horizontal spread
-    const radiusY = 28 // Vertical spread (slightly less for better fit)
+    const goldenAngle = 2.399963229728653
+    const angle = index * goldenAngle - Math.PI / 2
+    const radius = 22 + (index / Math.max(total - 1, 1)) * 18
     return {
-      x: 50 + Math.cos(angle) * radiusX,
-      y: 50 + Math.sin(angle) * radiusY,
-      delay: index * 0.12,
+      x: 50 + Math.cos(angle) * radius,
+      y: 50 + Math.sin(angle) * (radius * 0.85),
+      delay: index * 0.1,
     }
   }
 
+  const formatAreaLabel = (area: string) => {
+    const trimmed = area.replace(/\s*,\s*[A-Z]{2}\b/, '').trim()
+    return trimmed.length > 18 ? `${trimmed.slice(0, 16)}…` : trimmed
+  }
+
   // Show fewer pins on mobile to reduce crowding
-  const maxPins = isMobile ? 4 : 8
-  const pinPositions = areas.slice(0, maxPins).map((_, index) => getPosition(index, Math.min(areas.length, maxPins)))
+  const maxPins = isMobile ? 3 : 6
+  const pinPositions = areas
+    .slice(0, maxPins)
+    .map((_, index) => getPosition(index, Math.min(areas.length, maxPins)))
+
+  const labelPositions = useMemo(
+    () =>
+      pinPositions.map((pos) => ({
+        alignRight: pos.x >= 50,
+        offsetX: pos.x >= 50 ? 14 : -14,
+        offsetY: pos.y >= 50 ? 18 : -18,
+      })),
+    [pinPositions]
+  )
 
   return (
     <div 
@@ -232,12 +249,12 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
             <motion.div
               className="absolute whitespace-nowrap z-30 hidden md:block"
               style={{
-                // Position label based on which side of center the pin is
-                left: pos.x > 50 ? 'auto' : '50%',
-                right: pos.x > 50 ? '50%' : 'auto',
-                top: pos.y > 50 ? 'auto' : '100%',
-                bottom: pos.y > 50 ? '100%' : 'auto',
-                transform: `translate(${pos.x > 50 ? '60%' : '-60%'}, ${pos.y > 50 ? '-10px' : '10px'})`,
+                left: labelPositions[index]?.alignRight ? 'auto' : '50%',
+                right: labelPositions[index]?.alignRight ? '50%' : 'auto',
+                top: '50%',
+                transform: labelPositions[index]?.alignRight
+                  ? `translate(${labelPositions[index]?.offsetX}px, ${labelPositions[index]?.offsetY}px)`
+                  : `translate(-50%, ${labelPositions[index]?.offsetY}px)`,
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -251,7 +268,7 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
                   color: '#1e293b',
                 }}
               >
-                {areas[index]}
+                {formatAreaLabel(areas[index] || '')}
               </span>
             </motion.div>
           </motion.div>

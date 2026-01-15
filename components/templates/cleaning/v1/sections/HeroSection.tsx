@@ -84,6 +84,40 @@ export function HeroSection({ config }: HeroSectionProps) {
     nicheHeadlines.heroSubheadline ||
     `${config.business.name} provides trusted ${nicheLabel.toLowerCase()} services.`
 
+  const mockupRef = useRef<HTMLDivElement>(null)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
+    stiffness: 120,
+    damping: 20,
+  })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
+    stiffness: 120,
+    damping: 20,
+  })
+  const glowX = useSpring(useTransform(mouseX, [-0.5, 0.5], [20, 80]), {
+    stiffness: 120,
+    damping: 20,
+  })
+  const glowY = useSpring(useTransform(mouseY, [-0.5, 0.5], [20, 80]), {
+    stiffness: 120,
+    damping: 20,
+  })
+
+  const handleMockupMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!mockupRef.current) return
+    const rect = mockupRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    mouseX.set(x)
+    mouseY.set(y)
+  }
+
+  const handleMockupLeave = () => {
+    mouseX.set(0)
+    mouseY.set(0)
+  }
+
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -322,31 +356,41 @@ export function HeroSection({ config }: HeroSectionProps) {
               {subheadline}
             </motion.p>
 
-            {/* Hero mockup (image-free) */}
+            {/* Hero mockup (image-free, interactive) */}
             <motion.div
               variants={itemVariants}
-              className="relative mx-auto mb-10 w-full max-w-4xl"
+              className="relative mx-auto mb-12 w-full max-w-5xl"
             >
-              <div className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xl">
-                <div
-                  className="absolute inset-0 opacity-60"
+              <motion.div
+                ref={mockupRef}
+                onMouseMove={handleMockupMove}
+                onMouseLeave={handleMockupLeave}
+                style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+                className="relative rounded-[32px] bg-white/90 border border-slate-200/70 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.25)]"
+              >
+                <motion.div
+                  className="absolute -inset-6 rounded-[40px] opacity-70 pointer-events-none"
                   style={{
-                    background: `radial-gradient(600px circle at 20% 20%, ${primaryColor}20, transparent 40%), radial-gradient(600px circle at 80% 80%, ${accentColor}20, transparent 40%)`,
+                    background: `radial-gradient(500px circle at ${glowX}% ${glowY}%, ${primaryColor}25, ${accentColor}15, transparent 55%)`,
                   }}
                 />
-                <div className="relative aspect-[16/9] w-full p-6 md:p-8">
-                  <div className="grid h-full grid-cols-12 gap-4">
-                    <div className="col-span-7 flex flex-col justify-between rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-lg">
+                <div className="relative overflow-hidden rounded-[32px]">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor}08, ${accentColor}08)`,
+                    }}
+                  />
+                  <div className="relative p-6 md:p-8 grid gap-6 md:grid-cols-[1.3fr_1fr]">
+                    <div className="flex flex-col gap-5">
                       <div className="flex items-center gap-3">
                         <div
                           className="h-10 w-10 rounded-xl"
-                          style={{
-                            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                          }}
+                          style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
                         />
                         <div className="text-left">
-                          <div className="text-xs text-slate-500">Instant Estimate</div>
-                          <div className="text-sm font-semibold text-slate-900">Spotless in 60s</div>
+                          <div className="text-xs text-slate-500">Instant Quote Engine</div>
+                          <div className="text-sm font-semibold text-slate-900">Spotless Results, Fast</div>
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-3">
@@ -359,14 +403,26 @@ export function HeroSection({ config }: HeroSectionProps) {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-xs">
-                        <span className="font-semibold text-slate-700">Today availability</span>
-                        <span className="font-bold text-slate-900">3 slots</span>
+                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
+                        <div className="flex items-center justify-between text-xs text-slate-500">
+                          <span>Today’s availability</span>
+                          <span className="font-semibold text-slate-900">3 slots</span>
+                        </div>
+                        <div className="mt-4 grid grid-cols-3 gap-3">
+                          {['9:00', '11:30', '3:15'].map((slot) => (
+                            <div
+                              key={slot}
+                              className="rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
+                            >
+                              {slot}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="col-span-5 flex flex-col gap-4">
-                      <div className="rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-lg">
-                        <div className="text-xs text-slate-500">Avg. Rating</div>
+                    <div className="flex flex-col gap-4">
+                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
+                        <div className="text-xs text-slate-500">Average Rating</div>
                         <div className="mt-2 flex items-center gap-2">
                           <div className="text-2xl font-bold text-slate-900">4.9</div>
                           <div className="text-xs text-slate-500">/ 5.0</div>
@@ -378,18 +434,23 @@ export function HeroSection({ config }: HeroSectionProps) {
                           />
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-lg">
-                        <div className="text-xs text-slate-500">Fast Response</div>
-                        <div className="mt-2 text-lg font-bold text-slate-900">Under 30 min</div>
+                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
+                        <div className="text-xs text-slate-500">Live Dispatch</div>
+                        <div className="mt-2 text-lg font-bold text-slate-900">Cleaner en route</div>
                         <div className="mt-3 flex items-center gap-2 text-xs text-slate-600">
                           <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                          Live dispatch
+                          ETA 24 min
                         </div>
+                      </div>
+                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
+                        <div className="text-xs text-slate-500">Quote Confidence</div>
+                        <div className="mt-2 text-lg font-bold text-slate-900">No surprises</div>
+                        <div className="mt-3 text-xs text-slate-600">Transparent pricing & service checklist</div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
 
             {/* Trust indicators row */}

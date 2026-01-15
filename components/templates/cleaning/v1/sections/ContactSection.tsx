@@ -74,13 +74,12 @@ export function ContactSection({ config }: ContactSectionProps) {
     },
   ]
 
-  const services = [
-    'Residential Cleaning',
-    'Commercial Cleaning',
-    'Deep Cleaning',
-    'Move-in/Move-out',
-    'Other',
-  ]
+  const services =
+    (config.services || [])
+      .map((service) => (typeof service === 'string' ? service : service.name))
+      .slice(0, 6)
+      .filter(Boolean)
+  const servicesWithOther = [...services, 'Other']
 
   return (
     <section 
@@ -376,7 +375,7 @@ export function ContactSection({ config }: ContactSectionProps) {
                       }}
                     >
                       <option value="">Select a service...</option>
-                      {services.map((service) => (
+                      {servicesWithOther.map((service) => (
                         <option key={service} value={service}>
                           {service}
                         </option>

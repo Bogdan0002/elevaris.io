@@ -125,6 +125,26 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
             residents have to say about {config.business.name}.
           </p>
 
+          <motion.div
+            className="mt-8 flex flex-wrap items-center justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {[
+              { label: '5-Star Reviews', value: '4.9' },
+              { label: 'Response Time', value: '< 30 min' },
+              { label: 'Repeat Clients', value: '82%' },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm"
+              >
+                <span className="font-bold text-slate-900">{stat.value}</span> · {stat.label}
+              </div>
+            ))}
+          </motion.div>
+
           {/* Overall rating display */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}

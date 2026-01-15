@@ -988,3 +988,4 @@ export function getNicheDisplayName(niche: BusinessNiche): string {
   return NICHE_DISPLAY_NAMES[niche] || 'Service Business'
 }
 
+

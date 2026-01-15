@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { Menu, X, Phone, ChevronRight } from 'lucide-react'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
-import { DEFAULT_CLEANING_CONTENT } from '@/lib/previews/defaults'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getNavItems } from '@/lib/previews/defaults'
 
 interface NavbarProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 export function Navbar({ config }: NavbarProps) {
@@ -39,7 +39,7 @@ export function Navbar({ config }: NavbarProps) {
     }
   }, [mobileMenuOpen])
 
-  const navLinks = DEFAULT_CLEANING_CONTENT.navItems
+  const navLinks = getNavItems()
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
 
@@ -287,3 +287,4 @@ export function Navbar({ config }: NavbarProps) {
     </>
   )
 }
+

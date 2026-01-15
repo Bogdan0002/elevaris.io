@@ -83,7 +83,7 @@ async function main() {
     const preview = await createPreview(makoBrosConfig)
     console.log('✅ Preview created successfully!')
     console.log(`   Slug: ${preview.slug}`)
-    console.log(`   URL: https://p.elevaris.app/${preview.slug}`)
+    console.log(`   URL: https://elevaris.app/p/${preview.slug}`)
     console.log(`   ID: ${preview.id}`)
   } catch (error) {
     console.error('❌ Error creating preview:', error)
@@ -92,4 +92,5 @@ async function main() {
 }
 
 main()
+
 

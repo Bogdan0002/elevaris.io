@@ -113,9 +113,10 @@ app/dev/previews/
 ## Accessing Generated Previews
 
 All previews generated via the ops console are stored in Supabase and accessible at:
-- Preview URL: `https://p.elevaris.app/[slug]`
+- Preview URL: `https://elevaris.app/p/[slug]`
 - Review URL: Generated from Place ID
 
 You can see recent previews in the ops console main page, or view all at:
 `ops.elevaris.app/preview/list?key=your-key`
+
 

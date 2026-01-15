@@ -91,3 +91,4 @@ export function getDefaultTemplateForNiche(niche: BusinessNiche): Template {
   // Final fallback
   return TEMPLATE_REGISTRY[0]
 }
+

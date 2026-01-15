@@ -43,7 +43,7 @@ Apply to: **Production, Preview, Development**
 
 Add these domains:
 - `elevaris.app` (main)
-- `p.elevaris.app` (previews)
+- `elevaris.app/p` (previews)
 - `ops.elevaris.app` (operations)
 
 ### 4. DNS Configuration
@@ -62,7 +62,7 @@ CNAME ops    cname.vercel-dns.com
 ### Test URLs
 
 1. **Main site**: https://elevaris.app ✅
-2. **Test preview**: https://p.elevaris.app/mako-bros-window-cleaning-test ✅
+2. **Test preview**: https://elevaris.app/p/mako-bros-window-cleaning-test ✅
 3. **Ops dashboard**: https://ops.elevaris.app ✅
 
 ### Create Mako Bros Preview
@@ -70,7 +70,7 @@ CNAME ops    cname.vercel-dns.com
 **Option 1: Browser (Easiest)**
 1. Open `scripts/create-mako-bros.html` in browser
 2. Click "Create Preview"
-3. Access at: https://p.elevaris.app/mako-bros-window-cleaning
+3. Access at: https://elevaris.app/p/mako-bros-window-cleaning
 
 **Option 2: API**
 ```bash
@@ -154,7 +154,7 @@ Route (app)                              Size     First Load JS
 After deployment, verify:
 
 - [ ] Main site loads: https://elevaris.app
-- [ ] Test page loads: https://p.elevaris.app/mako-bros-window-cleaning-test
+- [ ] Test page loads: https://elevaris.app/p/mako-bros-window-cleaning-test
 - [ ] Shark colors applied correctly (#1B8CA8, #0D3B52)
 - [ ] All 11 sections render
 - [ ] Mobile responsive (test on phone)
@@ -184,4 +184,5 @@ After deployment, verify:
 **Ready to deploy! 🚀**
 
 Run: `git push origin main`
+
 

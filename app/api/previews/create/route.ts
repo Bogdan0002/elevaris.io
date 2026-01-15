@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 import { createPreview } from '@/lib/previews/repo'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {
-    const config = await request.json() as CleaningPreviewConfig
+    const config = await request.json() as PreviewConfig
 
     // Create the preview
     const preview = await createPreview(config)
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       preview,
-      url: `https://p.elevaris.app/${preview.slug}`,
+      url: `https://elevaris.app/p/${preview.slug}`,
     })
   } catch (error) {
     console.error('Error creating preview:', error)
@@ -28,4 +28,5 @@ export async function POST(request: Request) {
     )
   }
 }
+
 

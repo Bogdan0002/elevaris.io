@@ -4,19 +4,21 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Container } from '@/components/site/Container'
 import { Phone, Mail, MapPin, Facebook, Instagram, ArrowUp, Star, Shield, Leaf } from 'lucide-react'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
-import { DEFAULT_CLEANING_CONTENT } from '@/lib/previews/defaults'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getFooterLinks, getNavItems } from '@/lib/previews/defaults'
+import { getNicheDisplayName } from '@/lib/templates/registry'
 import { getGoogleReviewUrl } from '@/lib/previews/helpers'
 
 interface FooterSectionProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 export function FooterSection({ config }: FooterSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const navLinks = DEFAULT_CLEANING_CONTENT.navItems
-  const footerLinks = DEFAULT_CLEANING_CONTENT.footerLinks
+  const navLinks = getNavItems()
+  const footerLinks = getFooterLinks()
+  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
   const reviewUrl = getGoogleReviewUrl(config.placeId)
   
   const footerRef = useRef(null)
@@ -135,7 +137,7 @@ export function FooterSection({ config }: FooterSectionProps) {
               </div>
               
               <p className="text-slate-400 mb-6 leading-relaxed text-sm">
-                Professional cleaning services in {config.business.city},{' '}
+                Professional {nicheLabel.toLowerCase()} services in {config.business.city},{' '}
                 {config.business.state}. Your trusted partner for a spotless, 
                 healthy space.
               </p>
@@ -313,3 +315,4 @@ export function FooterSection({ config }: FooterSectionProps) {
     </footer>
   )
 }
+

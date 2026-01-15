@@ -379,3 +379,4 @@ export function isLegacyConfig(config: PreviewConfig | CleaningPreviewConfig): c
     Array.isArray(config.services) && 
     typeof config.services[0] === 'string'
 }
+

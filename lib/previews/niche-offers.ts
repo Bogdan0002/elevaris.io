@@ -162,3 +162,4 @@ export function isValidOffer(offerText: string): boolean {
   return promoKeywords.some(keyword => lowerText.includes(keyword))
 }
 
+

@@ -2,7 +2,7 @@
 
 ## Issues Found
 
-1. **Subdomains not working** (`p.elevaris.app`, `ops.elevaris.app`)
+1. **Subdomains not working** (`elevaris.app/p`, `ops.elevaris.app`)
 2. **Unauthorized access** on main domain
 
 ## Solution
@@ -16,7 +16,7 @@ The middleware is correct, but you need to configure DNS and Vercel:
 1. Go to Vercel Dashboard → Your Project → **Settings** → **Domains**
 2. Add these domains:
    - `elevaris.app` (main)
-   - `p.elevaris.app` (preview subdomain)
+   - `elevaris.app/p` (preview subdomain)
    - `ops.elevaris.app` (ops console subdomain)
 
 #### Step 2: Configure DNS at Your Domain Provider (Simply.com)
@@ -56,7 +56,7 @@ Once DNS propagates (can take 24-48 hours):
 
 - **Main site:** `https://elevaris.app`
 - **Ops console:** `https://ops.elevaris.app/preview?key=elevaris-ops-2025-secure-key`
-- **Preview:** `https://p.elevaris.app/your-slug`
+- **Preview:** `https://elevaris.app/p/your-slug`
 - **List previews:** `https://ops.elevaris.app/preview/list?key=elevaris-ops-2025-secure-key`
 
 ### Temporary Workaround (Until DNS Propagates):
@@ -69,9 +69,10 @@ But make sure `NEXT_PUBLIC_OPS_KEY` is set in Vercel!
 
 ## Quick Checklist
 
-- [ ] Added all 3 domains in Vercel (elevaris.app, p.elevaris.app, ops.elevaris.app)
+- [ ] Added all 3 domains in Vercel (elevaris.app, elevaris.app/p, ops.elevaris.app)
 - [ ] Added DNS CNAME records for `p` and `ops` subdomains
 - [ ] Added `NEXT_PUBLIC_OPS_KEY` to Vercel environment variables
 - [ ] Redeployed after adding env vars
-- [ ] Waited for DNS propagation (check with `nslookup p.elevaris.app`)
+- [ ] Waited for DNS propagation (check with `nslookup elevaris.app/p`)
+
 

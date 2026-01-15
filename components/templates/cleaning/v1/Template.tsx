@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
 import { HeroSection } from './sections/HeroSection'
 import { AboutSection } from './sections/AboutSection'
 import { ServicesSection } from './sections/ServicesSection'
@@ -15,7 +15,7 @@ import { FooterSection } from './sections/FooterSection'
 import { Navbar } from './sections/Navbar'
 
 interface CleaningTemplateProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 export default function CleaningTemplate({ config }: CleaningTemplateProps) {
@@ -99,3 +99,4 @@ function hexToRgb(hex: string): string {
   }
   return '14, 165, 233' // Default sky-500
 }
+

@@ -254,3 +254,4 @@ The site is already **well-optimized for SEO** with proper metadata, semantic st
 4. Enable Vercel Analytics
 5. Submit sitemap to Google Search Console
 
+

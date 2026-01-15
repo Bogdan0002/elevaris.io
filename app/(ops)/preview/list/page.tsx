@@ -45,7 +45,9 @@ function ListPreviewsContent() {
         if (search) params.set('search', search)
         params.set('key', key)
 
-        const response = await fetch(`/api/previews/list?${params.toString()}`)
+        const response = await fetch(`/api/previews/list?${params.toString()}`, {
+          cache: 'no-store',
+        })
         const data = await response.json()
         setPreviews(data)
       } catch (error) {
@@ -64,7 +66,7 @@ function ListPreviewsContent() {
     setTimeout(() => setCopied(null), 2000)
   }
 
-  const getPreviewUrl = (slug: string) => `https://p.elevaris.app/${slug}`
+  const getPreviewUrl = (slug: string) => `https://elevaris.app/p/${slug}`
   const getReviewUrl = (placeId: string) => getGoogleReviewUrl(placeId)
 
   const handleDelete = async (preview: PreviewRow) => {
@@ -313,3 +315,4 @@ export default function ListPreviewsPage() {
     </Suspense>
   )
 }
+

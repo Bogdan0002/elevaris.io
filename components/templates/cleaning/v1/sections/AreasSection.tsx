@@ -5,15 +5,17 @@ import { useRef } from 'react'
 import { Container } from '@/components/site/Container'
 import { MapPin, CheckCircle2, Phone, ArrowRight } from 'lucide-react'
 import { ServiceAreaMap } from './ServiceAreaMap'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getNicheDisplayName } from '@/lib/templates/registry'
 
 interface AreasSectionProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 export function AreasSection({ config }: AreasSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -70,7 +72,7 @@ export function AreasSection({ config }: AreasSectionProps) {
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            We provide professional cleaning services across {config.areasServed.length} locations 
+            We provide professional {nicheLabel.toLowerCase()} services across {config.areasServed.length} locations 
             in and around {config.business.city}, {config.business.state}.
           </p>
         </motion.div>
@@ -118,7 +120,7 @@ export function AreasSection({ config }: AreasSectionProps) {
                   'Same-day service available',
                   'No travel fees within service area',
                   'Flexible scheduling',
-                  'Emergency cleaning available',
+                  `Emergency ${nicheLabel.toLowerCase()} available`,
                 ].map((feature, i) => (
                   <motion.div
                     key={i}
@@ -190,3 +192,4 @@ export function AreasSection({ config }: AreasSectionProps) {
     </section>
   )
 }
+

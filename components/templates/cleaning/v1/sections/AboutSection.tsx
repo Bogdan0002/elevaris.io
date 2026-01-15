@@ -4,10 +4,12 @@ import { motion, useInView, useMotionValue, useSpring, useTransform, animate } f
 import { useRef, useEffect, useState } from 'react'
 import { Container } from '@/components/site/Container'
 import { CheckCircle2, Users, Award, Heart, TrendingUp, Shield, Leaf, ArrowRight, Sparkles, Building } from 'lucide-react'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getNicheHeadlines } from '@/lib/previews/defaults'
+import { getNicheDisplayName } from '@/lib/templates/registry'
 
 interface AboutSectionProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 // Animated counter component
@@ -42,11 +44,16 @@ export function AboutSection({ config }: AboutSectionProps) {
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [hoveredStat, setHoveredStat] = useState<number | null>(null)
 
+  const niche = config.niche || 'cleaning'
+  const nicheHeadlines = getNicheHeadlines(niche)
+  const nicheLabel = getNicheDisplayName(niche)
+  const aboutFallback = `${config.business.name} delivers trusted ${nicheLabel.toLowerCase()} services across ${config.business.city}, ${config.business.state}. Our team combines experience, attention to detail, and a commitment to quality on every project.`
+
   const stats = [
     { label: 'Years Experience', value: 3, suffix: '+', icon: Award },
     { label: 'Happy Customers', value: 500, suffix: '+', icon: Users },
     { label: 'Satisfaction Rate', value: 98, suffix: '%', icon: Heart },
-    { label: 'Cleanings Done', value: 2500, suffix: '+', icon: TrendingUp },
+    { label: 'Projects Completed', value: 2500, suffix: '+', icon: TrendingUp },
   ]
 
   const features = [
@@ -116,31 +123,16 @@ export function AboutSection({ config }: AboutSectionProps) {
             </motion.div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-slate-900 leading-tight">
-              Your Trusted
-              <span 
-                className="block"
-                style={{
-                  background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                Cleaning Partner
-              </span>
+              {nicheHeadlines.aboutHeadline}
             </h2>
             
             <p className="text-lg text-slate-600 mb-6 leading-relaxed">
-              {config.business.name} has been proudly serving{' '}
-              <span className="font-semibold text-slate-800">{config.business.city}, {config.business.state}</span>{' '}
-              and surrounding communities with exceptional cleaning services. We believe a clean 
-              space is the foundation of a healthy, productive life.
+              {config.about?.story || aboutFallback}
             </p>
             
             <p className="text-slate-600 mb-8 leading-relaxed">
-              Our team of dedicated professionals brings years of experience, attention to detail, 
-              and a genuine passion for creating spotless environments. We treat every home and 
-              business as if it were our own.
+              Serving {config.business.city}, {config.business.state} and the surrounding area, we tailor every project
+              to your exact needs with clear communication, reliable scheduling, and consistent quality.
             </p>
 
             {/* Feature grid */}
@@ -318,7 +310,7 @@ export function AboutSection({ config }: AboutSectionProps) {
               </div>
               <div>
                 <div className="font-bold text-slate-900">Eco-Friendly</div>
-                <div className="text-xs text-slate-500">Green cleaning products</div>
+                <div className="text-xs text-slate-500">Eco-friendly materials</div>
               </div>
             </motion.div>
 
@@ -356,3 +348,4 @@ export function AboutSection({ config }: AboutSectionProps) {
     </section>
   )
 }
+

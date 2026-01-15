@@ -252,15 +252,15 @@ Domain: elevaris.app
 Subdomain: p (previews)
 
 Full URL Pattern:
-https://p.elevaris.app/[slug]
+https://elevaris.app/p/[slug]
 
 Examples:
-✅ https://p.elevaris.app/mako-bros-window-cleaning
+✅ https://elevaris.app/p/mako-bros-window-cleaning
 ✅ http://localhost:3000/p/mako-bros-window-cleaning
 ✅ http://localhost:3000/p/mako-bros-window-cleaning-test (static test)
 
 Middleware handles:
-- p.elevaris.app → routes to app/(previews)/p/[slug]
+- elevaris.app/p → routes to app/(previews)/p/[slug]
 - Domain verification
 - SSL/Security
 ```
@@ -315,4 +315,5 @@ Response: { success: true, preview: {...} }
 ---
 
 **Architecture is clean, modular, and scalable!** ✨
+
 

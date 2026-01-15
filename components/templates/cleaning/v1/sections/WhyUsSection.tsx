@@ -18,10 +18,11 @@ import {
   ArrowRight,
   Star
 } from 'lucide-react'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getNicheDisplayName } from '@/lib/templates/registry'
 
 interface WhyUsSectionProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 // Animated number component
@@ -47,6 +48,7 @@ function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string
 export function WhyUsSection({ config }: WhyUsSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -56,7 +58,7 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
     {
       icon: Award,
       title: 'Experienced Team',
-      description: `${config.business.name}'s professionals bring years of expertise to every cleaning job.`,
+      description: `${config.business.name}'s professionals bring years of expertise to every ${nicheLabel.toLowerCase()} job.`,
       highlight: '3+ Years',
       stat: 10,
       statSuffix: '+',
@@ -189,7 +191,7 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            We&apos;re not just another cleaning company. Here&apos;s why {config.business.city} 
+            We&apos;re not just another {nicheLabel.toLowerCase()} company. Here&apos;s why {config.business.city} 
             residents trust us with their homes and businesses.
           </p>
         </motion.div>
@@ -359,7 +361,7 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
               </h3>
               <p className="text-white/90 max-w-xl mx-auto mb-8 text-lg">
                 Join hundreds of satisfied customers in {config.business.city}. 
-                Book your first cleaning today and see the difference.
+                Book your first {nicheLabel.toLowerCase()} service today and see the difference.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -391,3 +393,4 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
     </section>
   )
 }
+

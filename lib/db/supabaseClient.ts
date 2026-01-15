@@ -17,3 +17,4 @@ export const supabaseClient = createClient(
   SUPABASE_ANON_KEY || 'placeholder-key'
 )
 
+

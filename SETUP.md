@@ -55,3 +55,4 @@ Edit `app/globals.css` and `tailwind.config.ts` to customize:
 - **Accessibility**: ARIA labels, keyboard navigation, reduced motion support
 - **Performance**: Next.js Image optimization, code splitting
 
+

@@ -398,3 +398,4 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
     </section>
   )
 }
+

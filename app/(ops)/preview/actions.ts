@@ -2,20 +2,21 @@
 
 import { createPreview, getPreviewBySlug } from '@/lib/previews/repo'
 import { slugify } from '@/lib/utils/slugify'
-import { applyDefaults } from '@/lib/previews/helpers'
-import { getGoogleReviewUrl } from '@/lib/previews/helpers'
-import { cleaningPreviewConfigSchema } from '@/lib/previews/schema'
-import { getTemplateById } from '@/lib/templates/registry'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import { applyPreviewDefaults, getGoogleReviewUrl } from '@/lib/previews/helpers'
+import { previewConfigSchema } from '@/lib/previews/schema'
+import { getDefaultTemplateForNiche, getTemplateById } from '@/lib/templates/registry'
+import type { BusinessNiche, PreviewConfig } from '@/lib/previews/types'
 
 interface CreatePreviewInput {
   templateId: string
+  niche: BusinessNiche
   businessName: string
   city: string
   state: string
   phone: string
   placeId: string
   offerText: string
+  offerBadge?: string
   primaryColor?: string
   accentColor?: string
   services: string[]
@@ -24,6 +25,9 @@ interface CreatePreviewInput {
   lat?: number
   lng?: number
   radiusMiles?: number
+  heroHeadline?: string
+  heroSubheadline?: string
+  aboutStory?: string
   // New fields for reviews
   sampleReviews?: Array<{
     name: string
@@ -34,23 +38,18 @@ interface CreatePreviewInput {
 
 export async function createPreviewAction(input: CreatePreviewInput) {
   try {
-    // Validate template exists
-    const template = getTemplateById(input.templateId)
-    if (!template) {
-      return {
-        success: false,
-        error: `Template "${input.templateId}" not found in registry`,
-      }
-    }
+    // Validate template exists (fallback to best template for niche)
+    const template =
+      getTemplateById(input.templateId) || getDefaultTemplateForNiche(input.niche)
 
     // Generate slug
     const slug = slugify(input.businessName, input.city, input.state)
 
     // Build config
-    const config: CleaningPreviewConfig = {
+    const config: PreviewConfig = {
       slug,
-      niche: 'cleaning',
-      templateId: input.templateId,
+      niche: input.niche,
+      templateId: template.id,
       business: {
         name: input.businessName,
         city: input.city,
@@ -60,6 +59,7 @@ export async function createPreviewAction(input: CreatePreviewInput) {
       placeId: input.placeId,
       offer: {
         shortText: input.offerText,
+        badge: input.offerBadge,
       },
       branding: {
         primaryColor: input.primaryColor,
@@ -77,16 +77,23 @@ export async function createPreviewAction(input: CreatePreviewInput) {
             }
           : undefined,
       sampleReviews: input.sampleReviews,
+      hero: {
+        headline: input.heroHeadline,
+        subheadline: input.heroSubheadline,
+      },
+      about: {
+        story: input.aboutStory,
+      },
     }
 
     // Apply defaults
-    const configWithDefaults = applyDefaults(config)
+    const configWithDefaults = applyPreviewDefaults(config)
 
     console.log('[CreatePreview] Creating preview with slug:', slug)
     console.log('[CreatePreview] Config:', JSON.stringify(configWithDefaults, null, 2))
 
     // Validate
-    const validationResult = cleaningPreviewConfigSchema.safeParse(configWithDefaults)
+    const validationResult = previewConfigSchema.safeParse(configWithDefaults)
     if (!validationResult.success) {
       console.error('[CreatePreview] Validation failed:', validationResult.error.errors)
       return {
@@ -111,7 +118,7 @@ export async function createPreviewAction(input: CreatePreviewInput) {
     console.log('[CreatePreview] Preview verified in database')
 
     // Generate URLs
-    const previewUrl = `https://p.elevaris.app/${slug}`
+    const previewUrl = `https://elevaris.app/p/${slug}`
     const reviewUrl = getGoogleReviewUrl(input.placeId)
 
     return {
@@ -134,4 +141,5 @@ export async function createPreviewAction(input: CreatePreviewInput) {
     }
   }
 }
+
 

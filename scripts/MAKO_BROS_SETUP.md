@@ -20,7 +20,7 @@ This guide will help you create a preview page for **Mako Bros Window Cleaning**
 3. **Click "Create Preview"** button
 
 4. **Access the preview at:**
-   - Production: `https://p.elevaris.app/mako-bros-window-cleaning`
+   - Production: `https://elevaris.app/p/mako-bros-window-cleaning`
    - Local: `http://localhost:3000/p/mako-bros-window-cleaning`
 
 ## Method 2: Using API with curl/Postman
@@ -104,7 +104,7 @@ PUT /api/previews/update/mako-bros-window-cleaning
 ## Preview URL Structure
 
 Once created, the preview will be available at:
-- **Subdomain**: `https://p.elevaris.app/mako-bros-window-cleaning`
+- **Subdomain**: `https://elevaris.app/p/mako-bros-window-cleaning`
 - **Local**: `http://localhost:3000/p/mako-bros-window-cleaning`
 
 ## Template Sections
@@ -133,4 +133,5 @@ The preview will include all these sections from your cleaning template:
 ---
 
 Happy previewing! 🦈✨
+
 

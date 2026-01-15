@@ -5,26 +5,6 @@
       "has": [
         {
           "type": "host",
-          "value": "p.elevaris.app"
-        }
-      ],
-      "destination": "/p/:path*"
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "p.elevaris.app"
-        }
-      ],
-      "destination": "/p"
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
           "value": "ops.elevaris.app"
         }
       ],

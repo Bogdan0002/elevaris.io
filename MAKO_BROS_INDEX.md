@@ -94,7 +94,7 @@ Tagline:  "Professional Window Cleaning company dedicated to
 - Local: `http://localhost:3000/p/mako-bros-window-cleaning-test`
 
 ### Production (After DB Creation)
-- Live: `https://p.elevaris.app/mako-bros-window-cleaning`
+- Live: `https://elevaris.app/p/mako-bros-window-cleaning`
 - Local: `http://localhost:3000/p/mako-bros-window-cleaning`
 
 ---
@@ -252,4 +252,5 @@ curl http://localhost:3000/api/previews/list
 **Ready to swim? Dive in! 🦈✨**
 
 Start with: [MAKO_BROS_QUICKSTART.md](MAKO_BROS_QUICKSTART.md)
+
 

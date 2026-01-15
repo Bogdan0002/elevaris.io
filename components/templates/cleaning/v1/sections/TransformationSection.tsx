@@ -13,12 +13,11 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getNicheDisplayName } from '@/lib/templates/registry'
 
 interface TransformationSectionProps {
-  config: {
-    branding: { primaryColor?: string; accentColor?: string }
-    business: { name: string; city: string }
-  }
+  config: PreviewConfig
 }
 
 // Before/After slider component
@@ -148,6 +147,7 @@ function BeforeAfterSlider({
 export function TransformationSection({ config }: TransformationSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -324,7 +324,7 @@ export function TransformationSection({ config }: TransformationSectionProps) {
               <p className="text-slate-600 mb-6 leading-relaxed">
                 Our professional team transformed this space from cluttered and dirty to 
                 sparkling clean in just a few hours. This is the quality you can expect 
-                from every {config.business.name} cleaning.
+                from every {config.business.name} {nicheLabel.toLowerCase()} service.
               </p>
 
               {/* Results list */}
@@ -430,4 +430,5 @@ export function TransformationSection({ config }: TransformationSectionProps) {
     </section>
   )
 }
+
 

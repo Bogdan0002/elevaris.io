@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
 
 // Dynamic imports for templates
-const templateComponents: Record<string, () => Promise<{ default: React.ComponentType<{ config: CleaningPreviewConfig }> }>> = {
+const templateComponents: Record<string, () => Promise<{ default: React.ComponentType<{ config: PreviewConfig }> }>> = {
   'cleaning-v1': () => import('@/components/templates/cleaning/v1/Template'),
+  // Universal template currently maps to cleaning template (dynamic content drives niche)
+  'universal-v1': () => import('@/components/templates/cleaning/v1/Template'),
 }
 
 /**
@@ -11,7 +13,7 @@ const templateComponents: Record<string, () => Promise<{ default: React.Componen
  */
 export async function renderTemplate(
   templateId: string,
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 ) {
   const templateLoader = templateComponents[templateId]
 
@@ -29,4 +31,5 @@ export async function renderTemplate(
     notFound()
   }
 }
+
 

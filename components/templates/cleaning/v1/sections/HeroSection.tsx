@@ -19,15 +19,12 @@ import {
   Users,
   Calendar
 } from 'lucide-react'
-import { DEFAULT_CLEANING_CONTENT } from '@/lib/previews/defaults'
+import { getTrustBadges, getNicheHeadlines } from '@/lib/previews/defaults'
+import { getNicheDisplayName } from '@/lib/templates/registry'
+import type { PreviewConfig } from '@/lib/previews/types'
 
 interface HeroSectionProps {
-  config: {
-    business: { name: string; city: string; state: string; phone: string }
-    offer: { shortText: string }
-    branding: { primaryColor?: string; accentColor?: string }
-    placeId: string
-  }
+  config: PreviewConfig
 }
 
 // Animated number counter
@@ -77,7 +74,15 @@ export function HeroSection({ config }: HeroSectionProps) {
   const reviewUrl = getGoogleReviewUrl(config.placeId)
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const trustItems = DEFAULT_CLEANING_CONTENT.trustBadges
+  const niche = config.niche || 'cleaning'
+  const trustItems = getTrustBadges(niche)
+  const nicheHeadlines = getNicheHeadlines(niche)
+  const nicheLabel = getNicheDisplayName(niche)
+  const headline = config.hero?.headline || nicheHeadlines.heroHeadline
+  const subheadline =
+    config.hero?.subheadline ||
+    nicheHeadlines.heroSubheadline ||
+    `${config.business.name} provides trusted ${nicheLabel.toLowerCase()} services.`
 
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
@@ -271,9 +276,9 @@ export function HeroSection({ config }: HeroSectionProps) {
               variants={itemVariants}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]"
             >
-              <span className="text-slate-900">Sparkling Clean</span>
+              <span className="text-slate-900">{headline}</span>
               <br />
-              <span className="text-slate-900">Homes in </span>
+              <span className="text-slate-900">Serving </span>
               <span 
                 className="relative inline-block"
                 style={{
@@ -314,10 +319,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               variants={itemVariants}
               className="text-lg sm:text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed"
             >
-              {config.business.name} delivers{' '}
-              <span className="font-semibold text-slate-800">exceptional cleaning services</span>{' '}
-              with meticulous attention to detail. Experience the joy of coming home to a 
-              spotless, fresh space.
+              {subheadline}
             </motion.p>
 
             {/* Trust indicators row */}
@@ -325,18 +327,14 @@ export function HeroSection({ config }: HeroSectionProps) {
               variants={itemVariants}
               className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mb-10 text-sm"
             >
-              {[
-                { icon: CheckCircle2, text: 'Licensed & Insured', color: accentColor },
-                { icon: Shield, text: 'Background Checked', color: primaryColor },
-                { icon: Clock, text: 'Same-Day Available', color: accentColor },
-              ].map((item, i) => (
+              {trustItems.slice(0, 3).map((item, i) => (
                 <motion.div 
                   key={i}
                   className="flex items-center gap-2 text-slate-600"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <item.icon className="w-5 h-5" style={{ color: item.color }} />
-                  <span className="font-medium">{item.text}</span>
+                  <CheckCircle2 className="w-5 h-5" style={{ color: accentColor }} />
+                  <span className="font-medium">{item.label}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -556,3 +554,4 @@ export function HeroSection({ config }: HeroSectionProps) {
     </section>
   )
 }
+

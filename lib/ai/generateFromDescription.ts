@@ -362,3 +362,4 @@ function generateDefaultReviews(businessName: string, city: string) {
     },
   ]
 }
+

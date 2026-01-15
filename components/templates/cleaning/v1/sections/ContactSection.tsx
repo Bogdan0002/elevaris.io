@@ -15,18 +15,17 @@ import {
   ArrowRight,
   Zap
 } from 'lucide-react'
+import type { PreviewConfig } from '@/lib/previews/types'
+import { getNicheDisplayName } from '@/lib/templates/registry'
 
 interface ContactSectionProps {
-  config: {
-    business: { name: string; phone: string; city: string; state: string }
-    branding: { primaryColor?: string; accentColor?: string }
-    hours?: string
-  }
+  config: PreviewConfig
 }
 
 export function ContactSection({ config }: ContactSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -158,7 +157,7 @@ export function ContactSection({ config }: ContactSectionProps) {
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Get your free quote today. We&apos;ll get back to you within 24 hours 
-            with a customized cleaning plan.
+            with a customized {nicheLabel.toLowerCase()} plan.
           </p>
         </motion.div>
 
@@ -175,7 +174,7 @@ export function ContactSection({ config }: ContactSectionProps) {
                 Contact {config.business.name}
               </h3>
               <p className="text-slate-600">
-                We&apos;re here to help with all your cleaning needs.
+                We&apos;re here to help with all your {nicheLabel.toLowerCase()} needs.
               </p>
             </div>
 
@@ -387,7 +386,7 @@ export function ContactSection({ config }: ContactSectionProps) {
 
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Tell us about your cleaning needs
+                      Tell us about your {nicheLabel.toLowerCase()} needs
                     </label>
                     <textarea
                       rows={4}
@@ -454,3 +453,4 @@ export function ContactSection({ config }: ContactSectionProps) {
     </section>
   )
 }
+

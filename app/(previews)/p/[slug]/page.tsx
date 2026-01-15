@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getPreviewBySlug } from '@/lib/previews/repo'
-import { applyDefaults, validateConfigSafe } from '@/lib/previews/helpers'
+import { applyPreviewDefaults, validateConfigSafe } from '@/lib/previews/helpers'
+import { isLegacyConfig, migrateToPreviewConfig } from '@/lib/previews/types'
 import { renderTemplate } from '@/lib/templates/render'
 
 // Force dynamic rendering for preview pages
@@ -39,8 +40,11 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
   
   console.log('[PreviewPage] Found preview:', previewRow.id, previewRow.slug)
 
-  // Apply defaults to ensure template never crashes
-  const config = applyDefaults(previewRow.config)
+  // Normalize legacy config and apply defaults to ensure template never crashes
+  const normalizedConfig = isLegacyConfig(previewRow.config)
+    ? migrateToPreviewConfig(previewRow.config)
+    : previewRow.config
+  const config = applyPreviewDefaults(normalizedConfig)
 
   // Validate config is safe
   try {

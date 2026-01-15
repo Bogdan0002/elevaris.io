@@ -19,7 +19,7 @@ cp .env.example .env.local
 **Optional Variables:**
 - `OPENAI_API_KEY` (for AI features)
 - `NEXT_PUBLIC_APP_URL` (defaults to elevaris.app)
-- `NEXT_PUBLIC_PREVIEW_URL` (defaults to p.elevaris.app)
+- `NEXT_PUBLIC_PREVIEW_URL` (defaults to elevaris.app/p)
 
 ### 2. Database Setup
 
@@ -47,7 +47,7 @@ CREATE INDEX idx_client_previews_niche ON client_previews(niche);
 1. **Import your repository** to Vercel
 2. **Configure domains:**
    - Main: `elevaris.app` → Production
-   - Preview: `p.elevaris.app` → Production
+   - Preview: `elevaris.app/p` → Production
    - Ops: `ops.elevaris.app` → Production
 
 3. **Add environment variables** in Vercel dashboard:
@@ -71,7 +71,7 @@ CREATE INDEX idx_client_previews_niche ON client_previews(niche);
    - ✅ `fonts:read`
    - ✅ `datasets:read`
 3. Add restrictions (optional but recommended):
-   - URL: `https://elevaris.app/*`, `https://p.elevaris.app/*`
+   - URL: `https://elevaris.app/*`, `https://elevaris.app/p/*`
 4. Copy token to `NEXT_PUBLIC_MAPBOX_TOKEN`
 
 ## Deployment Steps
@@ -127,8 +127,8 @@ git push origin main
 Once deployed, check these URLs:
 
 1. **Main site**: `https://elevaris.app` ✅
-2. **Mako Bros preview**: `https://p.elevaris.app/mako-bros-window-cleaning` ✅
-3. **Test page**: `https://p.elevaris.app/mako-bros-window-cleaning-test` ✅
+2. **Mako Bros preview**: `https://elevaris.app/p/mako-bros-window-cleaning` ✅
+3. **Test page**: `https://elevaris.app/p/mako-bros-window-cleaning-test` ✅
 4. **Ops dashboard**: `https://ops.elevaris.app` ✅
 
 ### Step 5: Test Everything
@@ -167,7 +167,7 @@ curl -X PUT https://elevaris.app/api/previews/update/mako-bros-window-cleaning \
 
 Send client the preview URL:
 ```
-https://p.elevaris.app/mako-bros-window-cleaning
+https://elevaris.app/p/mako-bros-window-cleaning
 ```
 
 ### Monitor Performance
@@ -205,7 +205,7 @@ Check Vercel Analytics:
 1. Verify DNS is configured correctly
 2. Check Vercel domain settings
 3. Wait for DNS propagation (can take up to 48 hours)
-4. Test with `dig p.elevaris.app` or `nslookup p.elevaris.app`
+4. Test with `dig elevaris.app/p` or `nslookup elevaris.app/p`
 
 ## Rollback Plan
 
@@ -265,9 +265,9 @@ If you need help:
 
 ### URLs
 - **Main**: https://elevaris.app
-- **Preview**: https://p.elevaris.app/[slug]
+- **Preview**: https://elevaris.app/p/[slug]
 - **Ops**: https://ops.elevaris.app
-- **Test Page**: https://p.elevaris.app/mako-bros-window-cleaning-test
+- **Test Page**: https://elevaris.app/p/mako-bros-window-cleaning-test
 
 ### Commands
 ```bash
@@ -299,4 +299,5 @@ vercel logs
 **Ready to deploy!** 🚀
 
 Run: `git push origin main`
+
 

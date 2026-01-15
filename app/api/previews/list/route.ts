@@ -14,7 +14,11 @@ export async function GET(request: NextRequest) {
 
     const previews = await listPreviews({ search, limit })
 
-    return NextResponse.json(previews)
+    return NextResponse.json(previews, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    })
   } catch (error) {
     console.error('Error listing previews:', error)
     return NextResponse.json(
@@ -23,4 +27,5 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
 

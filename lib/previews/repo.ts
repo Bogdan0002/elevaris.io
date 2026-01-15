@@ -1,15 +1,15 @@
 import { supabaseServer } from '@/lib/db/supabaseServer'
-import { cleaningPreviewConfigSchema } from './schema'
-import type { CleaningPreviewConfig, ClientPreviewRow } from './types'
+import { previewConfigSchema } from './schema'
+import type { PreviewConfig, ClientPreviewRow } from './types'
 
 /**
  * Create a new preview configuration
  */
 export async function createPreview(
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 ): Promise<ClientPreviewRow> {
   // Validate config
-  const validated = cleaningPreviewConfigSchema.parse(config)
+  const validated = previewConfigSchema.parse(config)
 
   const { data, error } = await supabaseServer
     .from('client_previews')
@@ -55,7 +55,7 @@ export async function getPreviewBySlug(slug: string): Promise<ClientPreviewRow |
  */
 export async function updatePreview(
   slug: string,
-  partialConfig: Partial<CleaningPreviewConfig>
+  partialConfig: Partial<PreviewConfig>
 ): Promise<ClientPreviewRow> {
   // Get existing config
   const existing = await getPreviewBySlug(slug)
@@ -74,7 +74,7 @@ export async function updatePreview(
   }
 
   // Validate merged config
-  const validated = cleaningPreviewConfigSchema.parse(mergedConfig)
+  const validated = previewConfigSchema.parse(mergedConfig)
 
   const { data, error } = await supabaseServer
     .from('client_previews')
@@ -158,4 +158,5 @@ export async function deletePreviewById(id: string): Promise<boolean> {
 
   return true
 }
+
 

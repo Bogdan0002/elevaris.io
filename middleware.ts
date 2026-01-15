@@ -21,25 +21,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Handle p. subdomain (preview subdomain)
-  // Check for both 'p.' at start and 'p.elevaris.app' pattern
-  if (hostname.startsWith('p.') || hostname.includes('p.elevaris.app')) {
-    // Extract slug from pathname (e.g., /some-slug -> some-slug)
-    const slug = pathname.slice(1).split('?')[0] // Remove leading / and query params
-
-    // If it's root or empty, show a helpful message
-    if (!slug || slug === '') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/p'
-      return NextResponse.rewrite(url)
-    }
-
-    // Rewrite to internal preview route
-    const url = request.nextUrl.clone()
-    url.pathname = `/p/${slug}`
-    return NextResponse.rewrite(url)
-  }
-
   // Handle ops. subdomain - ensure routes work correctly
   if (hostname.startsWith('ops.') || hostname.includes('ops.elevaris.app')) {
     // If visiting root of ops subdomain, redirect to /preview (preserve query params)
@@ -69,4 +50,5 @@ export const config = {
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|eot)).*)',
   ],
 }
+
 

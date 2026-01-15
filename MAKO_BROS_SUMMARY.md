@@ -54,7 +54,7 @@ Copy the JSON from `scripts/mako-bros-config.json` and insert it directly into y
 - Use this to preview the design immediately!
 
 ### Live Preview (After Creating in Database)
-- **Production**: `https://p.elevaris.app/mako-bros-window-cleaning`
+- **Production**: `https://elevaris.app/p/mako-bros-window-cleaning`
 - **Local Dev**: `http://localhost:3000/p/mako-bros-window-cleaning`
 
 ## ✅ What's Included
@@ -167,4 +167,5 @@ Check `scripts/MAKO_BROS_SETUP.md` for:
 ---
 
 **Tagline**: *"Professional Window Cleaning company dedicated to giving your home the Sharky Shine it deserves."* 🦈✨
+
 

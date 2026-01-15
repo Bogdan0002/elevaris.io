@@ -14,7 +14,7 @@
 
 ### 1. Middleware for Subdomain Routing
 **File: `middleware.ts` (root)**
-- Detect subdomain (ops.elevaris.app, p.elevaris.app)
+- Detect subdomain (ops.elevaris.app, elevaris.app/p)
 - Rewrite to route groups
 - Preserve slug for preview routes
 
@@ -72,6 +72,7 @@ SUPABASE_ANON_KEY=
 ... (all existing routes unchanged)
 
 ops.elevaris.app/preview → app/(ops)/preview/page.tsx
-p.elevaris.app/<slug> → app/(previews)/[slug]/page.tsx
+elevaris.app/p/<slug> → app/(previews)/[slug]/page.tsx
 ```
+
 

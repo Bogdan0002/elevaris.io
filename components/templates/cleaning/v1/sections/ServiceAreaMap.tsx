@@ -3,10 +3,10 @@
 import { motion } from 'framer-motion'
 import { MapPin, Navigation2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import type { CleaningPreviewConfig } from '@/lib/previews/types'
+import type { PreviewConfig } from '@/lib/previews/types'
 
 interface ServiceAreaMapProps {
-  config: CleaningPreviewConfig
+  config: PreviewConfig
 }
 
 export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
@@ -345,3 +345,4 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
     </div>
   )
 }
+

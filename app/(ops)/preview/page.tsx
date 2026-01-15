@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { createPreviewAction } from './actions'
 import { generateContentAction } from './ai-actions'
 import { generateFromDescriptionAction } from './ai-description-action'
-import { TEMPLATE_REGISTRY, getAllNiches, getNicheDisplayName } from '@/lib/templates/registry'
+import { TEMPLATE_REGISTRY, getAllNiches, getDefaultTemplateForNiche, getNicheDisplayName } from '@/lib/templates/registry'
 import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2, Clock, List, Building2 } from 'lucide-react'
 import type { BusinessNiche } from '@/lib/previews/types'
 import { useRouter } from 'next/navigation'
@@ -84,7 +84,9 @@ function OpsConsoleContent() {
     const fetchRecent = async () => {
       setLoadingRecent(true)
       try {
-        const response = await fetch(`/api/previews/list?limit=5&key=${key}`)
+        const response = await fetch(`/api/previews/list?limit=5&key=${key}`, {
+          cache: 'no-store',
+        })
         const data = await response.json()
         setRecentPreviews(data)
       } catch (error) {
@@ -124,12 +126,14 @@ function OpsConsoleContent() {
 
       const response = await createPreviewAction({
         templateId: formData.templateId,
+        niche: formData.niche,
         businessName: formData.businessName,
         city: formData.city,
         state: formData.state,
         phone: formData.phone,
         placeId: formData.placeId,
         offerText: formData.offerText,
+        offerBadge: formData.offerBadge || undefined,
         primaryColor: formData.primaryColor,
         accentColor: formData.accentColor,
         services,
@@ -141,6 +145,9 @@ function OpsConsoleContent() {
           ? parseFloat(formData.radiusMiles)
           : undefined,
         sampleReviews: generatedReviews.length > 0 ? generatedReviews : undefined,
+        heroHeadline: formData.heroHeadline || undefined,
+        heroSubheadline: formData.heroSubheadline || undefined,
+        aboutStory: formData.aboutStory || undefined,
       })
 
       setResult(response)
@@ -149,7 +156,9 @@ function OpsConsoleContent() {
       if (response.success) {
         const fetchRecent = async () => {
           try {
-            const res = await fetch(`/api/previews/list?limit=5&key=${key}`)
+            const res = await fetch(`/api/previews/list?limit=5&key=${key}`, {
+              cache: 'no-store',
+            })
             const data = await res.json()
             setRecentPreviews(data)
           } catch (error) {
@@ -186,9 +195,11 @@ function OpsConsoleContent() {
       if (aiResult.success && aiResult.data) {
         const data = aiResult.data
         // Auto-fill form with generated data (now includes more fields)
+        const defaultTemplate = getDefaultTemplateForNiche(data.niche)
         setFormData({
           ...formData,
           niche: data.niche,
+          templateId: defaultTemplate.id,
           businessName: data.business.name,
           city: data.business.city,
           state: data.business.state,
@@ -883,7 +894,7 @@ function OpsConsoleContent() {
               ) : (
                 <div className="space-y-2">
                   {recentPreviews.map((preview: any) => {
-                    const previewUrl = `https://p.elevaris.app/${preview.slug}`
+                    const previewUrl = `https://elevaris.app/p/${preview.slug}`
                     const placeId = preview.config?.placeId || ''
                     const reviewUrl = placeId ? `https://search.google.com/local/writereview?placeid=${placeId}` : ''
                     const date = new Date(preview.created_at).toLocaleDateString()
@@ -955,4 +966,5 @@ export default function OpsConsolePage() {
     </Suspense>
   )
 }
+
 

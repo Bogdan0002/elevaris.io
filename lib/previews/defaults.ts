@@ -220,3 +220,4 @@ export const CONTAINER_PADDING = {
   desktop: 'lg:px-8',
   full: 'px-4 sm:px-6 lg:px-8',
 }
+

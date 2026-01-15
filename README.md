@@ -26,7 +26,7 @@ A comprehensive Next.js platform combining a marketing website, a dynamic previe
 Elevaris.io is a multi-faceted platform consisting of:
 
 1. **Main Marketing Website** (`elevaris.app`) - The public-facing website showcasing Elevaris services
-2. **Preview System** (`p.elevaris.app`) - Dynamic client preview websites generated from templates
+2. **Preview System** (`elevaris.app/p`) - Dynamic client preview websites generated from templates
 3. **Ops Console** (`ops.elevaris.app`) - Internal tool for generating and managing previews
 4. **Template System** - Modular, versioned templates for different business niches
 
@@ -89,7 +89,7 @@ Next.js route groups (`(ops)` and `(previews)`) are used to organize routes with
 
 The `middleware.ts` file handles subdomain-based routing:
 
-- **`p.elevaris.app/[slug]`** → Rewrites to `/p/[slug]` (preview pages)
+- **`elevaris.app/p/[slug]`** → Rewrites to `/p/[slug]` (preview pages)
 - **`ops.elevaris.app/`** → Redirects to `/preview` (ops console)
 - **`www.elevaris.app`** → Main marketing website (no rewrite)
 
@@ -150,7 +150,7 @@ The `ConditionalNavbar` component (`components/site/ConditionalNavbar.tsx`) inte
 - Preview routes (`/p/*`)
 - Ops console routes (`/preview*`)
 - Dev routes (`/dev/*`)
-- Preview subdomain (`p.elevaris.app`)
+- Preview subdomain (`elevaris.app/p`)
 - Ops subdomain (`ops.elevaris.app`)
 
 This prevents double navbars when viewing previews or using the ops console.
@@ -161,26 +161,26 @@ This prevents double navbars when viewing previews or using the ops console.
 
 ### Overview
 
-The preview system allows generating dynamic, personalized websites for clients using template-based architecture. Each preview is accessible via a unique subdomain URL: `p.elevaris.app/[slug]`.
+The preview system allows generating dynamic, personalized websites for clients using template-based architecture. Each preview is accessible via a unique subdomain URL: `elevaris.app/p/[slug]`.
 
 ### How It Works
 
 1. **Generation**: Ops console creates a preview configuration
 2. **Storage**: Configuration stored in Supabase `client_previews` table
-3. **Routing**: Middleware rewrites `p.elevaris.app/[slug]` → `/p/[slug]`
+3. **Routing**: Middleware rewrites `elevaris.app/p/[slug]` → `/p/[slug]`
 4. **Rendering**: Template renderer loads the appropriate template component
 5. **Display**: Fully personalized website with client data
 
 ### URL Structure
 
-- **Subdomain**: `p.elevaris.app/elite-cleaning-services-los-angeles-ca`
+- **Subdomain**: `elevaris.app/p/elite-cleaning-services-los-angeles-ca`
 - **Main Domain**: `www.elevaris.app/p/elite-cleaning-services-los-angeles-ca`
 - Both URLs work, but subdomain is preferred for client sharing
 
 ### Preview Page Flow
 
 ```
-p.elevaris.app/[slug]
+elevaris.app/p/[slug]
   ↓ (middleware rewrite)
 /p/[slug]
   ↓ (page.tsx)
@@ -609,7 +609,7 @@ CREATE TABLE client_previews (
 
 ### Why Subdomain Routing?
 
-- **Clean URLs**: `p.elevaris.app/slug` is cleaner than `elevaris.app/p/slug`
+- **Clean URLs**: `elevaris.app/p/slug` is cleaner than `elevaris.app/p/slug`
 - **Branding**: Subdomain feels more professional
 - **SEO**: Can isolate preview pages from main site
 - **Flexibility**: Can add more subdomains easily
@@ -651,7 +651,7 @@ NEXT_PUBLIC_OPS_KEY=[secure-key]
 - A record or CNAME pointing to Vercel
 
 **Subdomains**:
-- `p.elevaris.app` - CNAME to Vercel (for previews)
+- `elevaris.app/p` - CNAME to Vercel (for previews)
 - `ops.elevaris.app` - CNAME to Vercel (for ops console)
 
 **Vercel Settings:**
@@ -942,3 +942,4 @@ For questions or issues:
 ---
 
 **Last Updated**: January 2025
+

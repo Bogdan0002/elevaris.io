@@ -3,74 +3,63 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Container } from '@/components/site/Container'
+import { normalizeServices } from '@/lib/previews/helpers'
+import { getNicheHeadlines } from '@/lib/previews/defaults'
+import { getNicheDisplayName } from '@/lib/templates/registry'
+import type { PreviewConfig } from '@/lib/previews/types'
 import { 
   Home, 
   Building2, 
   Sparkles, 
-  Wind,
   Droplets,
   Sofa,
   ArrowRight,
   CheckCircle2,
-  Star,
   Zap,
   Shield,
-  Clock
+  Clock,
+  Wrench,
+  Sun,
+  Car,
+  Leaf,
+  TreeDeciduous,
+  Bug,
+  Key,
+  Lock,
+  Paintbrush,
+  Hammer,
 } from 'lucide-react'
 
 interface ServicesSectionProps {
-  config: {
-    branding: { primaryColor?: string; accentColor?: string }
-    business: { name: string }
-  }
+  config: PreviewConfig
 }
-
-// Static services for all cleaning companies
-const CLEANING_SERVICES = [
-  {
-    name: 'Residential Cleaning',
-    icon: Home,
-    description: 'Regular maintenance cleaning for homes and apartments. We keep your living space spotless with eco-friendly products and attention to detail.',
-    features: ['Weekly/Bi-weekly options', 'All rooms included', 'Eco-friendly products', 'Flexible scheduling'],
-    badge: { text: 'Most Popular', icon: Star },
-  },
-  {
-    name: 'Commercial Cleaning',
-    icon: Building2,
-    description: 'Professional cleaning services for offices, retail spaces, and businesses. After-hours available to minimize disruption.',
-    features: ['After-hours available', 'Custom schedules', 'Professional team', 'Commercial-grade equipment'],
-    badge: { text: 'For Business', icon: Building2 },
-  },
-  {
-    name: 'Deep Cleaning',
-    icon: Sparkles,
-    description: 'Intensive top-to-bottom cleaning service. Perfect for move-ins, special occasions, or when you need that extra level of cleanliness.',
-    features: ['Top to bottom clean', 'Hard-to-reach areas', 'Sanitization included', 'Appliance cleaning'],
-    badge: { text: 'Best Value', icon: Zap },
-  },
-  {
-    name: 'Move-in/Move-out Cleaning',
-    icon: Wind,
-    description: 'Comprehensive cleaning service for when you\'re moving. We ensure your old or new space is immaculate and ready.',
-    features: ['Full property coverage', 'Appliance cleaning', 'Same-day available', 'Carpet & window cleaning'],
-  },
-  {
-    name: 'Window Cleaning',
-    icon: Droplets,
-    description: 'Crystal-clear windows inside and out. Streak-free finish that lets natural light flood your space beautifully.',
-    features: ['Interior & exterior', 'Streak-free finish', 'Screen cleaning', 'Regular maintenance plans'],
-  },
-  {
-    name: 'Carpet & Upholstery Cleaning',
-    icon: Sofa,
-    description: 'Deep extraction cleaning to remove stains, odors, and allergens. Professional equipment ensures fast drying and lasting results.',
-    features: ['Deep extraction', 'Stain removal', 'Fast drying', 'Pet-friendly solutions'],
-  },
-]
 
 export function ServicesSection({ config }: ServicesSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const niche = config.niche || 'cleaning'
+  const nicheHeadlines = getNicheHeadlines(niche)
+  const nicheLabel = getNicheDisplayName(niche)
+  const servicesDescription = `Specialized ${nicheLabel.toLowerCase()} solutions tailored to your needs.`
+  const services = normalizeServices(config.services || [], niche)
+
+  const iconMap: Record<string, React.ElementType> = {
+    Home,
+    Building2,
+    Sparkles,
+    Droplets,
+    Sofa,
+    Wrench,
+    Sun,
+    Car,
+    Leaf,
+    TreeDeciduous,
+    Bug,
+    Key,
+    Lock,
+    Paintbrush,
+    Hammer,
+  }
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -171,23 +160,11 @@ export function ServicesSection({ config }: ServicesSectionProps) {
           </motion.div>
           
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-slate-900">
-            Professional Cleaning
-            <span 
-              className="block mt-2"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Services
-            </span>
+            {nicheHeadlines.servicesHeadline}
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Comprehensive cleaning solutions designed to keep your space immaculate. 
-            From routine maintenance to specialized deep cleaning, we&apos;ve got you covered.
+            {servicesDescription}
           </p>
         </motion.div>
 
@@ -198,8 +175,8 @@ export function ServicesSection({ config }: ServicesSectionProps) {
           animate={isInView ? 'visible' : 'hidden'}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
-          {CLEANING_SERVICES.map((service, index) => {
-            const Icon = service.icon
+          {services.map((service, index) => {
+            const Icon = iconMap[service.icon || ''] || Sparkles
             const isHovered = false // We'll use CSS hover instead
 
             return (
@@ -229,7 +206,7 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                   />
 
                   {/* Badge */}
-                  {service.badge && (
+                  {service.badge?.text && (
                     <motion.div
                       className="absolute top-5 right-5 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white shadow-lg z-20"
                       style={{
@@ -240,7 +217,6 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.05, type: 'spring' }}
                     >
-                      <service.badge.icon className="w-3 h-3" />
                       {service.badge.text}
                     </motion.div>
                   )}
@@ -298,7 +274,7 @@ export function ServicesSection({ config }: ServicesSectionProps) {
 
                     {/* Features list */}
                     <ul className="space-y-3 mb-6">
-                      {service.features.map((feature, i) => (
+                      {(service.features || []).map((feature, i) => (
                         <motion.li
                           key={i}
                           className="flex items-center gap-3 text-sm text-slate-700"
@@ -395,11 +371,11 @@ export function ServicesSection({ config }: ServicesSectionProps) {
               </div>
               
               <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
-                Need a Custom Cleaning Solution?
+                Need a Custom {nicheLabel} Solution?
               </h3>
               <p className="text-slate-600 mb-6 max-w-xl mx-auto">
-                Every space is unique. Tell us about your needs and we&apos;ll create a 
-                personalized cleaning plan just for you.
+                Every project is unique. Tell us about your needs and we&apos;ll create a 
+                personalized {nicheLabel.toLowerCase()} plan just for you.
               </p>
               
               <motion.a
@@ -422,3 +398,4 @@ export function ServicesSection({ config }: ServicesSectionProps) {
     </section>
   )
 }
+

@@ -61,10 +61,11 @@ git push origin main
 ## Test URLs
 
 After deploy:
-- **Test**: https://p.elevaris.app/mako-bros-window-cleaning-test
-- **Live**: https://p.elevaris.app/mako-bros-window-cleaning (after creating in DB)
+- **Test**: https://elevaris.app/p/mako-bros-window-cleaning-test
+- **Live**: https://elevaris.app/p/mako-bros-window-cleaning (after creating in DB)
 
 ---
 
 **Ready to deploy! 🦈✨**
+
 

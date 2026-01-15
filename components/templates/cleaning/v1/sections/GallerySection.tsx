@@ -3,6 +3,7 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { Container } from '@/components/site/Container'
+import type { PreviewConfig } from '@/lib/previews/types'
 import { 
   Image as ImageIcon, 
   Sparkles, 
@@ -19,10 +20,7 @@ import {
 } from 'lucide-react'
 
 interface GallerySectionProps {
-  config: {
-    branding: { primaryColor?: string; accentColor?: string }
-    business: { name: string }
-  }
+  config: PreviewConfig
 }
 
 // Bento grid gallery items with different sizes
@@ -51,7 +49,7 @@ const galleryItems = [
   { 
     id: 4, 
     label: 'Office Space',
-    description: 'Professional commercial cleaning for productive workspaces',
+    description: 'Professional service for productive workspaces',
     icon: Building2,
     size: 'medium', // Takes full width on mobile, half on desktop
   },
@@ -65,7 +63,7 @@ const galleryItems = [
   { 
     id: 6, 
     label: 'Whole Home',
-    description: 'Complete residential cleaning service',
+    description: 'Complete residential service',
     icon: Home,
     size: 'tall', // Takes 2 rows
   },
@@ -335,3 +333,4 @@ export function GallerySection({ config }: GallerySectionProps) {
     </section>
   )
 }
+

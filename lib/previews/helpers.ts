@@ -76,15 +76,15 @@ export function normalizeServices(services: ServiceItem[] | string[], niche: Bus
  */
 export function applyDefaults(
   config: Partial<PreviewConfig> | Partial<CleaningPreviewConfig>
-): CleaningPreviewConfig {
+): PreviewConfig {
   const niche = (config.niche || 'cleaning') as BusinessNiche
   const defaultColors = getNicheDefaultColors(niche)
   
   // Ensure required fields exist
-  const result: CleaningPreviewConfig = {
+  const result: PreviewConfig = {
     slug: config.slug || '',
-    niche: 'cleaning', // Keep as 'cleaning' for backward compatibility
-    templateId: config.templateId || 'cleaning-v1',
+    niche,
+    templateId: config.templateId || 'universal-v1',
     business: {
       name: config.business?.name || '',
       city: config.business?.city || '',
@@ -99,7 +99,7 @@ export function applyDefaults(
       primaryColor: config.branding?.primaryColor || defaultColors.primary,
       accentColor: config.branding?.accentColor || defaultColors.accent,
     },
-    services: [], // Will be populated below
+    services: [] as string[], // Will be populated below
     areasServed: (config.areasServed || []).slice(0, 15), // Max 15
   }
 
@@ -144,9 +144,11 @@ export function applyDefaults(
   // Ensure services meet minimums
   if (result.services.length < 4) {
     const defaultServices = getDefaultServices(niche)
-    while (result.services.length < 4 && defaultServices[result.services.length]) {
-      result.services.push(defaultServices[result.services.length].name)
+    const serviceList = result.services as string[]
+    while (serviceList.length < 4 && defaultServices[serviceList.length]) {
+      serviceList.push(defaultServices[serviceList.length].name)
     }
+    result.services = serviceList
   }
 
   // Ensure areasServed meet minimums
@@ -318,3 +320,4 @@ export function formatPhoneDisplay(phone: string): string {
 export function formatPhoneLink(phone: string): string {
   return phone.replace(/\s/g, '')
 }
+

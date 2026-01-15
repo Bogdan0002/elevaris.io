@@ -129,7 +129,7 @@ Apopka • Oviedo • Windermere • Dr. Phillips • College Park
 
 1. Open `scripts/create-mako-bros.html` in your browser
 2. Click "Create Preview"
-3. Access at: `https://p.elevaris.app/mako-bros-window-cleaning`
+3. Access at: `https://elevaris.app/p/mako-bros-window-cleaning`
 
 ### Option 2: API Call
 
@@ -205,7 +205,7 @@ Start with these docs in order:
 - **Status**: Available immediately, no database required
 
 ### Live Preview (Database)
-- **Production**: https://p.elevaris.app/mako-bros-window-cleaning
+- **Production**: https://elevaris.app/p/mako-bros-window-cleaning
 - **Local**: http://localhost:3000/p/mako-bros-window-cleaning
 - **Status**: Available after creating preview in database
 
@@ -348,4 +348,5 @@ Need help? Check the documentation:
 [Test Preview](http://localhost:3000/p/mako-bros-window-cleaning-test) • [Setup Guide](MAKO_BROS_QUICKSTART.md) • [Full Docs](MAKO_BROS_INDEX.md)
 
 </div>
+
 

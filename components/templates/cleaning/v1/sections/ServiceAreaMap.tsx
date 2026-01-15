@@ -43,10 +43,17 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
   }
 
   // Show fewer pins on mobile to reduce crowding
-  const maxPins = isMobile ? 2 : 6
-  const pinPositions = areas
+  const maxPins = isMobile ? 4 : 6
+  const mobileRing = [
+    { x: 50, y: 20, delay: 0.1 },
+    { x: 80, y: 50, delay: 0.2 },
+    { x: 50, y: 80, delay: 0.3 },
+    { x: 20, y: 50, delay: 0.4 },
+  ]
+  const pinPositions = (isMobile ? mobileRing : areas
     .slice(0, maxPins)
-    .map((_, index) => getPosition(index, Math.min(areas.length, maxPins)))
+    .map((_, index) => getPosition(index, Math.min(areas.length, maxPins))))
+    .slice(0, maxPins)
 
   const labelPositions = useMemo(
     () =>
@@ -319,27 +326,7 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </div>
       </motion.div>
 
-      {/* Area count badge - bottom right - smaller on mobile */}
-      <motion.div
-        className="absolute bottom-2 md:bottom-4 right-2 md:right-4 z-40"
-        initial={{ opacity: 0, x: 10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.5 }}
-      >
-        <div 
-          className="px-2 py-1.5 md:px-3 md:py-2 rounded-lg md:rounded-xl shadow-lg"
-          style={{
-            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-          }}
-        >
-          <div className="flex items-center gap-1.5 md:gap-2">
-            <MapPin className="w-3 h-3 md:w-4 md:h-4 text-white" />
-            <span className="text-white text-[10px] md:text-xs font-bold">
-              {areas.length} Areas
-            </span>
-          </div>
-        </div>
-      </motion.div>
+      {/* Area count badge removed (centered badge used instead) */}
     </div>
   )
 }

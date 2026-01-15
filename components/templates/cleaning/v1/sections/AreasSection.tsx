@@ -83,7 +83,7 @@ export function AreasSection({ config }: AreasSectionProps) {
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-2 order-2 lg:order-1"
+            className="lg:col-span-2 order-1 lg:order-1"
           >
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
               {/* Stats */}
@@ -198,12 +198,12 @@ export function AreasSection({ config }: AreasSectionProps) {
             initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-3 order-1 lg:order-2"
+            className="lg:col-span-3 order-2 lg:order-2"
           >
             <div className="relative">
               {/* Map container */}
               <div 
-                className="h-[350px] sm:h-[400px] lg:h-[480px] rounded-3xl overflow-hidden border border-slate-200 shadow-xl shadow-slate-200/50"
+                className="h-[260px] sm:h-[360px] lg:h-[480px] rounded-3xl overflow-hidden border border-slate-200 shadow-xl shadow-slate-200/50"
               >
                 <ServiceAreaMap config={config} />
               </div>

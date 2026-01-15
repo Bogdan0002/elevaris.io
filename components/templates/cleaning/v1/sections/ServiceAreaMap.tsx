@@ -43,7 +43,7 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
   }
 
   // Show fewer pins on mobile to reduce crowding
-  const maxPins = isMobile ? 3 : 6
+  const maxPins = isMobile ? 2 : 6
   const pinPositions = areas
     .slice(0, maxPins)
     .map((_, index) => getPosition(index, Math.min(areas.length, maxPins)))
@@ -250,9 +250,9 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
         </motion.div>
       ))}
 
-      {/* City/HQ label - positioned at top center with higher z-index and better visibility */}
+      {/* City/HQ label - hidden on mobile */}
       <motion.div
-        className="absolute top-6 left-1/2 -translate-x-1/2 z-50"
+        className="absolute top-6 left-1/2 -translate-x-1/2 z-50 hidden md:block"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
@@ -279,6 +279,20 @@ export function ServiceAreaMap({ config }: ServiceAreaMapProps) {
           </div>
         </div>
       </motion.div>
+
+      {/* Mobile badge */}
+      <div className="absolute bottom-4 right-4 z-40 md:hidden">
+        <div
+          className="px-3 py-2 rounded-full text-xs font-semibold shadow-lg border backdrop-blur-sm"
+          style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            borderColor: `${primaryColor}30`,
+            color: '#1e293b',
+          }}
+        >
+          {areas.length} areas served
+        </div>
+      </div>
 
       {/* Legend - bottom left - hidden on mobile */}
       <motion.div

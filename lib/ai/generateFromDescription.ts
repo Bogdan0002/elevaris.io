@@ -107,7 +107,7 @@ STEP 2: GENERATE COMPREHENSIVE CONTENT
    - primaryColor: Hex code
    - accentColor: Hex code (complementary)
 
-4. **Services** - Generate 4-6 detailed services with:
+4. **Services** - Generate exactly 3 or exactly 6 detailed services with:
    - name: Clear service name
    - description: 2-3 sentences explaining the service, benefits, and what's included
    - features: Array of 3-4 key features/benefits
@@ -185,8 +185,8 @@ OUTPUT FORMAT (JSON only, no markdown):
 }
 
 CRITICAL REQUIREMENTS:
-- Niche MUST be one of the valid options listed
-- Services MUST have 4-6 items with detailed descriptions
+- Niche MUST be "cleaning"
+- Services MUST have exactly 3 or exactly 6 items with detailed descriptions
 - Areas MUST have 8-15 items
 - Colors MUST be valid hex codes
 - Content should be professional, American-style, and conversion-focused
@@ -222,7 +222,7 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`
     const generated = JSON.parse(content) as Partial<StructuredCompanyData>
     
     // Validate and set defaults
-    const niche = validateNiche(generated.niche) || input.niche || 'cleaning'
+    const niche: BusinessNiche = 'cleaning'
     const defaultColors = getColorPalettes(niche)[0] || { primary: '#0EA5E9', accent: '#10B981' }
     const defaultServices = getDefaultServices(niche)
 
@@ -261,16 +261,15 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`
       whyUsReasons: generated.whyUsReasons,
     }
 
-    // Process services
-    if (generated.services && generated.services.length >= 4) {
-      result.services = generated.services.slice(0, 6).map(s => ({
-        name: s.name || 'Service',
-        description: s.description || 'Professional service tailored to your needs.',
-        features: s.features || [],
-      }))
-    } else {
-      result.services = defaultServices.slice(0, 6)
-    }
+    // Process services (must be exactly 3 or 6)
+    const aiServices = (generated.services || []).map(s => ({
+      name: s.name || 'Service',
+      description: s.description || 'Professional service tailored to your needs.',
+      features: s.features || [],
+    }))
+    const targetCount = aiServices.length >= 6 ? 6 : 3
+    const baseServices = aiServices.length >= 3 ? aiServices : defaultServices
+    result.services = baseServices.slice(0, targetCount)
 
     // Process areas
     if (generated.areasServed && generated.areasServed.length >= 5) {

@@ -4,9 +4,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { Container } from '@/components/site/Container'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getDefaultImages } from '@/lib/previews/niche-defaults'
 import { getNicheDisplayName } from '@/lib/templates/registry'
-import Image from 'next/image'
 import { 
   Image as ImageIcon, 
   Sparkles, 
@@ -31,38 +29,30 @@ export function GallerySection({ config }: GallerySectionProps) {
   const accentColor = config.branding.accentColor || '#10B981'
   const niche = config.niche || 'cleaning'
   const nicheLabel = getNicheDisplayName(niche)
-  const defaultImages = getDefaultImages(niche)
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
 
-  const gallerySources = Array.isArray(config.gallery?.images) && config.gallery?.images.length
-    ? (config.gallery.images as Array<string | { url: string; alt?: string; caption?: string }>)
-    : defaultImages.gallery
-
   const sizeCycle = ['large', 'small', 'small', 'medium', 'medium', 'tall'] as const
   const iconCycle = [Sofa, UtensilsCrossed, Bath, Building2, Bed, Home, Camera]
-  const galleryItems = gallerySources.map((item, index) => {
-    const isString = typeof item === 'string'
-    const url = isString ? item : item.url
-    const label = isString
-      ? `${nicheLabel} Project ${index + 1}`
-      : item.alt || `${nicheLabel} Project ${index + 1}`
-    const description = isString
-      ? `Showcasing a recent ${nicheLabel.toLowerCase()} transformation.`
-      : item.caption || `Showcasing a recent ${nicheLabel.toLowerCase()} transformation.`
+  const baseItems = [
+    'Signature Refresh',
+    'Deep Clean',
+    'Move-Out Reset',
+    'Office Shine',
+    'Kitchen Detail',
+    'Full Home Reset',
+  ]
 
-    return {
-      id: index + 1,
-      label,
-      description,
-      icon: iconCycle[index % iconCycle.length],
-      size: sizeCycle[index % sizeCycle.length],
-      url,
-    }
-  })
+  const galleryItems = baseItems.map((label, index) => ({
+    id: index + 1,
+    label,
+    description: `A premium ${nicheLabel.toLowerCase()} package designed to impress.`,
+    icon: iconCycle[index % iconCycle.length],
+    size: sizeCycle[index % sizeCycle.length],
+  }))
 
   return (
     <section 
@@ -157,19 +147,18 @@ export function GallerySection({ config }: GallerySectionProps) {
                       : '0 4px 6px rgba(0, 0, 0, 0.03)',
                   }}
                 >
-                  {/* Background image */}
+                  {/* Background gradient placeholder */}
                   <div
                     className="absolute inset-0"
                     style={{
-                      backgroundImage: `url(${item.url})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
+                      background: `linear-gradient(135deg, ${primaryColor}25, ${accentColor}25)`,
                     }}
                   />
                   <div
-                    className="absolute inset-0"
+                    className="absolute inset-0 opacity-60"
                     style={{
-                      background: `linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.4) 100%)`,
+                      backgroundImage: `radial-gradient(${primaryColor}40 1px, transparent 1px)`,
+                      backgroundSize: '26px 26px',
                     }}
                   />
                   
@@ -196,11 +185,11 @@ export function GallerySection({ config }: GallerySectionProps) {
                     
                     {/* Text */}
                     <div>
-                      <p className="font-bold text-sm md:text-base text-white drop-shadow-sm">
+                      <p className="font-bold text-sm md:text-base text-slate-900">
                         {item.label}
                       </p>
                       {(item.size === 'large' || item.size === 'tall' || item.size === 'medium') && (
-                        <p className="text-xs md:text-sm text-white/80 mt-1 line-clamp-2">
+                        <p className="text-xs md:text-sm text-slate-600 mt-1 line-clamp-2">
                           {item.description}
                         </p>
                       )}
@@ -237,7 +226,7 @@ export function GallerySection({ config }: GallerySectionProps) {
                     animate={{ opacity: isHovered ? 0 : 0.8 }}
                   >
                     <Camera className="w-3 h-3 text-slate-500" />
-                    <span className="text-[10px] text-slate-600 font-medium hidden sm:inline">Stock photo</span>
+                    <span className="text-[10px] text-slate-600 font-medium hidden sm:inline">Design preview</span>
                   </motion.div>
                 </motion.div>
               </motion.div>
@@ -292,7 +281,7 @@ export function GallerySection({ config }: GallerySectionProps) {
             </motion.button>
             
             <motion.div 
-              className="max-w-5xl w-full rounded-3xl overflow-hidden bg-black/30"
+              className="max-w-5xl w-full rounded-3xl overflow-hidden bg-white"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -303,16 +292,30 @@ export function GallerySection({ config }: GallerySectionProps) {
                 if (!selected) return null
                 return (
                   <div className="relative h-[70vh] w-full">
-                    <Image
-                      src={selected.url}
-                      alt={selected.label}
-                      fill
-                      unoptimized
-                      style={{ objectFit: 'cover' }}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: `radial-gradient(600px circle at 20% 20%, ${primaryColor}25, transparent 50%), radial-gradient(600px circle at 80% 80%, ${accentColor}25, transparent 50%)`,
+                      }}
                     />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
-                      <p className="text-white text-xl font-semibold">{selected.label}</p>
-                      <p className="text-white/70 text-sm mt-1">{selected.description}</p>
+                    <div
+                      className="absolute inset-0 opacity-60"
+                      style={{
+                        backgroundImage: `radial-gradient(${primaryColor}40 1px, transparent 1px)`,
+                        backgroundSize: '28px 28px',
+                      }}
+                    />
+                    <div className="relative h-full w-full flex items-center justify-center p-8">
+                      <div className="rounded-3xl border border-slate-200 bg-white/80 p-10 text-center shadow-2xl">
+                        <div className="mx-auto mb-4 h-14 w-14 rounded-2xl flex items-center justify-center"
+                          style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
+                        >
+                          <ImageIcon className="w-7 h-7 text-white" />
+                        </div>
+                        <p className="text-xl font-semibold text-slate-900">{selected.label}</p>
+                        <p className="text-slate-600 text-sm mt-2">{selected.description}</p>
+                        <p className="text-xs text-slate-400 mt-4">Placeholder — replace with real work photos</p>
+                      </div>
                     </div>
                   </div>
                 )

@@ -2,11 +2,10 @@
 
 import { createPreview, getPreviewBySlug } from '@/lib/previews/repo'
 import { slugify } from '@/lib/utils/slugify'
-import { applyPreviewDefaults, getGoogleReviewUrl } from '@/lib/previews/helpers'
-import { getNicheImageSet } from '@/lib/previews/images'
+import { applyPreviewDefaults, getGoogleReviewUrl, normalizeServices } from '@/lib/previews/helpers'
 import { previewConfigSchema } from '@/lib/previews/schema'
 import { getDefaultTemplateForNiche, getTemplateById } from '@/lib/templates/registry'
-import type { BusinessNiche, PreviewConfig } from '@/lib/previews/types'
+import type { BusinessNiche, PreviewConfig, ServiceItem } from '@/lib/previews/types'
 
 interface CreatePreviewInput {
   templateId: string
@@ -20,7 +19,7 @@ interface CreatePreviewInput {
   offerBadge?: string
   primaryColor?: string
   accentColor?: string
-  services: string[]
+  services: Array<string | ServiceItem>
   areasServed: string[]
   hours?: string
   lat?: number
@@ -47,6 +46,14 @@ export async function createPreviewAction(input: CreatePreviewInput) {
     const slug = slugify(input.businessName, input.city, input.state)
 
     // Build config
+    const normalizedServices = normalizeServices(input.services, input.niche)
+    const targetServiceCount = normalizedServices.length >= 6 ? 6 : 3
+    const servicesTrimmed = normalizedServices.slice(0, targetServiceCount)
+    const servicesFinal =
+      servicesTrimmed.length < targetServiceCount
+        ? [...servicesTrimmed, ...normalizedServices].slice(0, targetServiceCount)
+        : servicesTrimmed
+
     const config: PreviewConfig = {
       slug,
       niche: input.niche,
@@ -66,7 +73,7 @@ export async function createPreviewAction(input: CreatePreviewInput) {
         primaryColor: input.primaryColor,
         accentColor: input.accentColor,
       },
-      services: input.services.filter((s) => s.trim().length > 0),
+      services: servicesFinal,
       areasServed: input.areasServed.filter((a) => a.trim().length > 0),
       hours: input.hours || undefined,
       map:
@@ -85,28 +92,6 @@ export async function createPreviewAction(input: CreatePreviewInput) {
       about: {
         story: input.aboutStory,
       },
-    }
-
-    const imageSet = await getNicheImageSet({
-      niche: input.niche,
-      businessName: input.businessName,
-      services: input.services,
-    })
-
-    config.hero = {
-      ...config.hero,
-      backgroundImage: config.hero?.backgroundImage || imageSet.hero,
-    }
-    config.about = {
-      ...config.about,
-      image: config.about?.image || imageSet.about,
-    }
-    config.gallery = config.gallery || {
-      images: imageSet.gallery.map((url, index) => ({
-        url,
-        alt: `${input.businessName} project ${index + 1}`,
-        caption: `${input.businessName} ${input.niche} work`,
-      })),
     }
 
     // Apply defaults

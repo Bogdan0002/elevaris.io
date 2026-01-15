@@ -20,7 +20,6 @@ import {
   Calendar
 } from 'lucide-react'
 import { getTrustBadges, getNicheHeadlines } from '@/lib/previews/defaults'
-import { getDefaultImages } from '@/lib/previews/niche-defaults'
 import { getNicheDisplayName } from '@/lib/templates/registry'
 import type { PreviewConfig } from '@/lib/previews/types'
 
@@ -79,13 +78,11 @@ export function HeroSection({ config }: HeroSectionProps) {
   const trustItems = getTrustBadges(niche)
   const nicheHeadlines = getNicheHeadlines(niche)
   const nicheLabel = getNicheDisplayName(niche)
-  const defaultImages = getDefaultImages(niche)
   const headline = config.hero?.headline || nicheHeadlines.heroHeadline
   const subheadline =
     config.hero?.subheadline ||
     nicheHeadlines.heroSubheadline ||
     `${config.business.name} provides trusted ${nicheLabel.toLowerCase()} services.`
-  const heroImage = config.hero?.backgroundImage || defaultImages.hero
 
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
@@ -325,21 +322,73 @@ export function HeroSection({ config }: HeroSectionProps) {
               {subheadline}
             </motion.p>
 
-            {/* Hero Image */}
+            {/* Hero mockup (image-free) */}
             <motion.div
               variants={itemVariants}
               className="relative mx-auto mb-10 w-full max-w-4xl"
             >
-              <div
-                className="relative overflow-hidden rounded-3xl border border-slate-200/60 shadow-2xl"
-                style={{
-                  backgroundImage: `url(${heroImage})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-                <div className="relative aspect-[16/9] w-full" />
+              <div className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-2xl">
+                <div
+                  className="absolute inset-0 opacity-60"
+                  style={{
+                    background: `radial-gradient(600px circle at 20% 20%, ${primaryColor}20, transparent 40%), radial-gradient(600px circle at 80% 80%, ${accentColor}20, transparent 40%)`,
+                  }}
+                />
+                <div className="relative aspect-[16/9] w-full p-6 md:p-8">
+                  <div className="grid h-full grid-cols-12 gap-4">
+                    <div className="col-span-7 flex flex-col justify-between rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-lg">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="h-10 w-10 rounded-xl"
+                          style={{
+                            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                          }}
+                        />
+                        <div className="text-left">
+                          <div className="text-xs text-slate-500">Instant Estimate</div>
+                          <div className="text-sm font-semibold text-slate-900">Spotless in 60s</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {['Home', 'Office', 'Deep Clean'].map((label) => (
+                          <div
+                            key={label}
+                            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+                          >
+                            {label}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-xs">
+                        <span className="font-semibold text-slate-700">Today availability</span>
+                        <span className="font-bold text-slate-900">3 slots</span>
+                      </div>
+                    </div>
+                    <div className="col-span-5 flex flex-col gap-4">
+                      <div className="rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-lg">
+                        <div className="text-xs text-slate-500">Avg. Rating</div>
+                        <div className="mt-2 flex items-center gap-2">
+                          <div className="text-2xl font-bold text-slate-900">4.9</div>
+                          <div className="text-xs text-slate-500">/ 5.0</div>
+                        </div>
+                        <div className="mt-3 h-2 rounded-full bg-slate-100">
+                          <div
+                            className="h-2 rounded-full"
+                            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`, width: '92%' }}
+                          />
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-lg">
+                        <div className="text-xs text-slate-500">Fast Response</div>
+                        <div className="mt-2 text-lg font-bold text-slate-900">Under 30 min</div>
+                        <div className="mt-3 flex items-center gap-2 text-xs text-slate-600">
+                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          Live dispatch
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </motion.div>
 

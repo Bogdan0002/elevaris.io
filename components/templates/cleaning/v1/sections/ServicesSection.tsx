@@ -5,7 +5,6 @@ import { useRef } from 'react'
 import { Container } from '@/components/site/Container'
 import { normalizeServices } from '@/lib/previews/helpers'
 import { getNicheHeadlines } from '@/lib/previews/defaults'
-import { getDefaultImages } from '@/lib/previews/niche-defaults'
 import { getNicheDisplayName } from '@/lib/templates/registry'
 import type { PreviewConfig } from '@/lib/previews/types'
 import { 
@@ -43,7 +42,6 @@ export function ServicesSection({ config }: ServicesSectionProps) {
   const nicheLabel = getNicheDisplayName(niche)
   const servicesDescription = `Specialized ${nicheLabel.toLowerCase()} solutions tailored to your needs.`
   const services = normalizeServices(config.services || [], niche)
-  const serviceImages = getDefaultImages(niche).services
 
   const iconMap: Record<string, React.ElementType> = {
     Home,
@@ -180,7 +178,6 @@ export function ServicesSection({ config }: ServicesSectionProps) {
           {services.map((service, index) => {
             const Icon = iconMap[service.icon || ''] || Sparkles
             const isHovered = false // We'll use CSS hover instead
-            const imageUrl = service.image || serviceImages[index % serviceImages.length]
 
             return (
               <motion.div
@@ -223,19 +220,6 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                       {service.badge.text}
                     </motion.div>
                   )}
-
-                  {/* Service image */}
-                  <div className="relative mb-6 overflow-hidden rounded-2xl border border-slate-100">
-                    <div
-                      className="h-36 w-full"
-                      style={{
-                        backgroundImage: `url(${imageUrl})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  </div>
 
                   {/* Icon with animated background */}
                   <motion.div

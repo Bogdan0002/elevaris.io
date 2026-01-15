@@ -180,6 +180,7 @@ export function ServicesSection({ config }: ServicesSectionProps) {
           {services.map((service, index) => {
             const Icon = iconMap[service.icon || ''] || Sparkles
             const isHovered = false // We'll use CSS hover instead
+            const imageUrl = service.image || serviceImages[index % serviceImages.length]
 
             return (
               <motion.div
@@ -228,7 +229,7 @@ export function ServicesSection({ config }: ServicesSectionProps) {
                     <div
                       className="h-36 w-full"
                       style={{
-                        backgroundImage: `url(${serviceImages[index % serviceImages.length]})`,
+                        backgroundImage: `url(${imageUrl})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                       }}

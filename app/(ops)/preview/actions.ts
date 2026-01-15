@@ -3,6 +3,7 @@
 import { createPreview, getPreviewBySlug } from '@/lib/previews/repo'
 import { slugify } from '@/lib/utils/slugify'
 import { applyPreviewDefaults, getGoogleReviewUrl } from '@/lib/previews/helpers'
+import { getNicheImageSet } from '@/lib/previews/images'
 import { previewConfigSchema } from '@/lib/previews/schema'
 import { getDefaultTemplateForNiche, getTemplateById } from '@/lib/templates/registry'
 import type { BusinessNiche, PreviewConfig } from '@/lib/previews/types'
@@ -86,6 +87,28 @@ export async function createPreviewAction(input: CreatePreviewInput) {
       },
     }
 
+    const imageSet = await getNicheImageSet({
+      niche: input.niche,
+      businessName: input.businessName,
+      services: input.services,
+    })
+
+    config.hero = {
+      ...config.hero,
+      backgroundImage: config.hero?.backgroundImage || imageSet.hero,
+    }
+    config.about = {
+      ...config.about,
+      image: config.about?.image || imageSet.about,
+    }
+    config.gallery = config.gallery || {
+      images: imageSet.gallery.map((url, index) => ({
+        url,
+        alt: `${input.businessName} project ${index + 1}`,
+        caption: `${input.businessName} ${input.niche} work`,
+      })),
+    }
+
     // Apply defaults
     const configWithDefaults = applyPreviewDefaults(config)
 
@@ -103,8 +126,26 @@ export async function createPreviewAction(input: CreatePreviewInput) {
     }
 
     // Create in database
-    const preview = await createPreview(configWithDefaults)
-    console.log('[CreatePreview] Preview created successfully:', preview.id, preview.slug)
+    let preview
+    try {
+      preview = await createPreview(configWithDefaults)
+      console.log('[CreatePreview] Preview created successfully:', preview.id, preview.slug)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      if (message.toLowerCase().includes('duplicate') || message.toLowerCase().includes('already exists')) {
+        const existing = await getPreviewBySlug(slug)
+        if (existing) {
+          return {
+            success: true,
+            slug,
+            previewUrl: `https://elevaris.app/p/${slug}`,
+            reviewUrl: getGoogleReviewUrl(existing.config.placeId),
+            templateName: template.name,
+          }
+        }
+      }
+      throw error
+    }
     
     // Verify the preview was created
     const verifyPreview = await getPreviewBySlug(slug)

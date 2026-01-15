@@ -84,7 +84,7 @@ function OpsConsoleContent() {
     const fetchRecent = async () => {
       setLoadingRecent(true)
       try {
-        const response = await fetch(`/api/previews/list?limit=5&key=${key}`, {
+        const response = await fetch(`/api/previews/list?limit=20&key=${key}`, {
           cache: 'no-store',
         })
         const data = await response.json()
@@ -156,7 +156,7 @@ function OpsConsoleContent() {
       if (response.success) {
         const fetchRecent = async () => {
           try {
-            const res = await fetch(`/api/previews/list?limit=5&key=${key}`, {
+            const res = await fetch(`/api/previews/list?limit=20&key=${key}`, {
               cache: 'no-store',
             })
             const data = await res.json()

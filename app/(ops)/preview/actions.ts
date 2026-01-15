@@ -46,7 +46,18 @@ export async function createPreviewAction(input: CreatePreviewInput) {
     const slug = slugify(input.businessName, input.city, input.state)
 
     // Build config
-    const normalizedServices = normalizeServices(input.services, input.niche)
+    const rawServices = input.services || []
+    const servicesForNormalize: ServiceItem[] | string[] = rawServices.every(
+      (service) => typeof service === 'string'
+    )
+      ? (rawServices as string[])
+      : rawServices.map((service) =>
+          typeof service === 'string'
+            ? { name: service, description: '', features: [] }
+            : service
+        )
+
+    const normalizedServices = normalizeServices(servicesForNormalize, input.niche)
     const targetServiceCount = normalizedServices.length >= 6 ? 6 : 3
     const servicesTrimmed = normalizedServices.slice(0, targetServiceCount)
     const servicesFinal =

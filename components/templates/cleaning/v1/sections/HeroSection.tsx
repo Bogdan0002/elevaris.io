@@ -507,7 +507,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                           ETA 24 min
                         </div>
                       </motion.div>
-                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
+                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm mb-24 md:mb-0">
                         <div className="text-xs text-slate-500">Quote Confidence</div>
                         <div className="mt-2 text-lg font-bold text-slate-900">No surprises</div>
                         <div className="mt-3 text-xs text-slate-600">Transparent pricing & service checklist</div>

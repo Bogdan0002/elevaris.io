@@ -25,48 +25,81 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
   useEffect(() => {
     setMounted(true)
     
-    // Function to adjust chat widget position on mobile
+    // Aggressive chat widget position fixer for mobile
     const adjustChatWidget = () => {
-      if (window.innerWidth <= 768) {
-        const interval = setInterval(() => {
-          // Try multiple selectors to find the chat widget
-          const selectors = [
-            'iframe[src*="leadconnectorhq"]',
-            'iframe[title*="chat"]',
-            'div[id*="chat-widget"]',
-            '#chat-widget-container',
-            'body > div[style*="position: fixed"][style*="bottom"]',
-            'body > iframe[style*="position: fixed"][style*="bottom"]'
-          ]
-          
-          let found = false
-          selectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector)
-            elements.forEach((element: Element) => {
-              const htmlElement = element as HTMLElement
-              if (htmlElement.style.position === 'fixed' || window.getComputedStyle(htmlElement).position === 'fixed') {
-                htmlElement.style.bottom = '80px'
-                htmlElement.style.setProperty('bottom', '80px', 'important')
-                found = true
-              }
-            })
-          })
-          
-          // Clear interval once widget is found and adjusted
-          if (found) {
-            clearInterval(interval)
-          }
-        }, 500)
+      if (typeof window === 'undefined') return
+      
+      const isMobile = window.innerWidth <= 768
+      if (!isMobile) return
+      
+      // Get ALL elements on the page
+      const allElements = document.querySelectorAll('*')
+      
+      allElements.forEach((element: Element) => {
+        const htmlElement = element as HTMLElement
+        const computedStyle = window.getComputedStyle(htmlElement)
         
-        // Clear interval after 10 seconds to prevent memory leak
-        setTimeout(() => clearInterval(interval), 10000)
-      }
+        // Check if element is fixed position and near the bottom
+        if (computedStyle.position === 'fixed') {
+          const bottom = computedStyle.bottom
+          const zIndex = computedStyle.zIndex
+          
+          // Target elements that are:
+          // 1. Fixed position
+          // 2. Have a bottom value between 0-50px
+          // 3. Have high z-index (typical for chat widgets)
+          // 4. Are iframes or divs
+          const tagName = htmlElement.tagName.toLowerCase()
+          const isWidget = (tagName === 'iframe' || tagName === 'div')
+          const hasHighZIndex = parseInt(zIndex) > 1000 || zIndex === 'auto'
+          const bottomValue = parseInt(bottom)
+          const isAtBottom = !isNaN(bottomValue) && bottomValue >= 0 && bottomValue <= 50
+          
+          if (isWidget && hasHighZIndex && (isAtBottom || bottom === 'auto' || bottom === '0px')) {
+            // Check if it's likely a chat widget (contains chat-related attributes or is from leadconnectorhq)
+            const src = htmlElement.getAttribute('src') || ''
+            const id = htmlElement.getAttribute('id') || ''
+            const className = htmlElement.getAttribute('class') || ''
+            
+            const isChatWidget = 
+              src.includes('leadconnectorhq') ||
+              src.includes('chat') ||
+              id.includes('chat') ||
+              className.includes('chat') ||
+              (hasHighZIndex && isAtBottom && tagName === 'iframe')
+            
+            if (isChatWidget) {
+              htmlElement.style.setProperty('bottom', '80px', 'important')
+              console.log('Chat widget repositioned:', htmlElement)
+            }
+          }
+        }
+      })
     }
     
-    // Run on mount and after a delay to catch lazy-loaded widgets
+    // Use MutationObserver to watch for dynamically added elements
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+          adjustChatWidget()
+        }
+      })
+    })
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    })
+    
+    // Run immediately and repeatedly
     adjustChatWidget()
-    setTimeout(adjustChatWidget, 2000)
-    setTimeout(adjustChatWidget, 5000)
+    const interval = setInterval(adjustChatWidget, 1000)
+    
+    // Cleanup
+    return () => {
+      clearInterval(interval)
+      observer.disconnect()
+    }
   }, [])
 
   // Get theme colors with cleaning-appropriate defaults
@@ -142,22 +175,60 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
       
       {/* Custom CSS to position chat widget above mobile CTA */}
       <style jsx global>{`
-        /* Target GoHighLevel chat widget */
+        /* Aggressive targeting for all fixed position elements at bottom */
         @media (max-width: 768px) {
-          #chat-widget-container,
+          /* Generic chat widget selectors */
           iframe[src*="leadconnectorhq"],
+          iframe[src*="chat"],
           iframe[title*="chat"],
           div[id*="chat"],
-          div[class*="chat-widget"],
+          div[class*="chat"],
+          #chat-widget-container,
           .chat-widget-container,
-          [data-chat-widget],
-          body > div[style*="position: fixed"],
-          body > iframe[style*="position: fixed"] {
+          [data-chat-widget] {
             bottom: 80px !important;
-            margin-bottom: 0 !important;
+          }
+          
+          /* Target all high z-index fixed elements at bottom */
+          body > iframe[style*="position: fixed"],
+          body > div[style*="position: fixed"] {
+            bottom: 80px !important;
           }
         }
       `}</style>
+      
+      {/* Additional inline script for immediate execution */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              if (typeof window === 'undefined' || window.innerWidth > 768) return;
+              
+              function adjustWidget() {
+                const elements = document.querySelectorAll('iframe, div');
+                elements.forEach(function(el) {
+                  const style = window.getComputedStyle(el);
+                  if (style.position === 'fixed') {
+                    const src = el.getAttribute('src') || '';
+                    if (src.includes('leadconnectorhq') || src.includes('chat')) {
+                      el.style.setProperty('bottom', '80px', 'important');
+                    }
+                  }
+                });
+              }
+              
+              // Run repeatedly
+              setInterval(adjustWidget, 500);
+              
+              // Watch for new elements
+              new MutationObserver(adjustWidget).observe(document.body, {
+                childList: true,
+                subtree: true
+              });
+            })();
+          `
+        }}
+      />
     </div>
   )
 }

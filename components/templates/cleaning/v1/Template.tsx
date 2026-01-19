@@ -137,34 +137,6 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
       <ContactSection config={config} />
       <FooterSection config={config} />
       
-      {/* Floating CTA for mobile */}
-      {mounted && (
-        <div className="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-xl border-t border-slate-200/50 md:hidden z-50 safe-area-pb">
-          <div className="flex gap-2">
-            <a
-              href={`tel:${config.business.phone.replace(/\s/g, '')}`}
-              className="flex-1 py-3.5 rounded-xl font-bold text-white text-center text-sm shadow-lg"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                boxShadow: `0 4px 20px ${primaryColor}40`,
-              }}
-            >
-              📞 Call Now
-            </a>
-            <a
-              href="#contact"
-              className="flex-1 py-3.5 rounded-xl font-bold text-center text-sm border-2"
-              style={{
-                borderColor: primaryColor,
-                color: primaryColor,
-              }}
-            >
-              💬 Free Quote
-            </a>
-          </div>
-        </div>
-      )}
-      
       {/* GoHighLevel Live Chat Widget */}
       <Script
         src="https://widgets.leadconnectorhq.com/loader.js"

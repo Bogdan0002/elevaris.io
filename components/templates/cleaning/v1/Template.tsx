@@ -24,6 +24,49 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
   
   useEffect(() => {
     setMounted(true)
+    
+    // Function to adjust chat widget position on mobile
+    const adjustChatWidget = () => {
+      if (window.innerWidth <= 768) {
+        const interval = setInterval(() => {
+          // Try multiple selectors to find the chat widget
+          const selectors = [
+            'iframe[src*="leadconnectorhq"]',
+            'iframe[title*="chat"]',
+            'div[id*="chat-widget"]',
+            '#chat-widget-container',
+            'body > div[style*="position: fixed"][style*="bottom"]',
+            'body > iframe[style*="position: fixed"][style*="bottom"]'
+          ]
+          
+          let found = false
+          selectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector)
+            elements.forEach((element: Element) => {
+              const htmlElement = element as HTMLElement
+              if (htmlElement.style.position === 'fixed' || window.getComputedStyle(htmlElement).position === 'fixed') {
+                htmlElement.style.bottom = '80px'
+                htmlElement.style.setProperty('bottom', '80px', 'important')
+                found = true
+              }
+            })
+          })
+          
+          // Clear interval once widget is found and adjusted
+          if (found) {
+            clearInterval(interval)
+          }
+        }, 500)
+        
+        // Clear interval after 10 seconds to prevent memory leak
+        setTimeout(() => clearInterval(interval), 10000)
+      }
+    }
+    
+    // Run on mount and after a delay to catch lazy-loaded widgets
+    adjustChatWidget()
+    setTimeout(adjustChatWidget, 2000)
+    setTimeout(adjustChatWidget, 5000)
   }, [])
 
   // Get theme colors with cleaning-appropriate defaults
@@ -99,10 +142,19 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
       
       {/* Custom CSS to position chat widget above mobile CTA */}
       <style jsx global>{`
+        /* Target GoHighLevel chat widget */
         @media (max-width: 768px) {
           #chat-widget-container,
-          iframe[src*="leadconnectorhq"] {
+          iframe[src*="leadconnectorhq"],
+          iframe[title*="chat"],
+          div[id*="chat"],
+          div[class*="chat-widget"],
+          .chat-widget-container,
+          [data-chat-widget],
+          body > div[style*="position: fixed"],
+          body > iframe[style*="position: fixed"] {
             bottom: 80px !important;
+            margin-bottom: 0 !important;
           }
         }
       `}</style>

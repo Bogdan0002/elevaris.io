@@ -516,7 +516,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                   </div>
                 </div>
                 <motion.div 
-                  className="absolute bottom-4 right-4 md:bottom-6 md:right-6 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
+                  className="absolute bottom-6 right-4 md:bottom-4 md:right-6 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                     color: 'white',

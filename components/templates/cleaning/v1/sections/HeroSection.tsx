@@ -351,7 +351,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Subheadline */}
             <motion.p 
               variants={itemVariants}
-              className="text-lg sm:text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg sm:text-xl text-slate-600 mt-2 mb-8 max-w-2xl mx-auto leading-relaxed"
             >
               {subheadline}
             </motion.p>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Script from 'next/script'
 import type { PreviewConfig } from '@/lib/previews/types'
 import { HeroSection } from './sections/HeroSection'
 import { AboutSection } from './sections/AboutSection'
@@ -87,6 +88,14 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
           </div>
         </div>
       )}
+      
+      {/* GoHighLevel Live Chat Widget */}
+      <Script
+        src="https://widgets.leadconnectorhq.com/loader.js"
+        data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+        data-widget-id="6968f420d66fc3d0a314aa9e"
+        strategy="lazyOnload"
+      />
     </div>
   )
 }

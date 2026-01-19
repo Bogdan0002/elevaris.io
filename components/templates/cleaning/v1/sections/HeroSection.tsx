@@ -349,10 +349,10 @@ export function HeroSection({ config }: HeroSectionProps) {
             </motion.h1>
 
             {/* Subheadline */}
-              <motion.p 
-                variants={itemVariants}
-                className="text-lg sm:text-xl text-slate-600 mt-2 mb-8 max-w-2xl mx-auto leading-relaxed"
-              >
+            <motion.p 
+              variants={itemVariants}
+              className="text-lg sm:text-xl text-slate-600 mt-8 mb-8 max-w-2xl mx-auto leading-relaxed"
+            >
               {subheadline}
             </motion.p>
 
@@ -472,9 +472,18 @@ export function HeroSection({ config }: HeroSectionProps) {
                     </div>
                   </div>
                 </div>
-                <div className="absolute bottom-4 right-4 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-md group-hover:shadow-lg">
+                <motion.div 
+                  className="absolute bottom-4 right-4 md:bottom-6 md:right-6 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+                    color: 'white',
+                    boxShadow: `0 10px 30px ${primaryColor}40`,
+                  }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   Tap to book →
-                </div>
+                </motion.div>
               </motion.a>
             </motion.div>
 
@@ -674,7 +683,7 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.4}
-          className="top-[30%] -right-6 md:top-[28%] md:-right-2 2xl:right-[-1%]"
+          className="top-[15%] -right-6 md:top-[12%] md:-right-2 2xl:right-[-1%]"
           style={{ transform: 'rotate(3deg)' }}
         >
           <div className="flex items-center gap-0.5">

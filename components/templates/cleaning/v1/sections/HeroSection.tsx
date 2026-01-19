@@ -127,8 +127,8 @@ export function HeroSection({ config }: HeroSectionProps) {
   const y = useTransform(scrollYProgress, [0, 1], [0, 150])
   // Much more gradual fade - content stays visible much longer while scrolling
   // This ensures users can read all the content before it fades
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 0.95], [1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.95], [1, 0.98])
+  const opacity = useTransform(scrollYProgress, [0, 0.7, 0.98], [1, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.98], [1, 0.98])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -516,7 +516,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                   </div>
                 </div>
                 <motion.div 
-                  className="absolute bottom-2 right-2 md:bottom-4 md:right-4 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
+                  className="absolute bottom-4 right-4 md:bottom-6 md:right-6 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                     color: 'white',

@@ -96,6 +96,16 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
         data-widget-id="6968f420d66fc3d0a314aa9e"
         strategy="lazyOnload"
       />
+      
+      {/* Custom CSS to position chat widget above mobile CTA */}
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          #chat-widget-container,
+          iframe[src*="leadconnectorhq"] {
+            bottom: 80px !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

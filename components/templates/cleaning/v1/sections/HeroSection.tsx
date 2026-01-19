@@ -314,7 +314,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               <br />
               <span className="text-slate-900">Serving </span>
               <span 
-                className="relative inline-block pb-6"
+                className="relative inline-block pb-3"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   WebkitBackgroundClip: 'text',
@@ -324,7 +324,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               >
                 {config.business.city}
                 <motion.svg
-                  className="absolute bottom-2 left-0 w-full h-1.5 pointer-events-none"
+                  className="absolute bottom-0 left-0 w-full h-1.5 pointer-events-none"
                   viewBox="0 0 200 8"
                   preserveAspectRatio="none"
                 >
@@ -373,16 +373,24 @@ export function HeroSection({ config }: HeroSectionProps) {
                 <motion.div
                   className="pointer-events-none absolute inset-0 rounded-[32px]"
                   style={{
-                    boxShadow: `0 0 0 1px ${primaryColor}30, 0 30px 80px -60px ${primaryColor}90`,
+                    boxShadow: `0 0 0 2px ${primaryColor}40, 0 30px 80px -60px ${primaryColor}90`,
                   }}
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 />
                 <motion.div
-                  className="absolute -inset-6 rounded-[40px] opacity-70 pointer-events-none"
+                  className="absolute -inset-8 rounded-[40px] opacity-70 pointer-events-none blur-xl"
                   style={{
-                    background: `radial-gradient(500px circle at ${glowX}% ${glowY}%, ${primaryColor}25, ${accentColor}15, transparent 55%)`,
+                    background: `radial-gradient(600px circle at ${glowX}% ${glowY}%, ${primaryColor}30, ${accentColor}20, transparent 60%)`,
+                  }}
+                  animate={{
+                    opacity: [0.5, 0.8, 0.5],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
                   }}
                 />
                 <div className="relative overflow-hidden rounded-[32px]">
@@ -396,10 +404,20 @@ export function HeroSection({ config }: HeroSectionProps) {
                     <div className="flex flex-col gap-5">
                       <div className="flex items-center justify-between rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 text-xs font-semibold text-slate-600">
                         <span className="inline-flex items-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          <motion.span 
+                            className="h-2 w-2 rounded-full bg-emerald-500"
+                            animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          />
                           Live booking
                         </span>
-                        <span className="text-slate-900">Tap to start</span>
+                        <motion.span 
+                          className="text-slate-900"
+                          animate={{ x: [0, 3, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          Tap to start
+                        </motion.span>
                       </div>
                       <div className="flex items-center gap-3">
                         <div
@@ -427,13 +445,21 @@ export function HeroSection({ config }: HeroSectionProps) {
                           <span className="font-semibold text-slate-900">3 slots</span>
                         </div>
                         <div className="mt-4 grid grid-cols-3 gap-3">
-                          {['9:00', '11:30', '3:15'].map((slot) => (
-                            <div
+                          {['9:00', '11:30', '3:15'].map((slot, index) => (
+                            <motion.div
                               key={slot}
                               className="rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
+                              whileHover={{ 
+                                scale: 1.05,
+                                backgroundColor: `${primaryColor}15`,
+                                borderColor: primaryColor,
+                              }}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 1.5 + index * 0.1 }}
                             >
                               {slot}
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
                       </div>
@@ -449,21 +475,38 @@ export function HeroSection({ config }: HeroSectionProps) {
                           <div className="text-2xl font-bold text-slate-900">4.9</div>
                           <div className="text-xs text-slate-500">/ 5.0</div>
                         </div>
-                        <div className="mt-3 h-2 rounded-full bg-slate-100">
-                          <div
+                        <div className="mt-3 h-2 rounded-full bg-slate-100 overflow-hidden">
+                          <motion.div
                             className="h-2 rounded-full"
-                            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`, width: '92%' }}
+                            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
+                            initial={{ width: '0%' }}
+                            animate={{ width: '92%' }}
+                            transition={{ delay: 1.8, duration: 1, ease: 'easeOut' }}
                           />
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
+                      <motion.div 
+                        className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm"
+                        animate={{ 
+                          boxShadow: [
+                            '0 1px 3px rgba(0,0,0,0.1)', 
+                            `0 4px 12px ${primaryColor}20`,
+                            '0 1px 3px rgba(0,0,0,0.1)'
+                          ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
                         <div className="text-xs text-slate-500">Live Dispatch</div>
                         <div className="mt-2 text-lg font-bold text-slate-900">Cleaner en route</div>
                         <div className="mt-3 flex items-center gap-2 text-xs text-slate-600">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          <motion.span 
+                            className="h-2 w-2 rounded-full bg-emerald-500"
+                            animate={{ scale: [1, 1.3, 1] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          />
                           ETA 24 min
                         </div>
-                      </div>
+                      </motion.div>
                       <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
                         <div className="text-xs text-slate-500">Quote Confidence</div>
                         <div className="mt-2 text-lg font-bold text-slate-900">No surprises</div>
@@ -473,7 +516,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                   </div>
                 </div>
                 <motion.div 
-                  className="absolute bottom-4 right-4 md:bottom-6 md:right-6 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
+                  className="absolute bottom-2 right-2 md:bottom-4 md:right-4 rounded-full px-5 py-2.5 text-xs md:text-sm font-bold shadow-xl transition-all"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                     color: 'white',

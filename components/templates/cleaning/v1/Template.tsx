@@ -63,7 +63,7 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
       
       {/* Floating CTA for mobile */}
       {mounted && (
-        <div className="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-xl border-t border-slate-200/50 md:hidden z-40 safe-area-pb">
+        <div className="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-xl border-t border-slate-200/50 md:hidden z-50 safe-area-pb">
           <div className="flex gap-2">
             <a
               href={`tel:${config.business.phone.replace(/\s/g, '')}`}

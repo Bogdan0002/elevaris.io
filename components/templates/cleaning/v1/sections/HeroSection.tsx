@@ -84,7 +84,7 @@ export function HeroSection({ config }: HeroSectionProps) {
     nicheHeadlines.heroSubheadline ||
     `${config.business.name} provides trusted ${nicheLabel.toLowerCase()} services.`
 
-  const mockupRef = useRef<HTMLDivElement>(null)
+  const mockupRef = useRef<HTMLAnchorElement>(null)
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
@@ -104,7 +104,7 @@ export function HeroSection({ config }: HeroSectionProps) {
     damping: 20,
   })
 
-  const handleMockupMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMockupMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!mockupRef.current) return
     const rect = mockupRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width - 0.5
@@ -314,7 +314,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               <br />
               <span className="text-slate-900">Serving </span>
               <span 
-                className="relative inline-block"
+                className="relative inline-block pb-3"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   WebkitBackgroundClip: 'text',
@@ -324,7 +324,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               >
                 {config.business.city}
                 <motion.svg
-                  className="absolute -bottom-2 left-0 w-full h-3"
+                  className="absolute bottom-0 left-0 w-full h-3"
                   viewBox="0 0 200 12"
                   preserveAspectRatio="none"
                 >
@@ -361,12 +361,14 @@ export function HeroSection({ config }: HeroSectionProps) {
               variants={itemVariants}
               className="relative mx-auto mb-12 w-full max-w-5xl"
             >
-              <motion.div
+              <motion.a
                 ref={mockupRef}
+                href="#contact"
+                aria-label="Jump to booking"
                 onMouseMove={handleMockupMove}
                 onMouseLeave={handleMockupLeave}
                 style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-                className="relative rounded-[32px] bg-white/90 border border-slate-200/70 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.25)]"
+                className="relative rounded-[32px] bg-white/90 border border-slate-200/70 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.25)] transition-transform hover:-translate-y-1"
               >
                 <motion.div
                   className="absolute -inset-6 rounded-[40px] opacity-70 pointer-events-none"
@@ -450,7 +452,10 @@ export function HeroSection({ config }: HeroSectionProps) {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+                <div className="absolute bottom-4 right-4 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-md">
+                  Tap to book →
+                </div>
+              </motion.a>
             </motion.div>
 
             {/* Trust indicators row */}

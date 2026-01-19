@@ -314,7 +314,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               <br />
               <span className="text-slate-900">Serving </span>
               <span 
-                className="relative inline-block pb-3"
+                className="relative inline-block pb-2"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   WebkitBackgroundClip: 'text',
@@ -324,15 +324,15 @@ export function HeroSection({ config }: HeroSectionProps) {
               >
                 {config.business.city}
                 <motion.svg
-                  className="absolute bottom-0 left-0 w-full h-1.5 pointer-events-none"
-                  viewBox="0 0 200 8"
+                  className="absolute -bottom-1 left-0 w-full h-1 pointer-events-none"
+                  viewBox="0 0 200 6"
                   preserveAspectRatio="none"
                 >
                   <motion.path
-                    d="M0 6 Q 50 0, 100 6 T 200 6"
+                    d="M0 4 Q 50 0, 100 4 T 200 4"
                     fill="none"
                     stroke={`url(#gradient-${config.business.city})`}
-                    strokeWidth="3"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
@@ -463,7 +463,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                           ))}
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 flex items-center justify-between">
+                      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 flex items-center justify-between mb-12 md:mb-14">
                         <span>Book in 60 seconds</span>
                         <span className="text-emerald-600">No credit card</span>
                       </div>

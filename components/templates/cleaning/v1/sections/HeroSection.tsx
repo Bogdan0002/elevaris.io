@@ -308,13 +308,13 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Main headline */}
             <motion.h1 
               variants={itemVariants}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1]"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-10 leading-[1.1]"
             >
               <span className="text-slate-900">{headline}</span>
               <br />
               <span className="text-slate-900">Serving </span>
               <span 
-                className="relative inline-block pb-4"
+                className="relative inline-block pb-6"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   WebkitBackgroundClip: 'text',
@@ -324,15 +324,15 @@ export function HeroSection({ config }: HeroSectionProps) {
               >
                 {config.business.city}
                 <motion.svg
-                  className="absolute bottom-1 left-0 w-full h-2"
-                  viewBox="0 0 200 12"
+                  className="absolute bottom-2 left-0 w-full h-1.5 pointer-events-none"
+                  viewBox="0 0 200 8"
                   preserveAspectRatio="none"
                 >
                   <motion.path
-                    d="M0 9 Q 50 0, 100 9 T 200 9"
+                    d="M0 6 Q 50 0, 100 6 T 200 6"
                     fill="none"
                     stroke={`url(#gradient-${config.business.city})`}
-                    strokeWidth="4"
+                    strokeWidth="3"
                     strokeLinecap="round"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
@@ -349,10 +349,10 @@ export function HeroSection({ config }: HeroSectionProps) {
             </motion.h1>
 
             {/* Subheadline */}
-            <motion.p 
-              variants={itemVariants}
-              className="text-lg sm:text-xl text-slate-600 mt-4 mb-8 max-w-2xl mx-auto leading-relaxed"
-            >
+              <motion.p 
+                variants={itemVariants}
+                className="text-lg sm:text-xl text-slate-600 mt-2 mb-8 max-w-2xl mx-auto leading-relaxed"
+              >
               {subheadline}
             </motion.p>
 
@@ -370,6 +370,15 @@ export function HeroSection({ config }: HeroSectionProps) {
                 style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
                 className="group relative rounded-[32px] bg-white/90 border border-slate-200/70 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.25)] transition-transform hover:-translate-y-2 cursor-pointer"
               >
+                <motion.div
+                  className="pointer-events-none absolute inset-0 rounded-[32px]"
+                  style={{
+                    boxShadow: `0 0 0 1px ${primaryColor}30, 0 30px 80px -60px ${primaryColor}90`,
+                  }}
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
                 <motion.div
                   className="absolute -inset-6 rounded-[40px] opacity-70 pointer-events-none"
                   style={{
@@ -665,7 +674,7 @@ export function HeroSection({ config }: HeroSectionProps) {
 
         <FloatingBadge
           delay={2.4}
-          className="top-[40%] -right-2 md:right-0 2xl:right-[-1%]"
+          className="top-[30%] -right-6 md:top-[28%] md:-right-2 2xl:right-[-1%]"
           style={{ transform: 'rotate(3deg)' }}
         >
           <div className="flex items-center gap-0.5">

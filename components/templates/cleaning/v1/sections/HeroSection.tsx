@@ -308,13 +308,13 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Main headline */}
             <motion.h1 
               variants={itemVariants}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1]"
             >
               <span className="text-slate-900">{headline}</span>
               <br />
               <span className="text-slate-900">Serving </span>
               <span 
-                className="relative inline-block pb-3"
+                className="relative inline-block pb-4"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
                   WebkitBackgroundClip: 'text',
@@ -324,7 +324,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               >
                 {config.business.city}
                 <motion.svg
-                  className="absolute bottom-0 left-0 w-full h-3"
+                  className="absolute bottom-1 left-0 w-full h-2"
                   viewBox="0 0 200 12"
                   preserveAspectRatio="none"
                 >
@@ -351,7 +351,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Subheadline */}
             <motion.p 
               variants={itemVariants}
-              className="text-lg sm:text-xl text-slate-600 mt-2 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg sm:text-xl text-slate-600 mt-4 mb-8 max-w-2xl mx-auto leading-relaxed"
             >
               {subheadline}
             </motion.p>
@@ -368,7 +368,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                 onMouseMove={handleMockupMove}
                 onMouseLeave={handleMockupLeave}
                 style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-                className="relative rounded-[32px] bg-white/90 border border-slate-200/70 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.25)] transition-transform hover:-translate-y-1"
+                className="group relative rounded-[32px] bg-white/90 border border-slate-200/70 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.25)] transition-transform hover:-translate-y-2 cursor-pointer"
               >
                 <motion.div
                   className="absolute -inset-6 rounded-[40px] opacity-70 pointer-events-none"
@@ -385,6 +385,13 @@ export function HeroSection({ config }: HeroSectionProps) {
                   />
                   <div className="relative p-6 md:p-8 grid gap-6 md:grid-cols-[1.3fr_1fr]">
                     <div className="flex flex-col gap-5">
+                      <div className="flex items-center justify-between rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 text-xs font-semibold text-slate-600">
+                        <span className="inline-flex items-center gap-2">
+                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          Live booking
+                        </span>
+                        <span className="text-slate-900">Tap to start</span>
+                      </div>
                       <div className="flex items-center gap-3">
                         <div
                           className="h-10 w-10 rounded-xl"
@@ -421,6 +428,10 @@ export function HeroSection({ config }: HeroSectionProps) {
                           ))}
                         </div>
                       </div>
+                      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 flex items-center justify-between">
+                        <span>Book in 60 seconds</span>
+                        <span className="text-emerald-600">No credit card</span>
+                      </div>
                     </div>
                     <div className="flex flex-col gap-4">
                       <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
@@ -452,7 +463,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                     </div>
                   </div>
                 </div>
-                <div className="absolute bottom-4 right-4 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-md">
+                <div className="absolute bottom-4 right-4 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-md group-hover:shadow-lg">
                   Tap to book →
                 </div>
               </motion.a>

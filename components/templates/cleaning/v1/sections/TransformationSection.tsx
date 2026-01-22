@@ -153,12 +153,25 @@ export function TransformationSection({ config }: TransformationSectionProps) {
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [activeSlide, setActiveSlide] = useState(0)
 
-  const transformations = [
+  // Generate transformations from services if available, otherwise use defaults
+  const serviceBasedTransformations = (config.services || []).slice(0, 4).map(service => {
+    const serviceName = typeof service === 'string' ? service : service.name
+    return {
+      label: serviceName,
+      room: serviceName.split(' ')[0] // Use first word as room type
+    }
+  })
+
+  const defaultTransformations = [
     { label: 'Kitchen Deep Clean', room: 'Kitchen' },
     { label: 'Bathroom Restoration', room: 'Bathroom' },
     { label: 'Living Room Refresh', room: 'Living Room' },
     { label: 'Office Space Cleaning', room: 'Office' },
   ]
+
+  const transformations = serviceBasedTransformations.length >= 2 
+    ? serviceBasedTransformations 
+    : defaultTransformations
 
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % transformations.length)

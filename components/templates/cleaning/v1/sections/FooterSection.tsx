@@ -17,7 +17,18 @@ export function FooterSection({ config }: FooterSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
   const navLinks = getNavItems()
-  const footerLinks = getFooterLinks()
+  
+  // Use services from config instead of hardcoded defaults
+  const serviceLinks = (config.services || []).slice(0, 4).map(service => ({
+    label: typeof service === 'string' ? service : service.name,
+    href: '#services',
+  }))
+  
+  // Fallback to defaults if no services in config
+  const footerLinks = serviceLinks.length > 0 
+    ? { services: serviceLinks, company: getFooterLinks().company }
+    : getFooterLinks()
+  
   const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
   const reviewUrl = getGoogleReviewUrl(config.placeId)
   

@@ -55,7 +55,6 @@ async function createJCardonaPreview() {
       city: 'Dallas',
       state: 'TX',
       address: 'Dallas, TX', // Not specified in original
-      hours: 'Mon-Sun: 8AM - 12AM', // Based on "Open · Closes at 00"
     },
 
     branding: {
@@ -74,9 +73,9 @@ async function createJCardonaPreview() {
     },
 
     offer: {
-      text: 'Call Now for a Free Quote!',
+      shortText: 'Call Now for a Free Quote!',
+      longText: 'Specialized in commercial kitchen vent hood power washing and fire code compliance',
       badge: 'Commercial Kitchen Experts',
-      expires: undefined,
     },
 
     services: [
@@ -161,7 +160,7 @@ async function createJCardonaPreview() {
       'Frisco',
     ],
 
-    serviceArea: {
+    map: {
       lat: 32.7767, // Dallas coordinates
       lng: -96.7970,
       radiusMiles: 25,
@@ -169,8 +168,8 @@ async function createJCardonaPreview() {
 
     about: {
       story: "J's Cardona Vent Hood Specialist is your trusted partner for commercial kitchen cleaning in the Dallas-Fort Worth area. We specialize in professional power washing of vent hoods, exhaust systems, and kitchen equipment.\n\nWith years of experience serving restaurants, cafeterias, and commercial kitchens, we understand the critical importance of maintaining fire code compliance while minimizing downtime for your business. Our certified technicians use commercial-grade equipment and eco-friendly degreasers to deliver spotless results.\n\nWe pride ourselves on excellent service, flexible scheduling, and fast turnaround times. Whether you need regular maintenance or emergency cleaning, we're here to help keep your commercial kitchen safe, compliant, and running smoothly.",
-      yearsInBusiness: 5,
-      teamSize: 4,
+      yearFounded: 2019,
+      teamSize: '4 certified technicians',
       certifications: [
         'Fire Code Compliant',
         'Health Department Approved',
@@ -179,42 +178,7 @@ async function createJCardonaPreview() {
       ],
     },
 
-    whyUs: {
-      reasons: [
-        {
-          title: 'Fire Code Experts',
-          description: 'We ensure your vent hoods meet all fire code requirements and provide documentation for inspections.',
-          icon: 'Shield',
-        },
-        {
-          title: 'Commercial Kitchen Specialists',
-          description: 'We exclusively work with commercial kitchens and understand the unique challenges of restaurant cleaning.',
-          icon: 'ChefHat',
-        },
-        {
-          title: 'Fast Turnaround',
-          description: 'We work efficiently to minimize downtime. Same-day and after-hours service available.',
-          icon: 'Clock',
-        },
-        {
-          title: 'Professional Equipment',
-          description: 'Commercial-grade power washing equipment and eco-friendly degreasers for superior results.',
-          icon: 'Wrench',
-        },
-        {
-          title: 'Flexible Scheduling',
-          description: 'We work around your schedule, including nights and weekends, to minimize business disruption.',
-          icon: 'Calendar',
-        },
-        {
-          title: '100% Satisfaction Guaranteed',
-          description: 'We stand behind our work. If you\'re not completely satisfied, we\'ll make it right.',
-          icon: 'ThumbsUp',
-        },
-      ],
-    },
-
-    reviews: [
+    sampleReviews: [
       {
         name: 'Your Signs World Irving',
         text: 'Excellent company, amazing service! They cleaned our commercial kitchen vent hood and it looks brand new. Very professional and thorough.',
@@ -267,52 +231,28 @@ async function createJCardonaPreview() {
 
     gallery: {
       images: [
-        // Vent hood cleaning images - using relevant Unsplash images
-        'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80', // Commercial kitchen
-        'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80', // Restaurant kitchen
-        'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80', // Kitchen equipment
-        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', // Restaurant interior
-        'https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=800&q=80', // Commercial kitchen detail
-        'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&q=80', // Kitchen equipment
+        { url: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80', alt: 'Commercial kitchen vent hood', caption: 'Professional vent hood cleaning' },
+        { url: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80', alt: 'Restaurant kitchen exhaust system', caption: 'Exhaust system maintenance' },
+        { url: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80', alt: 'Clean commercial kitchen equipment', caption: 'Equipment power washing' },
+        { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', alt: 'Professional restaurant interior', caption: 'Commercial kitchen transformations' },
+        { url: 'https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=800&q=80', alt: 'Commercial kitchen cleaning detail', caption: 'Fire code compliant cleaning' },
+        { url: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&q=80', alt: 'Kitchen equipment power washing', caption: 'Grease removal service' },
       ],
-      showcaseTitle: 'Commercial Kitchen Transformations',
-      showcaseDescription: 'See the difference professional vent hood cleaning makes',
+      layout: 'grid',
     },
 
-    transformation: {
-      beforeImage: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=800&q=80', // Dirty commercial space
-      afterImage: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80', // Clean commercial kitchen
-      title: 'Fire Code Compliant in Hours',
-      description: 'From grease buildup to spotless and compliant. Our professional power washing restores your vent hood to like-new condition.',
-      stats: [
-        { label: 'Grease Removed', value: '100%' },
-        { label: 'Avg. Cleaning Time', value: '2-4hrs' },
-        { label: 'Fire Code Pass Rate', value: '100%' },
-      ],
-    },
+    placeId: 'ChIJExamplePlaceId', // Placeholder - would need real Google Place ID
 
-    contact: {
-      formTitle: 'Get Your Free Quote Today',
-      formDescription: 'Fill out the form below and we\'ll get back to you within 1 hour during business hours. Need immediate service? Call us!',
+    features: {
+      showGallery: true,
+      showPricing: false,
       showMap: true,
-      collectFields: ['name', 'email', 'phone', 'service', 'message'],
-    },
-
-    footer: {
-      copyrightText: `© ${new Date().getFullYear()} J's Cardona Vent Hood Specialist. All rights reserved.`,
-      showSocialLinks: false,
-      links: [
-        { text: 'Services', href: '#services' },
-        { text: 'About', href: '#about' },
-        { text: 'Service Areas', href: '#areas' },
-        { text: 'Contact', href: '#contact' },
-      ],
-    },
-
-    seo: {
-      title: "J's Cardona Vent Hood Specialist | Commercial Kitchen Power Washing Dallas",
-      description: 'Professional vent hood power washing and commercial kitchen cleaning in Dallas-Fort Worth. Fire code compliant. Free quotes. Call +1 214-635-8341',
-      keywords: 'vent hood cleaning, commercial kitchen cleaning, power washing dallas, restaurant cleaning, exhaust system cleaning, grease removal, fire code compliance',
+      showReviews: true,
+      showAreas: true,
+      showAbout: true,
+      showWhyUs: true,
+      enableChat: true,
+      enableBooking: true,
     },
   }
 

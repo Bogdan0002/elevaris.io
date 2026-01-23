@@ -171,23 +171,12 @@ export function applyPreviewDefaults(config: Partial<PreviewConfig>): PreviewCon
   const defaultColors = getNicheDefaultColors(niche)
   const defaultServices = getDefaultServices(niche)
   const defaultTrustBadges = getDefaultTrustBadges(niche)
-  
-  // DEBUG: Check what services we're getting
-  console.log('[applyPreviewDefaults] Input config.services:', config.services)
-  console.log('[applyPreviewDefaults] Services length:', config.services?.length)
-  console.log('[applyPreviewDefaults] Niche:', niche)
-  
   const normalizedServices = config.services?.length
     ? normalizeServices(config.services, niche)
     : defaultServices
-  
-  console.log('[applyPreviewDefaults] Normalized services:', normalizedServices)
-  
   const servicesWithMinimum = normalizedServices.length >= 2
     ? normalizedServices
     : [...normalizedServices, ...defaultServices].slice(0, 2)
-  
-  console.log('[applyPreviewDefaults] Final services with minimum:', servicesWithMinimum)
   
   return {
     slug: config.slug || '',

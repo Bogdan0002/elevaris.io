@@ -44,15 +44,7 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
   const normalizedConfig = isLegacyConfig(previewRow.config)
     ? migrateToPreviewConfig(previewRow.config)
     : previewRow.config
-  
-  // DEBUG: Log services before and after applying defaults
-  console.log('[PreviewPage] Raw config.services:', normalizedConfig.services)
-  console.log('[PreviewPage] Services count:', normalizedConfig.services?.length)
-  
   const config = applyPreviewDefaults(normalizedConfig)
-  
-  console.log('[PreviewPage] After applyDefaults, services:', config.services)
-  console.log('[PreviewPage] Services count after defaults:', config.services?.length)
 
   // Validate config is safe
   try {

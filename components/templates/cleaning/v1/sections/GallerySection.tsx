@@ -37,7 +37,14 @@ export function GallerySection({ config }: GallerySectionProps) {
 
   const sizeCycle = ['large', 'small', 'small', 'medium', 'medium', 'tall'] as const
   const iconCycle = [Sofa, UtensilsCrossed, Bath, Building2, Bed, Home, Camera]
-  const baseItems = [
+  
+  // Use services from config instead of hardcoded items
+  const serviceNames = (config.services || []).map(service => 
+    typeof service === 'string' ? service : service.name
+  )
+  
+  // If no services, use defaults
+  const defaultItems = [
     'Signature Refresh',
     'Deep Clean',
     'Move-Out Reset',
@@ -45,6 +52,8 @@ export function GallerySection({ config }: GallerySectionProps) {
     'Kitchen Detail',
     'Full Home Reset',
   ]
+  
+  const baseItems = serviceNames.length > 0 ? serviceNames : defaultItems
 
   const galleryItems = baseItems.map((label, index) => ({
     id: index + 1,

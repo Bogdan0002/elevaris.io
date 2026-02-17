@@ -19,12 +19,13 @@ export const navLinks: NavLink[] = [
   {
     label: "Industries",
     children: [
+      { label: "Car Detailing", href: "/car-detailing" },
       { label: "Cleaning Services", href: "/cleaning" },
-      { label: "Pool Cleaning", href: "/pool-cleaning" },
       { label: "Construction", href: "/construction" },
-      { label: "PMU Artists", href: "/pmu-artists" },
       { label: "HVAC Services", href: "/hvac" },
       { label: "Landscaping", href: "/landscaping" },
+      { label: "PMU Artists", href: "/pmu-artists" },
+      { label: "Pool Cleaning", href: "/pool-cleaning" },
       { label: "Roofing", href: "/roofing" },
     ],
   },

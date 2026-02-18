@@ -7,6 +7,8 @@ import { Container } from "@/components/site/Container"
 import { SectionHeading } from "@/components/site/SectionHeading"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Footer } from "@/components/site/Footer"
+import { PricingTiers } from "@/components/site/PricingTiers"
+import { getBasePricingTiers } from "@/lib/constants/pricing"
 import { 
   CheckCircle2, 
   X,
@@ -34,79 +36,46 @@ import {
   UserPlus
 } from "lucide-react"
 
-const tiers = [
-  {
-    name: "Launch",
-    tagline: "Look professional. Capture leads. Stay organized.",
-    setupPrice: "$249",
-    monthlyPrice: "$99",
-    popular: false,
-    included: [
-      "Custom cleaning business website",
-      "Custom branding (logo, colors, service area)",
-      "Quote / contact forms (lead capture)",
-      "Leads stored in your client CRM",
-      "Email notifications for new inquiries",
-      "Google Maps integration",
-      "Hosting + SSL included",
-      "Basic SEO structure",
-      "Mobile optimized",
-    ],
-    notIncluded: [
-      "SMS follow-up automation",
-      "Missed-call text-back",
-      "Review request automation",
-      "Lead pipeline tracking",
-    ],
-    cta: "Launch My System",
-  },
-  {
-    name: "Growth",
-    tagline: "Convert more inquiries into paying clients — automatically.",
-    setupPrice: "$549",
-    monthlyPrice: "$149",
-    popular: true,
-    included: [
-      "Everything in Launch",
-      "Automatic lead follow-up (SMS + email)",
-      "Missed-call text-back (instant response)",
-      "Lead pipeline tracking (New → Contacted → Won)",
-      "Google review request automation",
-      "Centralized conversations",
-      "Mobile app access",
-      "Tagging & segmentation",
-      "Unlimited content edits (fair-use)",
-      "System monitoring & maintenance",
-      "Website live chat widget",
-      "Automated review requests after jobs",
-    ],
-    notIncluded: [
-      "Automated estimate calculator",
-      "Reactivation campaigns",
-    ],
-    cta: "Choose Growth",
-  },
-  {
-    name: "Accelerator",
-    tagline: "Maximize every lead and scale with advanced automation.",
-    setupPrice: "$999",
-    monthlyPrice: "$299",
-    popular: false,
-    included: [
-      "Everything in Growth",
-      "Automated estimate calculator",
-      "Advanced follow-up logic (smart nudges)",
-      "Lead reactivation campaigns",
-      "Custom workflows by service type",
-      "Priority support",
-      "Monthly performance insights",
-      "Optional online booking flow",
-      "Smart review filtering",
-    ],
-    notIncluded: [],
-    cta: "Choose Accelerator",
-  },
-]
+// Get pricing tiers with cleaning business specific customization
+const getTiers = () => getBasePricingTiers({
+  industryName: "cleaning business",
+  launchServices: [
+    "Custom cleaning business website",
+    "Custom branding (logo, colors, service area)",
+    "Quote / contact forms (lead capture)",
+    "Leads stored in your client CRM",
+    "Email notifications for new inquiries",
+    "Google Maps integration",
+    "Hosting + SSL included",
+    "Basic SEO structure",
+    "Mobile optimized",
+  ],
+  growthServices: [
+    "Everything in Launch",
+    "Automatic lead follow-up (SMS + email)",
+    "Missed-call text-back (instant response)",
+    "Lead pipeline tracking (New → Contacted → Won)",
+    "Google review request automation",
+    "Centralized conversations",
+    "Mobile app access",
+    "Tagging & segmentation",
+    "Unlimited content edits (fair-use)",
+    "System monitoring & maintenance",
+    "Website live chat widget",
+    "Automated review requests after jobs",
+  ],
+  acceleratorServices: [
+    "Everything in Growth",
+    "Automated estimate calculator",
+    "Advanced follow-up logic (smart nudges)",
+    "Lead reactivation campaigns",
+    "Custom workflows by service type",
+    "Priority support",
+    "Monthly performance insights",
+    "Optional online booking flow",
+    "Smart review filtering",
+  ],
+})
 
 const features = [
   {
@@ -910,8 +879,10 @@ export default function CleaningPage() {
             subtitle="No hidden fees. No surprises. Cancel anytime."
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12 items-stretch">
-            {tiers.map((tier, index) => (
+          {/* Pricing Tiers - Now linked to Stripe Checkout */}
+          <div className="mt-12">
+            <PricingTiers tiers={getTiers()} accentColor="primary" />
+          </div>
               <motion.div
                 key={tier.name}
                 initial={{ opacity: 0, y: 30 }}

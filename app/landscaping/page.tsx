@@ -7,6 +7,8 @@ import { Container } from "@/components/site/Container"
 import { SectionHeading } from "@/components/site/SectionHeading"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { Footer } from "@/components/site/Footer"
+import { PricingTiers } from "@/components/site/PricingTiers"
+import { getBasePricingTiers } from "@/lib/constants/pricing"
 import { 
   CheckCircle2, 
   X,
@@ -30,7 +32,9 @@ import {
   UserPlus
 } from "lucide-react"
 
-const tiers = [
+const getTiers = () => getBasePricingTiers({
+  industryName: "landscaping business",
+})
   {
     name: "Launch",
     tagline: "Professional online presence for your landscaping business.",
@@ -907,8 +911,10 @@ export default function LandscapingPage() {
             subtitle="No hidden fees. No surprises. Perfect for lawn mowing services, landscape design firms, and full-service landscaping companies."
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12 items-stretch">
-            {tiers.map((tier, index) => (
+          {/* Pricing Tiers - Now linked to Stripe Checkout */}
+          <div className="mt-12">
+            <PricingTiers tiers={getTiers()} accentColor="orange" />
+          </div>
               <motion.div
                 key={tier.name}
                 initial={{ opacity: 0, y: 30 }}

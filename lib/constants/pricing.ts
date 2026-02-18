@@ -1,11 +1,10 @@
 import { PricingTier } from "@/components/site/PricingTiers"
 
-// Stripe checkout URLs with success redirect to onboarding
-// Replace these with your actual Stripe checkout links
+// Stripe checkout URLs - Active and configured
 export const STRIPE_CHECKOUT_URLS = {
-  launch: "https://buy.stripe.com/YOUR_LAUNCH_LINK?success_url=https://onboarding.elevaris.app",
-  growth: "https://buy.stripe.com/YOUR_GROWTH_LINK?success_url=https://onboarding.elevaris.app",
-  accelerator: "https://buy.stripe.com/YOUR_ACCELERATOR_LINK?success_url=https://onboarding.elevaris.app",
+  launch: "https://buy.stripe.com/aFa14ndEze8iayQ28IbII02",
+  growth: "https://buy.stripe.com/8x228rgQL4xIgXeaFebII03",
+  accelerator: "https://buy.stripe.com/6oUdR9cAv2pA22kaFebII04",
 }
 
 // Base pricing tiers (can be customized per industry)

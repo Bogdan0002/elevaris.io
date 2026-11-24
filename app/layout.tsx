@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 import { ConditionalNavbar } from "@/components/site/ConditionalNavbar"
 
@@ -87,6 +88,12 @@ export default function RootLayout({
       <body className={`${inter.className} overflow-x-hidden`}>
         <ConditionalNavbar />
         <main className="overflow-x-hidden">{children}</main>
+        <Script
+          src="https://widgets.leadconnectorhq.com/loader.js"
+          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+          data-widget-id="6b062198e6cd500e96f6c78e"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )

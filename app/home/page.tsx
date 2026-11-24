@@ -4,7 +4,6 @@ import { Work } from "@/components/home/Work"
 import { ProcessTimeline } from "@/components/home/ProcessTimeline"
 import { About } from "@/components/home/About"
 import { Testimonials } from "@/components/home/Testimonials"
-import { ContactSection } from "@/components/home/ContactSection"
 import { FAQ } from "@/components/home/FAQ"
 import { SectionMotion } from "@/components/home/SectionMotion"
 import { Footer } from "@/components/site/Footer"
@@ -235,13 +234,6 @@ const testimonialsData = [
   },
 ]
 
-const contactData = {
-  title: "We're Here to Turn Your Ideas into Digital Reality",
-  highlight: "Digital Reality",
-  text: "We'll listen to your goals, understand your needs, and craft a digital solution tailored to your business. Fill out the form or schedule a call, and let's start building a website that truly represents your brand.",
-  submit: "SUBMIT",
-}
-
 const faqData = [
   {
     q: "What makes Elevaris different from traditional web design agencies?",
@@ -337,10 +329,6 @@ export default function HomePage() {
 
       <SectionMotion direction="right" delay={0.05}>
         <Testimonials testimonials={testimonialsData} />
-      </SectionMotion>
-
-      <SectionMotion direction="left">
-        <ContactSection {...contactData} />
       </SectionMotion>
 
       <SectionMotion direction="up">

@@ -5,20 +5,18 @@ import { useRef, useState, useEffect } from 'react'
 import { Container } from '@/components/site/Container'
 import { Star, Quote, ChevronLeft, ChevronRight, MessageSquare, ExternalLink, User } from 'lucide-react'
 import { getGoogleReviewUrl } from '@/lib/previews/helpers'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
+import type { PreviewConfig } from '@/lib/previews/types'
 
 interface ReviewsSectionProps {
-  config: {
-    sampleReviews?: { name: string; text: string; stars: number }[]
-    placeId: string
-    business: { name: string; city: string }
-    branding: { primaryColor?: string; accentColor?: string }
-  }
+  config: PreviewConfig
 }
 
 export function ReviewsSection({ config }: ReviewsSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const reviews = config.sampleReviews || []
+  const presentation = resolveCleaningPresentation(config)
+  const reviews = presentation.reviews
   const reviewUrl = getGoogleReviewUrl(config.placeId)
   
   const sectionRef = useRef(null)
@@ -121,8 +119,9 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Don&apos;t just take our word for it. Here&apos;s what {config.business.city}{' '}
-            residents have to say about {config.business.name}.
+            {presentation.reviewsAreGenuine
+              ? `Reviews supplied for ${config.business.name}.`
+              : 'Example testimonials included with this preview. These are not labeled as verified Google reviews.'}
           </p>
 
           <motion.div
@@ -131,11 +130,10 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {[
-              { label: '5-Star Reviews', value: '4.9' },
-              { label: 'Response Time', value: '< 30 min' },
-              { label: 'Repeat Clients', value: '82%' },
-            ].map((stat) => (
+            {(presentation.showRating
+              ? [{ label: 'Google rating', value: presentation.rating?.toFixed(1) || '' }, { label: 'Google reviews', value: String(presentation.reviewCount || '') }]
+              : [{ label: presentation.reviewsAreGenuine ? 'Supplied reviews' : 'Example testimonials', value: String(reviews.length) }]
+            ).map((stat) => (
               <div
                 key={stat.label}
                 className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm"
@@ -160,7 +158,7 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
             <div className="h-6 w-px bg-slate-200" />
             <div className="text-left">
               <div className="font-bold text-slate-900">5.0 Rating</div>
-              <div className="text-xs text-slate-500">Based on Google Reviews</div>
+              <div className="text-xs text-slate-500">{presentation.reviewsAreGenuine ? 'Supplied Google reviews' : 'Example testimonials, not verified Google reviews'}</div>
             </div>
           </motion.div>
         </motion.div>
@@ -227,7 +225,7 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
                     </div>
                     <div className="text-sm text-slate-500 flex items-center gap-1">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      Verified Customer
+                      {presentation.reviewsAreGenuine ? 'Google review' : 'Example'}
                     </div>
                   </div>
                 </div>
@@ -340,7 +338,7 @@ export function ReviewsSection({ config }: ReviewsSectionProps) {
                     <div className="font-bold text-slate-900">{review.name}</div>
                     <div className="text-sm text-slate-500 flex items-center gap-1">
                       <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      Verified Customer
+                      {presentation.reviewsAreGenuine ? 'Google review' : 'Example'}
                     </div>
                   </div>
                 </div>

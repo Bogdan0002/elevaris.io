@@ -1,11 +1,15 @@
 'use server'
 
-import { createPreview, getPreviewBySlug } from '@/lib/previews/repo'
+import { randomUUID } from 'crypto'
+import { assertOpsAccess, OpsAuthError } from '@/lib/ops/guard'
+import { consumeRateLimit } from '@/lib/ops/rate-limit'
+import { recordPreviewEvent } from '@/lib/previews/events'
+import { createPreview, getPreviewBySlug, updatePreview } from '@/lib/previews/repo'
 import { slugify } from '@/lib/utils/slugify'
 import { applyPreviewDefaults, getGoogleReviewUrl, normalizeServices } from '@/lib/previews/helpers'
 import { previewConfigSchema } from '@/lib/previews/schema'
 import { getDefaultTemplateForNiche, getTemplateById } from '@/lib/templates/registry'
-import type { BusinessNiche, PreviewConfig, ServiceItem } from '@/lib/previews/types'
+import type { BusinessNiche, CleaningProfile, GoogleBusinessProfile, PreviewConfig, ReviewItem, ServiceItem } from '@/lib/previews/types'
 
 interface CreatePreviewInput {
   templateId: string
@@ -28,16 +32,17 @@ interface CreatePreviewInput {
   heroHeadline?: string
   heroSubheadline?: string
   aboutStory?: string
-  // New fields for reviews
-  sampleReviews?: Array<{
-    name: string
-    text: string
-    stars: number
-  }>
+  sampleReviews?: ReviewItem[]
+  cleaningProfile?: CleaningProfile
+  googleBusinessProfile?: GoogleBusinessProfile
+  updateExisting?: boolean
 }
 
 export async function createPreviewAction(input: CreatePreviewInput) {
   try {
+    await assertOpsAccess()
+    const allowed = await consumeRateLimit('preview-create', 30, 60 * 60 * 1000)
+    if (!allowed) return { success: false, error: 'Too many previews created. Try again later.' }
     // Validate template exists (fallback to best template for niche)
     const template =
       getTemplateById(input.templateId) || getDefaultTemplateForNiche(input.niche)
@@ -57,15 +62,14 @@ export async function createPreviewAction(input: CreatePreviewInput) {
             : service
         )
 
-    const normalizedServices = normalizeServices(servicesForNormalize, input.niche)
-    const targetServiceCount = normalizedServices.length >= 6 ? 6 : 3
-    const servicesTrimmed = normalizedServices.slice(0, targetServiceCount)
-    const servicesFinal =
-      servicesTrimmed.length < targetServiceCount
-        ? [...servicesTrimmed, ...normalizedServices].slice(0, targetServiceCount)
-        : servicesTrimmed
+    const servicesFinal = normalizeServices(servicesForNormalize, input.niche).slice(0, 8)
 
     const config: PreviewConfig = {
+      schemaVersion: 2,
+      mode: 'preview',
+      attributionId: randomUUID(),
+      cleaningProfile: input.cleaningProfile,
+      googleBusinessProfile: input.googleBusinessProfile,
       slug,
       niche: input.niche,
       templateId: template.id,
@@ -95,7 +99,12 @@ export async function createPreviewAction(input: CreatePreviewInput) {
               radiusMiles: input.radiusMiles || 15,
             }
           : undefined,
-      sampleReviews: input.sampleReviews,
+      sampleReviews: input.sampleReviews?.map((review) => ({
+        ...review,
+        kind: review.kind || 'illustrative',
+        source: review.source || 'operator',
+        verified: review.source === 'google',
+      })),
       hero: {
         headline: input.heroHeadline,
         subheadline: input.heroSubheadline,
@@ -107,9 +116,6 @@ export async function createPreviewAction(input: CreatePreviewInput) {
 
     // Apply defaults
     const configWithDefaults = applyPreviewDefaults(config)
-
-    console.log('[CreatePreview] Creating preview with slug:', slug)
-    console.log('[CreatePreview] Config:', JSON.stringify(configWithDefaults, null, 2))
 
     // Validate
     const validationResult = previewConfigSchema.safeParse(configWithDefaults)
@@ -130,13 +136,27 @@ export async function createPreviewAction(input: CreatePreviewInput) {
       const message = error instanceof Error ? error.message : String(error)
       if (message.toLowerCase().includes('duplicate') || message.toLowerCase().includes('already exists')) {
         const existing = await getPreviewBySlug(slug)
-        if (existing) {
+        if (existing && input.updateExisting) {
+          const updated = await updatePreview(slug, {
+            ...configWithDefaults,
+            attributionId: ('attributionId' in existing.config ? existing.config.attributionId : undefined) || configWithDefaults.attributionId,
+          })
           return {
             success: true,
             slug,
-            previewUrl: `https://elevaris.app/p/${slug}`,
-            reviewUrl: getGoogleReviewUrl(existing.config.placeId),
+            updated: true,
+            previewUrl: `https://elevaris.app/p/${updated.slug}`,
+            reviewUrl: getGoogleReviewUrl(updated.config.placeId),
             templateName: template.name,
+          }
+        }
+        if (existing) {
+          return {
+            success: false,
+            conflict: true,
+            slug,
+            previewUrl: `https://elevaris.app/p/${slug}`,
+            error: 'A preview with this business name and city already exists. Choose update to replace it.',
           }
         }
       }
@@ -158,14 +178,24 @@ export async function createPreviewAction(input: CreatePreviewInput) {
     const previewUrl = `https://elevaris.app/p/${slug}`
     const reviewUrl = getGoogleReviewUrl(input.placeId)
 
+    if (configWithDefaults.attributionId) {
+      await recordPreviewEvent({
+        event: 'preview_generated',
+        attributionId: configWithDefaults.attributionId,
+        eventKey: `${configWithDefaults.attributionId}:preview_generated`,
+      })
+    }
+
     return {
       success: true,
       slug,
       previewUrl,
       reviewUrl,
       templateName: template.name,
+      attributionId: configWithDefaults.attributionId,
     }
   } catch (error) {
+    if (error instanceof OpsAuthError) return { success: false, error: 'Unauthorized' }
     if (error instanceof Error) {
       return {
         success: false,

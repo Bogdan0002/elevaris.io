@@ -1,7 +1,9 @@
 "use client"
 
+import { useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { CheckCircle2, X, Sparkles, ArrowRight } from "lucide-react"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 
@@ -64,6 +66,17 @@ const colorClasses = {
 
 export function PricingTiers({ tiers, accentColor = "cyan" }: PricingTiersProps) {
   const colors = colorClasses[accentColor]
+  const searchParams = useSearchParams()
+  const ref = searchParams.get('ref') || ''
+
+  useEffect(() => {
+    if (!ref) return
+    fetch('/api/preview-events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'sales_page_viewed', attributionId: ref, path: window.location.pathname }),
+    }).catch(() => undefined)
+  }, [ref])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
@@ -115,7 +128,7 @@ export function PricingTiers({ tiers, accentColor = "cyan" }: PricingTiersProps)
                   <span className="text-foreground-secondary">/month</span>
                 </div>
                 <p className="text-sm text-foreground-secondary mt-1">
-                  {tier.setupPrice} one-time setup
+                  No setup fee. Cancel anytime.
                 </p>
               </div>
               
@@ -149,7 +162,7 @@ export function PricingTiers({ tiers, accentColor = "cyan" }: PricingTiersProps)
               
               {/* CTA */}
               <Link
-                href={tier.stripeUrl || "/schedule-a-call"}
+                href={tier.stripeUrl ? `/api/checkout?plan=${encodeURIComponent(tier.name.toLowerCase())}${ref ? `&ref=${encodeURIComponent(ref)}` : ''}` : "/schedule-a-call"}
                 className={`w-full inline-flex items-center justify-center gap-2 h-11 px-5 font-semibold rounded-xl transition-all duration-200 mt-auto active:scale-[0.98] ${
                   tier.popular 
                     ? `bg-gradient-to-r ${colors.gradientButton} text-white hover:brightness-110 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_12px_${colors.glow},inset_0_1px_0_rgba(255,255,255,0.1)]`

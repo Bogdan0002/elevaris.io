@@ -5,8 +5,7 @@ import { useRef, useEffect, useState } from 'react'
 import { Container } from '@/components/site/Container'
 import { CheckCircle2, Users, Award, Heart, TrendingUp, Shield, Leaf, ArrowRight, Sparkles, Building } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getNicheHeadlines } from '@/lib/previews/defaults'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface AboutSectionProps {
   config: PreviewConfig
@@ -44,40 +43,13 @@ export function AboutSection({ config }: AboutSectionProps) {
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [hoveredStat, setHoveredStat] = useState<number | null>(null)
 
-  const niche = config.niche || 'cleaning'
-  const nicheHeadlines = getNicheHeadlines(niche)
-  const nicheLabel = getNicheDisplayName(niche)
-  const aboutFallback = `${config.business.name} delivers trusted ${nicheLabel.toLowerCase()} services across ${config.business.city}, ${config.business.state}. Our team combines experience, attention to detail, and a commitment to quality on every project.`
-
-  const stats = [
-    { label: 'Years Experience', value: 3, suffix: '+', icon: Award },
-    { label: 'Happy Customers', value: 500, suffix: '+', icon: Users },
-    { label: 'Satisfaction Rate', value: 98, suffix: '%', icon: Heart },
-    { label: 'Projects Completed', value: 2500, suffix: '+', icon: TrendingUp },
-  ]
-
-  const features = [
-    { 
-      icon: Shield, 
-      title: 'Fully Insured & Bonded',
-      description: 'Complete peace of mind with comprehensive coverage'
-    },
-    { 
-      icon: Leaf, 
-      title: 'Eco-Friendly Products',
-      description: 'Safe for your family, pets, and the environment'
-    },
-    { 
-      icon: Users, 
-      title: 'Vetted Professionals',
-      description: 'Background-checked and extensively trained team'
-    },
-    { 
-      icon: Award, 
-      title: 'Quality Guaranteed',
-      description: '100% satisfaction or we\'ll make it right'
-    },
-  ]
+  const presentation = resolveCleaningPresentation(config)
+  const stats = presentation.stats.map((stat) => ({ ...stat, icon: Sparkles }))
+  const features = presentation.benefits.map((benefit) => ({
+    icon: CheckCircle2,
+    title: benefit.title,
+    description: benefit.description,
+  }))
 
   return (
     <section 
@@ -123,16 +95,15 @@ export function AboutSection({ config }: AboutSectionProps) {
             </motion.div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-slate-900 leading-tight">
-              {nicheHeadlines.aboutHeadline}
+              {presentation.aboutHeadline}
             </h2>
             
             <p className="text-lg text-slate-600 mb-6 leading-relaxed">
-              {config.about?.story || aboutFallback}
+              {presentation.aboutParagraphs[0]}
             </p>
             
             <p className="text-slate-600 mb-8 leading-relaxed">
-              Serving {config.business.city}, {config.business.state} and the surrounding area, we tailor every project
-              to your exact needs with clear communication, reliable scheduling, and consistent quality.
+              {presentation.aboutParagraphs[1]}
             </p>
 
             {/* Feature grid */}
@@ -225,7 +196,7 @@ export function AboutSection({ config }: AboutSectionProps) {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-5">
+              <div className={`grid gap-5 ${stats.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 {stats.map((stat, index) => {
                   const Icon = stat.icon
                   const isHovered = hoveredStat === index
@@ -266,7 +237,7 @@ export function AboutSection({ config }: AboutSectionProps) {
                           backgroundClip: 'text',
                         }}
                       >
-                        <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                        {stat.value}
                       </div>
                       <div className="text-sm text-slate-600 font-medium">
                         {stat.label}
@@ -337,8 +308,8 @@ export function AboutSection({ config }: AboutSectionProps) {
                   ))}
                 </div>
                 <div className="text-xs">
-                  <div className="font-bold text-slate-900">500+</div>
-                  <div className="text-slate-500">Happy clients</div>
+                  <div className="font-bold text-slate-900">{config.business.city}</div>
+                  <div className="text-slate-500">{presentation.servicePhrase}</div>
                 </div>
               </div>
             </motion.div>

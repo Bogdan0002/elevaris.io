@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { listPreviews } from '@/lib/previews/repo'
+import { assertOpsRequest, OpsAuthError } from '@/lib/ops/guard'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 export async function GET(request: NextRequest) {
   try {
+    await assertOpsRequest(request)
     const searchParams = request.nextUrl.searchParams
     const search = searchParams.get('search') || undefined
     const limit = searchParams.get('limit')
@@ -20,6 +22,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
+    if (error instanceof OpsAuthError) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     console.error('Error listing previews:', error)
     return NextResponse.json(
       { error: 'Failed to list previews' },

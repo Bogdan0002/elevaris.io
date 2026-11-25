@@ -20,7 +20,7 @@ export function getBasePricingTiers(customization?: {
     {
       name: "Launch",
       tagline: `Professional online presence for your ${industryName}.`,
-      setupPrice: "$249",
+      setupPrice: "",
       monthlyPrice: "$99",
       popular: false,
       included: customization?.launchServices || [
@@ -46,7 +46,7 @@ export function getBasePricingTiers(customization?: {
     {
       name: "Growth",
       tagline: `Convert more leads into paying clients automatically.`,
-      setupPrice: "$549",
+      setupPrice: "",
       monthlyPrice: "$149",
       popular: true,
       included: customization?.growthServices || [
@@ -73,7 +73,7 @@ export function getBasePricingTiers(customization?: {
     {
       name: "Accelerator",
       tagline: `Scale your ${industryName} with advanced automation.`,
-      setupPrice: "$999",
+      setupPrice: "",
       monthlyPrice: "$299",
       popular: false,
       included: customization?.acceleratorServices || [

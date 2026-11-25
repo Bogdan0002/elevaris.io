@@ -1,23 +1,20 @@
 import OpenAI from 'openai'
-import type { BusinessNiche, ServiceItem } from '@/lib/previews/types'
-import { NICHE_DISPLAY_NAMES, getDefaultServices, getColorPalettes } from '@/lib/previews/niche-defaults'
-import { getDefaultOffer, isValidOffer } from '@/lib/previews/niche-offers'
+import { z } from 'zod'
+import type { BusinessNiche, CleaningCategory, CleaningProfile, GoogleBusinessProfile, ServiceItem } from '@/lib/previews/types'
+import { getColorPalettes } from '@/lib/previews/niche-defaults'
+import { CLEANING_CATEGORIES, inferCleaningProfile } from '@/lib/previews/cleaning-presentation'
 
-// Initialize OpenAI client
 function getOpenAIClient(): OpenAI {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error('Missing OPENAI_API_KEY environment variable.')
   }
-  
-  return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  })
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 }
 
 export interface CompanyDescription {
-  description: string // Free text description of the company
-  placeId?: string // Optional Google Place ID
-  niche?: BusinessNiche // Optional niche hint
+  description: string
+  placeId?: string
+  niche?: BusinessNiche
 }
 
 export interface StructuredCompanyData {
@@ -46,8 +43,9 @@ export interface StructuredCompanyData {
     text: string
     stars: number
     service?: string
+    kind: 'genuine' | 'illustrative'
+    source: 'google' | 'operator' | 'unknown'
   }>
-  // New fields for multi-niche
   heroHeadline?: string
   heroSubheadline?: string
   aboutStory?: string
@@ -56,309 +54,201 @@ export interface StructuredCompanyData {
     description: string
     highlight?: string
   }>
+  cleaningProfile: CleaningProfile
+  googleBusinessProfile?: GoogleBusinessProfile
 }
 
-// Build the niche list for the prompt
-const NICHE_LIST = Object.entries(NICHE_DISPLAY_NAMES)
-  .map(([key, name]) => `"${key}" (${name})`)
-  .join(', ')
+const categorySchema = z.enum(CLEANING_CATEGORIES as [CleaningCategory, ...CleaningCategory[]])
 
-/**
- * Generate structured company data from free-form description
- * Now supports multiple niches and generates more comprehensive content
- */
-export async function generateFromDescription(
-  input: CompanyDescription
-): Promise<StructuredCompanyData> {
-  const client = getOpenAIClient()
+const aiSchema = z.object({
+  primaryCategory: categorySchema,
+  secondaryCategories: z.array(categorySchema).max(6).default([]),
+  audience: z.enum(['residential', 'commercial', 'mixed']),
+  environment: z.enum(['interior', 'exterior', 'specialized']),
+  business: z.object({
+    name: z.string().min(1).max(200),
+    city: z.string().max(100).default(''),
+    state: z.string().max(32).default(''),
+    phone: z.string().max(30).default(''),
+    email: z.string().max(200).optional(),
+    website: z.string().max(300).optional(),
+  }),
+  google: z.object({
+    placeId: z.string().max(200).optional(),
+    rating: z.number().min(1).max(5).optional(),
+    reviewCount: z.number().min(0).max(1000000).optional(),
+    primaryCategory: z.string().max(120).optional(),
+    hours: z.string().max(300).optional(),
+  }).optional(),
+  services: z.array(z.object({
+    name: z.string().min(1).max(100),
+    description: z.string().max(500).default(''),
+  })).max(8).default([]),
+  areasServed: z.array(z.string().min(1).max(80)).max(15).default([]),
+  hours: z.string().max(300).optional(),
+  reviews: z.array(z.object({
+    name: z.string().min(1).max(100),
+    text: z.string().min(1).max(1000),
+    stars: z.number().min(1).max(5),
+    source: z.enum(['google', 'operator']).default('google'),
+  })).max(8).default([]),
+  heroHeadline: z.string().min(4).max(120),
+  heroSubheadline: z.string().min(8).max(280),
+  aboutParagraphs: z.array(z.string().min(8).max(600)).min(1).max(2),
+  offerText: z.string().max(160).optional(),
+})
 
-  const prompt = `You are a professional content generator for local service business websites across multiple industries. Extract and generate structured data from the following company description.
-
-COMPANY DESCRIPTION:
-${input.description}
-
-${input.niche ? `HINT: This appears to be a ${NICHE_DISPLAY_NAMES[input.niche]} business.` : ''}
-
-STEP 1: IDENTIFY THE NICHE
-First, determine which industry/niche this business belongs to. Choose from:
-${NICHE_LIST}
-
-STEP 2: GENERATE COMPREHENSIVE CONTENT
-
-1. **Business Info** - Extract:
-   - name: Company/business name
-   - city: Primary city
-   - state: State abbreviation (2 letters)
-   - phone: Phone number format "+1 555-123-4567"
-   - email: Email if mentioned
-   - website: Website if mentioned
-
-2. **Offer** - Create a compelling promotional offer:
-   - shortText: A REAL promotional offer that drives action. If no specific offer is mentioned in the description, generate one like:
-     * "20% Off Your First Service"
-     * "Free Estimate + 15% Off First Visit"
-     * "$50 Off Your First Cleaning"
-     * "Book Today, Save 25%"
-     * "First-Time Customer Special: 20% Off"
-   - The offer should be specific to the niche and include a discount percentage or dollar amount
-   - badge: Optional badge text (e.g., "LIMITED TIME", "NEW CUSTOMER", "SPECIAL OFFER")
-
-3. **Branding Colors** - Choose professional, industry-appropriate colors:
-   - primaryColor: Hex code
-   - accentColor: Hex code (complementary)
-
-4. **Services** - Generate exactly 3 or exactly 6 detailed services with:
-   - name: Clear service name
-   - description: 2-3 sentences explaining the service, benefits, and what's included
-   - features: Array of 3-4 key features/benefits
-
-5. **Areas Served** - 8-15 specific areas/cities/neighborhoods
-
-6. **Hours** - Business hours if mentioned, otherwise realistic hours
-
-7. **Sample Reviews** - Generate 3-5 authentic reviews with:
-   - name: Realistic first and last name
-   - text: 2-4 sentences mentioning specific services, quality, and experience
-   - stars: 5
-   - service: Which service they used (optional)
-
-8. **Hero Content**:
-   - heroHeadline: Powerful, benefit-focused headline (4-6 words)
-   - heroSubheadline: Compelling subheadline (15-25 words)
-
-9. **About Story** - 2-3 paragraph company story focusing on:
-   - How the business started
-   - What makes them unique
-   - Their commitment to customers
-
-10. **Why Us Reasons** - 4-6 reasons to choose this business:
-    - title: Short title (2-4 words)
-    - description: 1-2 sentences
-    - highlight: Key stat or badge (e.g., "24/7", "100%", "5-Star")
-
-OUTPUT FORMAT (JSON only, no markdown):
-{
-  "niche": "string (from niche list)",
-  "business": {
-    "name": "string",
-    "city": "string",
-    "state": "string (2 letters)",
-    "phone": "string",
-    "email": "string (optional)",
-    "website": "string (optional)"
-  },
-  "offer": {
-    "shortText": "string",
-    "badge": "string (optional)"
-  },
-  "branding": {
-    "primaryColor": "#hexcode",
-    "accentColor": "#hexcode"
-  },
-  "services": [
-    {
-      "name": "string",
-      "description": "string (2-3 sentences)",
-      "features": ["string", "string", "string"]
-    }
-  ],
-  "areasServed": ["string", ...],
-  "hours": "string (optional)",
-  "sampleReviews": [
-    {
-      "name": "string",
-      "text": "string (2-4 sentences)",
-      "stars": 5,
-      "service": "string (optional)"
-    }
-  ],
-  "heroHeadline": "string",
-  "heroSubheadline": "string",
-  "aboutStory": "string (2-3 paragraphs)",
-  "whyUsReasons": [
-    {
-      "title": "string",
-      "description": "string",
-      "highlight": "string (optional)"
-    }
-  ]
+function wordCount(value: string): number {
+  return value.trim().split(/\s+/).filter(Boolean).length
 }
 
-CRITICAL REQUIREMENTS:
-- Niche MUST be "cleaning"
-- Services MUST have exactly 3 or exactly 6 items with detailed descriptions
-- Areas MUST have 8-15 items
-- Colors MUST be valid hex codes
-- Content should be professional, American-style, and conversion-focused
-- Reviews should sound authentic and specific
-- Hero content should be punchy and memorable
-
-Return ONLY valid JSON, no markdown, no code blocks, no explanations.`
-
-  try {
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a professional content generator for local service business websites. Generate compelling, conversion-focused content. Always return valid JSON only, no markdown formatting. Strictly follow all constraints.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-      max_tokens: 4000,
-    })
-
-    const content = completion.choices[0]?.message?.content
-    if (!content) {
-      throw new Error('No content generated from OpenAI')
-    }
-
-    const generated = JSON.parse(content) as Partial<StructuredCompanyData>
-    
-    // Validate and set defaults
-    const niche: BusinessNiche = 'cleaning'
-    const defaultColors = getColorPalettes(niche)[0] || { primary: '#0EA5E9', accent: '#10B981' }
-    const defaultServices = getDefaultServices(niche)
-
-    // Get a default offer for the niche in case AI doesn't generate a good one
-    const defaultOffer = getDefaultOffer(niche)
-    
-    // Check if AI-generated offer is valid (contains promotional language)
-    const aiOffer = generated.offer?.shortText || ''
-    const useDefaultOffer = !isValidOffer(aiOffer)
-    
-    const result: StructuredCompanyData = {
-      niche,
-      business: {
-        name: generated.business?.name || 'Service Business',
-        city: generated.business?.city || 'Los Angeles',
-        state: (generated.business?.state || 'CA').toUpperCase().slice(0, 2),
-        phone: generated.business?.phone || '+1 555-123-4567',
-        email: generated.business?.email,
-        website: generated.business?.website,
-      },
-      offer: {
-        shortText: useDefaultOffer ? defaultOffer.shortText : aiOffer,
-        badge: useDefaultOffer ? defaultOffer.badge : generated.offer?.badge,
-      },
-      branding: {
-        primaryColor: validateHexColor(generated.branding?.primaryColor) || defaultColors.primary,
-        accentColor: validateHexColor(generated.branding?.accentColor) || defaultColors.accent,
-      },
-      services: [],
-      areasServed: [],
-      hours: generated.hours,
-      sampleReviews: [],
-      heroHeadline: generated.heroHeadline,
-      heroSubheadline: generated.heroSubheadline,
-      aboutStory: generated.aboutStory,
-      whyUsReasons: generated.whyUsReasons,
-    }
-
-    // Process services (must be exactly 3 or 6)
-    const aiServices = (generated.services || []).map(s => ({
-      name: s.name || 'Service',
-      description: s.description || 'Professional service tailored to your needs.',
-      features: s.features || [],
-    }))
-    const targetCount = aiServices.length >= 6 ? 6 : 3
-    const baseServices = aiServices.length >= 3 ? aiServices : defaultServices
-    result.services = baseServices.slice(0, targetCount)
-
-    // Process areas
-    if (generated.areasServed && generated.areasServed.length >= 5) {
-      result.areasServed = generated.areasServed.slice(0, 15)
-    } else {
-      const city = result.business.city
-      result.areasServed = [
-        city,
-        `${city} Metro`,
-        'Downtown',
-        'Suburbs',
-        'Surrounding Areas',
-        `Greater ${city}`,
-        'Nearby Communities',
-        'Local Neighborhoods',
-      ].slice(0, 10)
-    }
-
-    // Process reviews
-    if (generated.sampleReviews && generated.sampleReviews.length >= 3) {
-      result.sampleReviews = generated.sampleReviews.slice(0, 5).map(r => ({
-        name: r.name || 'Happy Customer',
-        text: r.text || 'Excellent service! Highly recommend.',
-        stars: r.stars || 5,
-        service: r.service,
-      }))
-    } else {
-      result.sampleReviews = generateDefaultReviews(result.business.name, result.business.city)
-    }
-
-    return result
-  } catch (error) {
-    console.error('Error generating content from description:', error)
-    throw new Error(
-      `Failed to generate content: ${error instanceof Error ? error.message : 'Unknown error'}`
-    )
-  }
+function normalizeAbout(paragraphs: string[]): string {
+  const cleaned = paragraphs.map((part) => part.replace(/\s+/g, ' ').trim()).filter(Boolean).slice(0, 2)
+  const words = cleaned.join(' ').split(/\s+/).filter(Boolean).slice(0, 100)
+  const usable = words.length >= 40 ? words : [
+    ...words,
+    ...'This preview describes the listed services and service area. Final details are confirmed before launch.'.split(' '),
+  ].slice(0, 70)
+  const midpoint = Math.max(20, Math.ceil(usable.length / 2))
+  return [usable.slice(0, midpoint).join(' '), usable.slice(midpoint).join(' ')].filter(Boolean).join('\n\n')
 }
 
-/**
- * Validate that a niche string is valid
- */
-function validateNiche(niche?: string): BusinessNiche | null {
-  if (!niche) return null
-  if (niche in NICHE_DISPLAY_NAMES) {
-    return niche as BusinessNiche
-  }
-  return null
+function stateCode(value: string): string {
+  const match = value.toUpperCase().match(/\b[A-Z]{2}\b/)
+  return match?.[0] || ''
 }
 
-/**
- * Validate hex color
- */
 function validateHexColor(color?: string): string | null {
   if (!color) return null
-  const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-  return hexRegex.test(color) ? color : null
+  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color) ? color : null
 }
 
-/**
- * Generate default reviews
- */
-function generateDefaultReviews(businessName: string, city: string) {
-  return [
-    {
-      name: 'Sarah Johnson',
-      text: `Excellent service from ${businessName}! They were professional, punctual, and did an amazing job. I couldn't be happier with the results. Highly recommend to anyone in ${city}!`,
-      stars: 5,
-    },
-    {
-      name: 'Michael Chen',
-      text: `Great experience from start to finish. The team was friendly, knowledgeable, and the quality of work exceeded my expectations. Will definitely use them again!`,
-      stars: 5,
-    },
-    {
-      name: 'Emily Rodriguez',
-      text: `${businessName} is now my go-to service provider in ${city}. They're reliable, thorough, and their attention to detail is impressive. Worth every penny!`,
-      stars: 5,
-    },
-    {
-      name: 'David Martinez',
-      text: `Outstanding service! They were on time, professional, and left everything spotless. The pricing was fair and transparent. Couldn't ask for more!`,
-      stars: 5,
-    },
-    {
-      name: 'Jennifer Lee',
-      text: `Professional, efficient, and affordable. ${businessName} transformed our space. The team was a pleasure to work with. Will definitely use them again!`,
-      stars: 5,
-    },
-  ]
-}
+export async function generateFromDescription(input: CompanyDescription): Promise<StructuredCompanyData> {
+  const description = input.description.trim().slice(0, 8000)
+  if (description.length < 20) {
+    throw new Error('Add a longer company description before generating.')
+  }
 
+  const client = getOpenAIClient()
+  const prompt = `Extract a cleaning-business website draft from the notes below. Return JSON only.
+
+NOTES:
+${description}
+${input.placeId ? `KNOWN PLACE ID: ${input.placeId}` : ''}
+
+Rules:
+- Classify primaryCategory as one of: ${CLEANING_CATEGORIES.join(', ')}.
+- Add secondaryCategories only when the notes clearly support them.
+- audience is residential, commercial, or mixed. environment is interior, exterior, or specialized.
+- Extract the business name, city, state abbreviation, and phone only when present. Use empty strings when missing. Never invent a phone number, email, address, discount, guarantee, certification, insurance, years in business, or customer count.
+- services: only services explicitly mentioned or unmistakably implied by the business name. 1 to 6 items. Each description is one factual sentence, not a fabricated benefit claim.
+- areasServed: only cities or neighborhoods named in the notes. Include the primary city when known.
+- hours: only when stated.
+- reviews: only reviews written out in the notes. If none are written out, return an empty array. Never invent reviewer names or quotes. Mark source as "google" only when the note says the review is from Google.
+- google.rating and google.reviewCount only when numeric values are present.
+- heroHeadline: specific service plus city, under 8 words. heroSubheadline: one sentence, under 25 words.
+- aboutParagraphs: exactly two short paragraphs totaling 60 to 100 words. No invented facts.
+- offerText: only if the notes state a real promotion. Otherwise omit it.
+
+Return this shape:
+{
+  "primaryCategory": "residential-cleaning",
+  "secondaryCategories": [],
+  "audience": "residential",
+  "environment": "interior",
+  "business": { "name": "", "city": "", "state": "", "phone": "", "email": "", "website": "" },
+  "google": { "placeId": "", "rating": 4.8, "reviewCount": 20, "primaryCategory": "", "hours": "" },
+  "services": [{ "name": "", "description": "" }],
+  "areasServed": [],
+  "hours": "",
+  "reviews": [{ "name": "", "text": "", "stars": 5, "source": "google" }],
+  "heroHeadline": "",
+  "heroSubheadline": "",
+  "aboutParagraphs": ["", ""],
+  "offerText": ""
+}`
+
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      {
+        role: 'system',
+        content: 'You extract factual website drafts for cleaning businesses. Return valid JSON only. Do not invent reviews, ratings, discounts, credentials, or services.',
+      },
+      { role: 'user', content: prompt },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.2,
+    max_tokens: 1800,
+  })
+
+  const content = completion.choices[0]?.message?.content
+  if (!content) throw new Error('No content generated from OpenAI')
+
+  const parsed = aiSchema.safeParse(JSON.parse(content))
+  if (!parsed.success) {
+    throw new Error(`Generated draft failed validation: ${parsed.error.issues.slice(0, 4).map((issue) => issue.message).join(', ')}`)
+  }
+
+  const generated = parsed.data
+  const colors = getColorPalettes('cleaning')[0] || { primary: '#0EA5E9', accent: '#10B981' }
+  const city = generated.business.city.trim()
+  const services = generated.services.filter((service) => service.name.trim())
+  const areas = Array.from(new Set(generated.areasServed.map((area) => area.trim()).filter(Boolean)))
+  if (city && !areas.some((area) => area.toLowerCase() === city.toLowerCase())) areas.unshift(city)
+  if (areas.length === 1) areas.push(`${areas[0]} area`)
+
+  const profile: CleaningProfile = inferCleaningProfile({
+    business: { name: generated.business.name, city, state: stateCode(generated.business.state), phone: generated.business.phone },
+    services,
+    cleaningProfile: {
+      primaryCategory: generated.primaryCategory,
+      secondaryCategories: generated.secondaryCategories,
+      audience: generated.audience,
+      environment: generated.environment,
+      assetCollection: generated.primaryCategory,
+    },
+  })
+
+  const rating = generated.google?.rating
+  const googleBusinessProfile: GoogleBusinessProfile | undefined = (input.placeId || generated.google?.placeId || rating || generated.google?.reviewCount)
+    ? {
+        placeId: input.placeId || generated.google?.placeId || undefined,
+        rating: typeof rating === 'number' && rating >= 4 ? rating : undefined,
+        reviewCount: generated.google?.reviewCount,
+        primaryCategory: generated.google?.primaryCategory,
+      }
+    : undefined
+
+  return {
+    niche: 'cleaning',
+    business: {
+      name: generated.business.name.trim(),
+      city,
+      state: stateCode(generated.business.state),
+      phone: generated.business.phone.trim(),
+      email: generated.business.email?.includes('@') ? generated.business.email : undefined,
+      website: generated.business.website?.startsWith('http') ? generated.business.website : undefined,
+    },
+    offer: {
+      shortText: generated.offerText?.trim() || 'Request a free quote',
+    },
+    branding: {
+      primaryColor: validateHexColor(colors.primary) || '#0EA5E9',
+      accentColor: validateHexColor(colors.accent) || '#10B981',
+    },
+    services: services.length ? services : [{ name: profile.primaryCategory.replace(/-/g, ' '), description: '' }],
+    areasServed: areas.length ? areas.slice(0, 15) : ['Local area', 'Nearby communities'],
+    hours: generated.hours || generated.google?.hours || undefined,
+    sampleReviews: generated.reviews.map((review) => ({
+      ...review,
+      kind: 'genuine' as const,
+      source: review.source,
+    })),
+    heroHeadline: generated.heroHeadline.trim(),
+    heroSubheadline: generated.heroSubheadline.trim(),
+    aboutStory: normalizeAbout(generated.aboutParagraphs),
+    cleaningProfile: profile,
+    googleBusinessProfile,
+  }
+}

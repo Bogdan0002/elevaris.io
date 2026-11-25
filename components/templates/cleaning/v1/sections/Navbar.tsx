@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { Menu, X, Phone, ChevronRight } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
 import { getNavItems } from '@/lib/previews/defaults'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface NavbarProps {
   config: PreviewConfig
@@ -39,7 +40,15 @@ export function Navbar({ config }: NavbarProps) {
     }
   }, [mobileMenuOpen])
 
-  const navLinks = getNavItems()
+  const presentation = resolveCleaningPresentation(config)
+  const navLinks = getNavItems().filter((item) => {
+    if (item.href === '#about') return presentation.sections.about
+    if (item.href === '#gallery') return presentation.sections.gallery
+    if (item.href === '#areas') return presentation.sections.areas
+    if (item.href === '#reviews') return presentation.sections.reviews
+    if (item.href === '#contact') return presentation.sections.booking
+    return true
+  })
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
 

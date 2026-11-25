@@ -1,22 +1,15 @@
 import { NextResponse } from 'next/server'
 import { getPreviewBySlug, listPreviews } from '@/lib/previews/repo'
+import { assertOpsRequest, OpsAuthError } from '@/lib/ops/guard'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   try {
-    // Check for API key
+    await assertOpsRequest(request)
     const { searchParams } = new URL(request.url)
-    const key = searchParams.get('key')
     const slug = searchParams.get('slug')
-    
-    if (key !== process.env.OPS_ACCESS_KEY) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
 
     // Check environment
     const envCheck = {
@@ -75,6 +68,9 @@ export async function GET(request: Request) {
       })
     }
   } catch (error) {
+    if (error instanceof OpsAuthError) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+    }
     console.error('Debug error:', error)
     return NextResponse.json(
       { 

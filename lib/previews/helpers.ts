@@ -1,5 +1,6 @@
-import type { CleaningPreviewConfig, PreviewConfig, BusinessNiche, ServiceItem } from './types'
-import { getDefaultServices, getDefaultTrustBadges, getColorPalettes } from './niche-defaults'
+import type { CleaningPreviewConfig, PreviewConfig, BusinessNiche, ReviewItem, ServiceItem } from './types'
+import { getDefaultServices, getColorPalettes } from './niche-defaults'
+import { inferCleaningProfile } from './cleaning-presentation'
 
 /**
  * Default branding colors if not provided
@@ -8,26 +9,17 @@ import { getDefaultServices, getDefaultTrustBadges, getColorPalettes } from './n
 const DEFAULT_PRIMARY_COLOR = '#0EA5E9' // Sky blue
 const DEFAULT_ACCENT_COLOR = '#10B981' // Emerald green
 
-/**
- * Default sample reviews if none provided
- */
-const DEFAULT_SAMPLE_REVIEWS = [
-  {
-    name: 'Sarah Johnson',
-    text: 'Excellent service! They did a thorough job. Very professional and punctual.',
-    stars: 5,
-  },
-  {
-    name: 'Michael Chen',
-    text: 'Great experience from start to finish. The team was friendly and the results exceeded our expectations.',
-    stars: 5,
-  },
-  {
-    name: 'Emily Rodriguez',
-    text: 'Highly recommend! Worth every penny. Will definitely use them again.',
-    stars: 5,
-  },
-]
+function normalizeReviews(reviews?: ReviewItem[]): ReviewItem[] {
+  return (reviews || []).map((review) => {
+    const genuine = review.kind === 'genuine' || review.source === 'google'
+    return {
+      ...review,
+      kind: review.kind || 'illustrative',
+      source: review.source || 'unknown',
+      verified: genuine ? Boolean(review.verified) : false,
+    }
+  })
+}
 
 /**
  * Get niche-appropriate default colors
@@ -53,21 +45,10 @@ export function normalizeServices(services: ServiceItem[] | string[], niche: Bus
     return services as ServiceItem[]
   }
   
-  // Convert string[] to ServiceItem[]
-  const defaultServices = getDefaultServices(niche)
-  return (services as string[]).map((serviceName, index) => {
-    // Try to find matching default service for description
-    const matchingDefault = defaultServices.find(
-      ds => ds.name.toLowerCase() === serviceName.toLowerCase()
-    )
-    
-    return {
-      name: serviceName,
-      description: matchingDefault?.description || `Professional ${serviceName.toLowerCase()} services.`,
-      icon: matchingDefault?.icon,
-      features: matchingDefault?.features,
-    }
-  })
+  return (services as string[]).map((serviceName) => ({
+    name: serviceName,
+    description: '',
+  }))
 }
 
 /**
@@ -82,6 +63,11 @@ export function applyDefaults(
   
   // Ensure required fields exist
   const result: PreviewConfig = {
+    schemaVersion: 2,
+    mode: ('mode' in config && config.mode) || 'preview',
+    attributionId: 'attributionId' in config ? config.attributionId : undefined,
+    cleaningProfile: inferCleaningProfile(config as Partial<PreviewConfig>),
+    googleBusinessProfile: 'googleBusinessProfile' in config ? config.googleBusinessProfile : undefined,
     slug: config.slug || '',
     niche,
     templateId: config.templateId || 'universal-v1',
@@ -99,18 +85,13 @@ export function applyDefaults(
       primaryColor: config.branding?.primaryColor || defaultColors.primary,
       accentColor: config.branding?.accentColor || defaultColors.accent,
     },
-    services: [] as string[], // Will be populated below
+    services: [],
     areasServed: (config.areasServed || []).slice(0, 15), // Max 15
   }
 
-  // Handle services (can be string[] or ServiceItem[])
-  if (config.services && Array.isArray(config.services)) {
-    if (typeof config.services[0] === 'string') {
-      result.services = (config.services as string[]).slice(0, 10)
-    } else {
-      // Extract names from ServiceItem[]
-      result.services = (config.services as ServiceItem[]).map(s => s.name).slice(0, 10)
-    }
+  // Keep supplied services, including descriptions. Do not invent extra services.
+  if (config.services && Array.isArray(config.services) && config.services.length > 0) {
+    result.services = normalizeServices(config.services as ServiceItem[] | string[], niche).slice(0, 10)
   }
 
   // Apply optional fields
@@ -130,26 +111,9 @@ export function applyDefaults(
     }
   }
 
-  // Ensure sampleReviews exist
-  if ('sampleReviews' in config && config.sampleReviews?.length) {
-    result.sampleReviews = config.sampleReviews.map(r => ({
-      name: r.name,
-      text: r.text,
-      stars: r.stars,
-    }))
-  } else {
-    result.sampleReviews = DEFAULT_SAMPLE_REVIEWS
-  }
-
-  // Ensure services meet minimums
-  if (result.services.length < 4) {
-    const defaultServices = getDefaultServices(niche)
-    const serviceList = result.services as string[]
-    while (serviceList.length < 4 && defaultServices[serviceList.length]) {
-      serviceList.push(defaultServices[serviceList.length].name)
-    }
-    result.services = serviceList
-  }
+  result.sampleReviews = normalizeReviews(
+    'sampleReviews' in config ? (config.sampleReviews as ReviewItem[] | undefined) : undefined
+  )
 
   // Ensure areasServed meet minimums
   if (result.areasServed.length < 2) {
@@ -169,16 +133,16 @@ export function applyDefaults(
 export function applyPreviewDefaults(config: Partial<PreviewConfig>): PreviewConfig {
   const niche = config.niche || 'cleaning'
   const defaultColors = getNicheDefaultColors(niche)
-  const defaultServices = getDefaultServices(niche)
-  const defaultTrustBadges = getDefaultTrustBadges(niche)
   const normalizedServices = config.services?.length
     ? normalizeServices(config.services, niche)
-    : defaultServices
-  const servicesWithMinimum = normalizedServices.length >= 2
-    ? normalizedServices
-    : [...normalizedServices, ...defaultServices].slice(0, 2)
+    : getDefaultServices(niche)
   
   return {
+    schemaVersion: 2,
+    mode: config.mode || 'preview',
+    attributionId: config.attributionId,
+    cleaningProfile: inferCleaningProfile({ ...config, niche, services: normalizedServices }),
+    googleBusinessProfile: config.googleBusinessProfile,
     slug: config.slug || '',
     niche,
     templateId: config.templateId || `${niche}-v1`,
@@ -205,7 +169,7 @@ export function applyPreviewDefaults(config: Partial<PreviewConfig>): PreviewCon
       fontFamily: config.branding?.fontFamily || 'modern',
       style: config.branding?.style || 'clean',
     },
-    services: servicesWithMinimum,
+    services: normalizedServices,
     areasServed: config.areasServed?.length 
       ? config.areasServed.slice(0, 15)
       : config.business?.city 
@@ -213,16 +177,12 @@ export function applyPreviewDefaults(config: Partial<PreviewConfig>): PreviewCon
         : ['Local Area'],
     hours: config.hours,
     map: config.map || { radiusMiles: 15 },
-    sampleReviews: config.sampleReviews?.length 
-      ? config.sampleReviews.map(r => ({ ...r, verified: r.verified ?? true }))
-      : DEFAULT_SAMPLE_REVIEWS.map(r => ({ ...r, verified: true })),
+    sampleReviews: normalizeReviews(config.sampleReviews),
     hero: config.hero,
     about: config.about,
     gallery: config.gallery,
     pricing: config.pricing,
-    socialProof: config.socialProof || {
-      badges: defaultTrustBadges,
-    },
+    socialProof: config.socialProof,
     content: config.content,
     features: {
       showGallery: config.features?.showGallery ?? true,
@@ -260,10 +220,6 @@ export function validateConfigSafe(config: CleaningPreviewConfig | PreviewConfig
 
   if (!config.business?.name || config.business.name.trim().length === 0) {
     throw new Error('Business name is required')
-  }
-
-  if (!config.placeId || config.placeId.trim().length === 0) {
-    throw new Error('Place ID is required')
   }
 
   if (!config.services || config.services.length === 0) {

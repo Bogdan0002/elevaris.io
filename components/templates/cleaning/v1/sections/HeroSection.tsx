@@ -19,9 +19,8 @@ import {
   Users,
   Calendar
 } from 'lucide-react'
-import { getTrustBadges, getNicheHeadlines } from '@/lib/previews/defaults'
-import { getNicheDisplayName } from '@/lib/templates/registry'
 import type { PreviewConfig } from '@/lib/previews/types'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface HeroSectionProps {
   config: PreviewConfig
@@ -58,7 +57,7 @@ function FloatingBadge({
 }) {
   return (
     <motion.div
-      className={`absolute hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white shadow-xl shadow-slate-200/50 border border-slate-100 z-20 ${className}`}
+      className={`absolute hidden xl:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white shadow-xl shadow-slate-200/50 border border-slate-100 z-20 ${className}`}
       style={style}
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -74,15 +73,14 @@ export function HeroSection({ config }: HeroSectionProps) {
   const reviewUrl = getGoogleReviewUrl(config.placeId)
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const niche = config.niche || 'cleaning'
-  const trustItems = getTrustBadges(niche)
-  const nicheHeadlines = getNicheHeadlines(niche)
-  const nicheLabel = getNicheDisplayName(niche)
-  const headline = config.hero?.headline || nicheHeadlines.heroHeadline
-  const subheadline =
-    config.hero?.subheadline ||
-    nicheHeadlines.heroSubheadline ||
-    `${config.business.name} provides trusted ${nicheLabel.toLowerCase()} services.`
+  const presentation = resolveCleaningPresentation(config)
+  const trustItems = presentation.benefits.map((benefit) => ({
+    icon: '✓',
+    label: benefit.title,
+    description: benefit.description,
+  }))
+  const headline = presentation.headline
+  const subheadline = presentation.subheadline
 
   const mockupRef = useRef<HTMLAnchorElement>(null)
   const mouseX = useMotionValue(0)
@@ -156,7 +154,7 @@ export function HeroSection({ config }: HeroSectionProps) {
   return (
     <section 
       ref={sectionRef}
-      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden pt-24 pb-16 md:pt-32 md:pb-24"
+      className="relative flex items-center justify-center overflow-hidden pt-24 pb-16 md:pt-28 md:pb-20"
     >
       {/* Premium gradient background */}
       <div className="absolute inset-0">
@@ -267,7 +265,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="text-center max-w-5xl mx-auto"
+            className="text-center max-w-5xl mx-auto flex flex-col"
           >
             {/* Offer Badge */}
             <motion.div variants={itemVariants} className="mb-8">
@@ -308,10 +306,10 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Main headline */}
             <motion.h1 
               variants={itemVariants}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-10 leading-[1.1]"
+              className="order-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]"
             >
               <span className="text-slate-900">{headline}</span>
-              <br />
+              {!headline.toLowerCase().includes((config.business.city || '').toLowerCase()) && <><br />
               <span className="text-slate-900">Serving </span>
               <span 
                 className="relative inline-block"
@@ -345,13 +343,13 @@ export function HeroSection({ config }: HeroSectionProps) {
                     </linearGradient>
                   </defs>
                 </motion.svg>
-              </span>
+              </span></>}
             </motion.h1>
 
             {/* Subheadline */}
             <motion.p 
               variants={itemVariants}
-              className="text-lg sm:text-xl text-slate-600 mt-8 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="order-3 text-lg sm:text-xl text-slate-600 mt-4 mb-6 max-w-2xl mx-auto leading-relaxed"
             >
               {subheadline}
             </motion.p>
@@ -359,7 +357,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Hero mockup (image-free, interactive) */}
             <motion.div
               variants={itemVariants}
-              className="relative mx-auto mb-12 w-full max-w-5xl"
+              className="order-6 relative mx-auto mb-12 mt-8 w-full max-w-5xl"
             >
               <motion.a
                 ref={mockupRef}
@@ -409,15 +407,9 @@ export function HeroSection({ config }: HeroSectionProps) {
                             animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
                           />
-                          Live booking
+                          Quote preview
                         </span>
-                        <motion.span 
-                          className="text-slate-900"
-                          animate={{ x: [0, 3, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          Tap to start
-                        </motion.span>
+                        <span className="whitespace-nowrap text-slate-900">Local service</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <div
@@ -425,12 +417,12 @@ export function HeroSection({ config }: HeroSectionProps) {
                           style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
                         />
                         <div className="text-left">
-                          <div className="text-xs text-slate-500">Instant Quote Engine</div>
-                          <div className="text-sm font-semibold text-slate-900">Spotless Results, Fast</div>
+                          <div className="text-xs text-slate-500">{presentation.bookingSubtitle}</div>
+                          <div className="text-sm font-semibold text-slate-900">{presentation.bookingTitle}</div>
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-3">
-                        {['Home', 'Office', 'Deep Clean'].map((label) => (
+                        {presentation.bookingOptions.map((label) => (
                           <div
                             key={label}
                             className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
@@ -470,10 +462,10 @@ export function HeroSection({ config }: HeroSectionProps) {
                     </div>
                     <div className="flex flex-col gap-4">
                       <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm">
-                        <div className="text-xs text-slate-500">Average Rating</div>
+                        <div className="text-xs text-slate-500">{presentation.showRating ? 'Google rating' : 'Listed services'}</div>
                         <div className="mt-2 flex items-center gap-2">
-                          <div className="text-2xl font-bold text-slate-900">4.9</div>
-                          <div className="text-xs text-slate-500">/ 5.0</div>
+                          <div className="text-2xl font-bold text-slate-900">{presentation.showRating ? presentation.rating?.toFixed(1) : presentation.bookingOptions.length}</div>
+                          <div className="text-xs text-slate-500">{presentation.showRating ? `/ ${presentation.reviewCount || 0} reviews` : 'options'}</div>
                         </div>
                         <div className="mt-3 h-2 rounded-full bg-slate-100 overflow-hidden">
                           <motion.div
@@ -496,15 +488,15 @@ export function HeroSection({ config }: HeroSectionProps) {
                         }}
                         transition={{ duration: 2, repeat: Infinity }}
                       >
-                        <div className="text-xs text-slate-500">Live Dispatch</div>
-                        <div className="mt-2 text-lg font-bold text-slate-900">Cleaner en route</div>
+                        <div className="text-xs text-slate-500">Next step</div>
+                        <div className="mt-2 text-lg font-bold text-slate-900">{presentation.dispatchLabel}</div>
                         <div className="mt-3 flex items-center gap-2 text-xs text-slate-600">
                           <motion.span 
                             className="h-2 w-2 rounded-full bg-emerald-500"
                             animate={{ scale: [1, 1.3, 1] }}
                             transition={{ duration: 1.5, repeat: Infinity }}
                           />
-                          ETA 24 min
+                          Demonstration only
                         </div>
                       </motion.div>
                       <div className="rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-sm mb-24 md:mb-0">
@@ -525,7 +517,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Tap to book →
+                  <span className="whitespace-nowrap">Request a quote</span>
                 </motion.div>
               </motion.a>
             </motion.div>
@@ -533,7 +525,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Trust indicators row */}
             <motion.div 
               variants={itemVariants}
-              className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mb-10 text-sm"
+              className="order-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mb-10 text-sm"
             >
               {trustItems.slice(0, 3).map((item, i) => (
                 <motion.div 
@@ -550,7 +542,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* CTA Buttons */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
+              className="order-4 flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
             >
               <motion.a
                 href={`tel:${config.business.phone.replace(/\s/g, '')}`}
@@ -597,7 +589,7 @@ export function HeroSection({ config }: HeroSectionProps) {
                 whileTap={{ scale: 0.98 }}
               >
                 <MessageSquare className="w-5 h-5" />
-                <span>Get Free Quote</span>
+                <span>{presentation.primaryCta}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </motion.a>
             </motion.div>
@@ -605,7 +597,7 @@ export function HeroSection({ config }: HeroSectionProps) {
             {/* Social proof card */}
             <motion.div
               variants={itemVariants}
-              className="inline-block w-full max-w-4xl"
+              className="order-7 inline-block w-full max-w-4xl"
             >
               <motion.div
                 className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl shadow-slate-200/60 border border-slate-100/80"
@@ -628,15 +620,15 @@ export function HeroSection({ config }: HeroSectionProps) {
                       ))}
                     </div>
                     <div className="text-left">
-                      <span className="font-bold text-slate-900 text-lg">5.0</span>
-                      <span className="text-slate-500 ml-2">Rating</span>
+                      <span className="font-bold text-slate-900 text-lg">{presentation.showRating ? presentation.rating?.toFixed(1) : config.business.city}</span>
+                      <span className="text-slate-500 ml-2">{presentation.showRating ? 'Google rating' : presentation.servicePhrase}</span>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-4">
                     <div className="text-center sm:text-right">
-                      <div className="font-bold text-slate-900">Trusted by</div>
-                      <div className="text-sm text-slate-500">{config.business.city} families</div>
+                      <div className="font-bold text-slate-900">{config.business.name}</div>
+                      <div className="text-sm text-slate-500">{config.business.city}</div>
                     </div>
                     <motion.a
                       href={reviewUrl}
@@ -690,7 +682,7 @@ export function HeroSection({ config }: HeroSectionProps) {
         {/* Floating badges - positioned more sideways to avoid covering H1 */}
         <FloatingBadge
           delay={2}
-          className="top-[25%] -left-2 md:left-0 2xl:left-[-2%]"
+          className="top-[58%] left-4"
           style={{ transform: 'rotate(-4deg)' }}
         >
           <div 
@@ -701,13 +693,13 @@ export function HeroSection({ config }: HeroSectionProps) {
           </div>
           <div>
             <div className="font-bold text-slate-900 text-sm">Book Today</div>
-            <div className="text-xs text-slate-500">Same-day slots</div>
+            <div className="text-xs text-slate-500">Request a visit</div>
           </div>
         </FloatingBadge>
 
         <FloatingBadge
           delay={2.2}
-          className="bottom-[35%] -right-2 md:right-0 2xl:right-[-2%]"
+          className="top-[70%] right-4"
           style={{ transform: 'rotate(4deg)' }}
         >
           <div 
@@ -718,15 +710,15 @@ export function HeroSection({ config }: HeroSectionProps) {
           </div>
           <div>
             <div className="font-bold text-slate-900 text-sm">
-              <AnimatedNumber value={500} suffix="+" />
+              {presentation.bookingOptions.length}
             </div>
-            <div className="text-xs text-slate-500">Happy clients</div>
+            <div className="text-xs text-slate-500">Services listed</div>
           </div>
         </FloatingBadge>
 
         <FloatingBadge
           delay={2.4}
-          className="top-[15%] -right-6 md:top-[12%] md:-right-2 2xl:right-[-1%]"
+          className="bottom-24 right-8"
           style={{ transform: 'rotate(3deg)' }}
         >
           <div className="flex items-center gap-0.5">
@@ -734,7 +726,7 @@ export function HeroSection({ config }: HeroSectionProps) {
               <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
             ))}
           </div>
-          <span className="text-xs text-slate-600 font-medium">5-Star Service</span>
+          <span className="text-xs text-slate-600 font-medium">{presentation.showRating ? 'Google rating' : 'Quote demo'}</span>
         </FloatingBadge>
       </Container>
 

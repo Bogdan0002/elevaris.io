@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { Container } from '@/components/site/Container'
 import { normalizeServices } from '@/lib/previews/helpers'
 import { getNicheHeadlines } from '@/lib/previews/defaults'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 import type { PreviewConfig } from '@/lib/previews/types'
 import { 
   Home, 
@@ -38,9 +38,10 @@ export function ServicesSection({ config }: ServicesSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
   const niche = config.niche || 'cleaning'
-  const nicheHeadlines = getNicheHeadlines(niche)
-  const nicheLabel = getNicheDisplayName(niche)
-  const servicesDescription = `Specialized ${nicheLabel.toLowerCase()} solutions tailored to your needs.`
+  const presentation = resolveCleaningPresentation(config)
+  const nicheHeadlines = { servicesHeadline: presentation.servicePhrase.charAt(0).toUpperCase() + presentation.servicePhrase.slice(1) }
+  const nicheLabel = presentation.servicePhrase
+  const servicesDescription = `Services for ${presentation.servicePhrase} in ${config.business.city}.`
   const services = normalizeServices(config.services || [], niche)
 
   const iconMap: Record<string, React.ElementType> = {

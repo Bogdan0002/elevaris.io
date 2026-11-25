@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import Script from 'next/script'
 import type { PreviewConfig } from '@/lib/previews/types'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
+import { PreviewSalesCta } from './PreviewSalesCta'
 import { HeroSection } from './sections/HeroSection'
 import { AboutSection } from './sections/AboutSection'
 import { ServicesSection } from './sections/ServicesSection'
@@ -24,87 +26,23 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
   
   useEffect(() => {
     setMounted(true)
-    
-    // Aggressive chat widget position fixer for mobile
-    const adjustChatWidget = () => {
-      if (typeof window === 'undefined') return
-      
-      const isMobile = window.innerWidth <= 768
-      if (!isMobile) return
-      
-      // Get ALL elements on the page
-      const allElements = document.querySelectorAll('*')
-      
-      allElements.forEach((element: Element) => {
-        const htmlElement = element as HTMLElement
-        const computedStyle = window.getComputedStyle(htmlElement)
-        
-        // Check if element is fixed position and near the bottom
-        if (computedStyle.position === 'fixed') {
-          const bottom = computedStyle.bottom
-          const zIndex = computedStyle.zIndex
-          
-          // Target elements that are:
-          // 1. Fixed position
-          // 2. Have a bottom value between 0-50px
-          // 3. Have high z-index (typical for chat widgets)
-          // 4. Are iframes or divs
-          const tagName = htmlElement.tagName.toLowerCase()
-          const isWidget = (tagName === 'iframe' || tagName === 'div')
-          const hasHighZIndex = parseInt(zIndex) > 1000 || zIndex === 'auto'
-          const bottomValue = parseInt(bottom)
-          const isAtBottom = !isNaN(bottomValue) && bottomValue >= 0 && bottomValue <= 50
-          
-          if (isWidget && hasHighZIndex && (isAtBottom || bottom === 'auto' || bottom === '0px')) {
-            // Check if it's likely a chat widget (contains chat-related attributes or is from leadconnectorhq)
-            const src = htmlElement.getAttribute('src') || ''
-            const id = htmlElement.getAttribute('id') || ''
-            const className = htmlElement.getAttribute('class') || ''
-            
-            const isChatWidget = 
-              src.includes('leadconnectorhq') ||
-              src.includes('chat') ||
-              id.includes('chat') ||
-              className.includes('chat') ||
-              (hasHighZIndex && isAtBottom && tagName === 'iframe')
-            
-            if (isChatWidget) {
-              htmlElement.style.setProperty('bottom', '80px', 'important')
-              console.log('Chat widget repositioned:', htmlElement)
-            }
-          }
-        }
-      })
-    }
-    
-    // Use MutationObserver to watch for dynamically added elements
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.addedNodes.length) {
-          adjustChatWidget()
-        }
-      })
-    })
-    
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    })
-    
-    // Run immediately and repeatedly
-    adjustChatWidget()
-    const interval = setInterval(adjustChatWidget, 1000)
-    
-    // Cleanup
-    return () => {
-      clearInterval(interval)
-      observer.disconnect()
-    }
+    let attempts = 0
+    const timer = window.setInterval(() => {
+      attempts += 1
+      const widget = document.querySelector('iframe[src*="6968f420d66fc3d0a314aa9e"], iframe[src*="leadconnectorhq"]') as HTMLElement | null
+      if (widget && window.innerWidth <= 768) {
+        widget.style.setProperty('bottom', '148px', 'important')
+      }
+      if (widget || attempts >= 8) window.clearInterval(timer)
+    }, 500)
+    return () => window.clearInterval(timer)
   }, [])
 
   // Get theme colors with cleaning-appropriate defaults
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
+  const presentation = resolveCleaningPresentation(config)
+  const showTemplateChat = config.mode !== 'production' || Boolean(config.features?.enableChat)
 
   return (
     <div 
@@ -127,80 +65,32 @@ export default function CleaningTemplate({ config }: CleaningTemplateProps) {
       
       <Navbar config={config} />
       <HeroSection config={config} />
-      <AboutSection config={config} />
+      {presentation.sections.about && <AboutSection config={config} />}
       <ServicesSection config={config} />
-      <TransformationSection config={config} />
-      <GallerySection config={config} />
-      <WhyUsSection config={config} />
-      <AreasSection config={config} />
-      <ReviewsSection config={config} />
-      <ContactSection config={config} />
+      {presentation.sections.transformation && <TransformationSection config={config} />}
+      {presentation.sections.gallery && <GallerySection config={config} />}
+      {presentation.sections.whyUs && <WhyUsSection config={config} />}
+      {presentation.sections.areas && <AreasSection config={config} />}
+      {presentation.sections.reviews && <ReviewsSection config={config} />}
+      {presentation.sections.booking && <ContactSection config={config} />}
       <FooterSection config={config} />
+      {config.mode !== 'production' && <PreviewSalesCta attributionId={config.attributionId} />}
       
-      {/* GoHighLevel Live Chat Widget */}
-      <Script
-        src="https://widgets.leadconnectorhq.com/loader.js"
-        data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-        data-widget-id="6968f420d66fc3d0a314aa9e"
-        strategy="lazyOnload"
-      />
-      
-      {/* Custom CSS to position chat widget above mobile CTA */}
+      {showTemplateChat && (
+        <Script
+          src="https://widgets.leadconnectorhq.com/loader.js"
+          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+          data-widget-id="6968f420d66fc3d0a314aa9e"
+          strategy="lazyOnload"
+        />
+      )}
       <style jsx global>{`
-        /* Aggressive targeting for all fixed position elements at bottom */
         @media (max-width: 768px) {
-          /* Generic chat widget selectors */
-          iframe[src*="leadconnectorhq"],
-          iframe[src*="chat"],
-          iframe[title*="chat"],
-          div[id*="chat"],
-          div[class*="chat"],
-          #chat-widget-container,
-          .chat-widget-container,
-          [data-chat-widget] {
-            bottom: 80px !important;
-          }
-          
-          /* Target all high z-index fixed elements at bottom */
-          body > iframe[style*="position: fixed"],
-          body > div[style*="position: fixed"] {
-            bottom: 80px !important;
+          iframe[src*="leadconnectorhq"] {
+            bottom: 148px !important;
           }
         }
       `}</style>
-      
-      {/* Additional inline script for immediate execution */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              if (typeof window === 'undefined' || window.innerWidth > 768) return;
-              
-              function adjustWidget() {
-                const elements = document.querySelectorAll('iframe, div');
-                elements.forEach(function(el) {
-                  const style = window.getComputedStyle(el);
-                  if (style.position === 'fixed') {
-                    const src = el.getAttribute('src') || '';
-                    if (src.includes('leadconnectorhq') || src.includes('chat')) {
-                      el.style.setProperty('bottom', '80px', 'important');
-                    }
-                  }
-                });
-              }
-              
-              // Run repeatedly
-              setInterval(adjustWidget, 500);
-              
-              // Watch for new elements
-              new MutationObserver(adjustWidget).observe(document.body, {
-                childList: true,
-                subtree: true
-              });
-            })();
-          `
-        }}
-      />
     </div>
   )
 }

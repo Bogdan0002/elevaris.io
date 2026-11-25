@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { opsKeyMatches, signOpsSession, verifyOpsSession } from '@/lib/ops/session'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const hostname = request.headers.get('host') || ''
   
@@ -19,6 +20,24 @@ export function middleware(request: NextRequest) {
     pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|woff|woff2|ttf|eot)$/)
   ) {
     return NextResponse.next()
+  }
+
+  const opsRoute = pathname.startsWith('/preview') || hostname.startsWith('ops.') || hostname.includes('ops.elevaris.app')
+  if (opsRoute) {
+    const key = request.nextUrl.searchParams.get('key')
+    const cookie = request.cookies.get('elevaris_ops')?.value
+    const validCookie = await verifyOpsSession(cookie)
+    if (!validCookie && opsKeyMatches(key)) {
+      const response = NextResponse.next()
+      response.cookies.set('elevaris_ops', await signOpsSession(), {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 14,
+      })
+      return response
+    }
   }
 
   // Handle ops. subdomain - ensure routes work correctly

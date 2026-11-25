@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server'
 import { deletePreview, deletePreviewById } from '@/lib/previews/repo'
+import { assertOpsRequest, OpsAuthError } from '@/lib/ops/guard'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function DELETE(request: Request) {
   try {
-    // Check for API key
-    const { searchParams } = new URL(request.url)
-    const key = searchParams.get('key')
-    
-    if (key !== process.env.OPS_ACCESS_KEY) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    await assertOpsRequest(request)
 
     const body = await request.json()
     const { slug, id } = body
@@ -39,6 +31,9 @@ export async function DELETE(request: Request) {
       message: `Preview ${slug || id} deleted successfully`,
     })
   } catch (error) {
+    if (error instanceof OpsAuthError) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+    }
     console.error('Error deleting preview:', error)
     return NextResponse.json(
       { 

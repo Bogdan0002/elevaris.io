@@ -30,6 +30,9 @@ const reviewItemSchema = z.object({
   service: z.string().optional(),
   image: z.string().url().optional(),
   verified: z.boolean().optional(),
+  kind: z.enum(['genuine', 'illustrative']).optional(),
+  source: z.enum(['google', 'operator', 'ai', 'default', 'unknown']).optional(),
+  sourceUrl: z.string().url().optional(),
 })
 
 /**
@@ -176,7 +179,37 @@ const featuresSchema = z.object({
 /**
  * Full preview config schema (new multi-niche version)
  */
+const cleaningCategorySchema = z.enum([
+  'residential-cleaning',
+  'commercial-janitorial',
+  'exterior-cleaning',
+  'window-cleaning',
+  'carpet-upholstery',
+  'vacation-rental',
+  'post-construction',
+  'mixed-specialized',
+])
+
 export const previewConfigSchema = z.object({
+  schemaVersion: z.literal(2).optional(),
+  mode: z.enum(['preview', 'production']).optional(),
+  attributionId: z.string().min(8).max(80).optional(),
+  cleaningProfile: z.object({
+    primaryCategory: cleaningCategorySchema,
+    secondaryCategories: z.array(cleaningCategorySchema).max(6).optional(),
+    audience: z.enum(['residential', 'commercial', 'mixed']),
+    environment: z.enum(['interior', 'exterior', 'specialized']),
+    assetCollection: z.string().min(1).max(80),
+    serviceModel: z.enum(['recurring', 'project', 'mixed']).optional(),
+  }).optional(),
+  googleBusinessProfile: z.object({
+    placeId: z.string().optional(),
+    profileUrl: z.string().url().optional(),
+    rating: z.number().min(1).max(5).optional(),
+    reviewCount: z.number().min(0).optional(),
+    primaryCategory: z.string().optional(),
+    additionalCategories: z.array(z.string()).max(10).optional(),
+  }).optional(),
   slug: z.string().min(1).max(100),
   niche: z.enum(VALID_NICHES),
   templateId: z.string().min(1),
@@ -189,7 +222,7 @@ export const previewConfigSchema = z.object({
     address: z.string().optional(),
     website: z.string().url().optional(),
   }),
-  placeId: z.string().min(1),
+  placeId: z.string().max(200).optional(),
   offer: z.object({
     shortText: z.string().min(1).max(500),
     longText: z.string().optional(),
@@ -197,8 +230,8 @@ export const previewConfigSchema = z.object({
   }),
   branding: brandingSchema,
   services: z.union([
-    z.array(z.string()).min(2).max(10),
-    z.array(serviceItemSchema).min(2).max(10),
+    z.array(z.string()).min(1).max(10),
+    z.array(serviceItemSchema).min(1).max(10),
   ]),
   areasServed: z.array(z.string()).min(2).max(15),
   hours: z.string().optional(),
@@ -230,7 +263,7 @@ export const cleaningPreviewConfigSchema = z.object({
     state: z.string().min(2).max(2),
     phone: z.string().min(10).max(20),
   }),
-  placeId: z.string().min(1),
+  placeId: z.string().max(200).optional(),
   offer: z.object({
     shortText: z.string().min(1).max(500),
   }),

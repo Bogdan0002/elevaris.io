@@ -16,7 +16,7 @@ import {
   Zap
 } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface ContactSectionProps {
   config: PreviewConfig
@@ -25,7 +25,9 @@ interface ContactSectionProps {
 export function ContactSection({ config }: ContactSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
+  const presentation = resolveCleaningPresentation(config)
+  const nicheLabel = presentation.servicePhrase
+  const isPreview = config.mode !== 'production'
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -42,8 +44,11 @@ export function ContactSection({ config }: ContactSectionProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (isPreview) {
+      setIsSubmitted(true)
+      return
+    }
     setIsSubmitting(true)
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSubmitted(true)
@@ -140,23 +145,13 @@ export function ContactSection({ config }: ContactSectionProps) {
           </motion.div>
           
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-slate-900">
-            Ready for a
-            <span 
-              className="block mt-2"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Spotless Space?
-            </span>
+            {presentation.contactHeadline}
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Get your free quote today. We&apos;ll get back to you within 24 hours 
-            with a customized {nicheLabel.toLowerCase()} plan.
+            {isPreview
+              ? 'This form is a demonstration. It does not send an enquiry.'
+              : `Request a quote for ${nicheLabel}.`}
           </p>
         </motion.div>
 
@@ -271,7 +266,7 @@ export function ContactSection({ config }: ContactSectionProps) {
                     Thank You!
                   </h3>
                   <p className="text-slate-600 mb-6">
-                    We&apos;ve received your request and will get back to you within 24 hours.
+                    {isPreview ? 'Preview only. Nothing was sent.' : 'Request received.'}
                   </p>
                   <motion.button
                     onClick={() => {
@@ -397,7 +392,8 @@ export function ContactSection({ config }: ContactSectionProps) {
                       style={{ 
                         borderColor: focusedField === 'message' ? primaryColor : '#e2e8f0',
                       }}
-                      placeholder="Size of space, frequency, special requirements..."
+                      placeholder={presentation.formPlaceholder}
+                      disabled={isPreview}
                     />
                   </div>
 
@@ -424,7 +420,7 @@ export function ContactSection({ config }: ContactSectionProps) {
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
-                        Get My Free Quote
+                        {isPreview ? 'Demonstration only' : 'Get My Free Quote'}
                       </>
                     )}
                   </motion.button>

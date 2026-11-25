@@ -4,7 +4,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { Container } from '@/components/site/Container'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 import { 
   Image as ImageIcon, 
   Sparkles, 
@@ -27,8 +27,7 @@ interface GallerySectionProps {
 export function GallerySection({ config }: GallerySectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const niche = config.niche || 'cleaning'
-  const nicheLabel = getNicheDisplayName(niche)
+  const presentation = resolveCleaningPresentation(config)
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -37,11 +36,6 @@ export function GallerySection({ config }: GallerySectionProps) {
 
   const sizeCycle = ['large', 'small', 'small', 'medium', 'medium', 'tall'] as const
   const iconCycle = [Sofa, UtensilsCrossed, Bath, Building2, Bed, Home, Camera]
-  
-  // Use services from config instead of hardcoded items
-  const serviceNames = (config.services || []).map(service => 
-    typeof service === 'string' ? service : service.name
-  )
   
   // If no services, use defaults
   const defaultItems = [
@@ -53,12 +47,12 @@ export function GallerySection({ config }: GallerySectionProps) {
     'Full Home Reset',
   ]
   
-  const baseItems = serviceNames.length > 0 ? serviceNames : defaultItems
+  const baseItems = presentation.gallery.length ? presentation.gallery : defaultItems.map((label) => ({ label, description: 'Preview placeholder.', icon: 'Camera' }))
 
-  const galleryItems = baseItems.map((label, index) => ({
+  const galleryItems = baseItems.map((item, index) => ({
     id: index + 1,
-    label,
-    description: `A premium ${nicheLabel.toLowerCase()} package designed to impress.`,
+    label: item.label,
+    description: `${item.description} Preview placeholder, not completed work.`,
     icon: iconCycle[index % iconCycle.length],
     size: sizeCycle[index % sizeCycle.length],
   }))
@@ -265,7 +259,7 @@ export function GallerySection({ config }: GallerySectionProps) {
           
           <p className="text-sm text-slate-500 mt-4 flex items-center justify-center gap-2">
             <Camera className="w-4 h-4" style={{ color: primaryColor }} />
-            Stock photos shown — replace with your real work
+            Preview placeholders — not photos of completed work
           </p>
         </motion.div>
       </Container>

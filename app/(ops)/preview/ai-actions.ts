@@ -1,6 +1,7 @@
 'use server'
 
 import { generatePreviewContent, type ClientInfo } from '@/lib/ai/generateContent'
+import { assertOpsAccess, OpsAuthError } from '@/lib/ops/guard'
 
 export interface GenerateContentResult {
   success: boolean
@@ -26,6 +27,7 @@ export async function generateContentAction(
   clientInfo: ClientInfo
 ): Promise<GenerateContentResult> {
   try {
+    await assertOpsAccess()
     // Validate required fields
     if (!clientInfo.businessName || !clientInfo.city || !clientInfo.state || !clientInfo.phone) {
       return {

@@ -19,7 +19,7 @@ import {
   Star
 } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface WhyUsSectionProps {
   config: PreviewConfig
@@ -48,59 +48,20 @@ function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string
 export function WhyUsSection({ config }: WhyUsSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
+  const presentation = resolveCleaningPresentation(config)
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  const whyUsReasons = [
-    {
-      icon: Award,
-      title: 'Experienced Team',
-      description: `${config.business.name}'s professionals bring years of expertise to every ${nicheLabel.toLowerCase()} job.`,
-      highlight: '3+ Years',
-      stat: 10,
-      statSuffix: '+',
-    },
-    {
-      icon: Shield,
-      title: 'Fully Insured',
-      description: 'Complete peace of mind with comprehensive insurance coverage protecting your property.',
-      highlight: '100% Coverage',
-      stat: 100,
-      statSuffix: '%',
-    },
-    {
-      icon: Leaf,
-      title: 'Eco-Friendly',
-      description: 'We use environmentally responsible products safe for your family and pets.',
-      highlight: 'Green Certified',
-      stat: null,
-    },
-    {
-      icon: Clock,
-      title: 'Flexible Scheduling',
-      description: 'Book at your convenience with same-day availability and flexible appointment times.',
-      highlight: 'Same-Day',
-      stat: null,
-    },
-    {
-      icon: BadgeCheck,
-      title: 'Background Checked',
-      description: 'Every team member undergoes thorough background checks and professional training.',
-      highlight: 'Verified Staff',
-      stat: null,
-    },
-    {
-      icon: HeartHandshake,
-      title: 'Satisfaction Guaranteed',
-      description: "Not happy? We'll re-clean for free. Your satisfaction is our top priority.",
-      highlight: '100% Guarantee',
-      stat: 100,
-      statSuffix: '%',
-    },
-  ]
+  const whyUsReasons = presentation.whyUs.map((reason) => ({
+    icon: CheckCircle2,
+    title: reason.title,
+    description: reason.description,
+    highlight: presentation.servicePhrase,
+    stat: null as number | null,
+    statSuffix: '',
+  }))
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -191,8 +152,7 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            We&apos;re not just another {nicheLabel.toLowerCase()} company. Here&apos;s why {config.business.city} 
-            residents trust us with their homes and businesses.
+            What to expect from {presentation.servicePhrase} in {config.business.city}.
           </p>
         </motion.div>
 
@@ -357,11 +317,10 @@ export function WhyUsSection({ config }: WhyUsSectionProps) {
               </motion.div>
               
               <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-                Ready for a Spotless Space?
+                {presentation.contactHeadline}
               </h3>
               <p className="text-white/90 max-w-xl mx-auto mb-8 text-lg">
-                Join hundreds of satisfied customers in {config.business.city}. 
-                Book your first {nicheLabel.toLowerCase()} service today and see the difference.
+                Request a quote for {presentation.servicePhrase} in {config.business.city}.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

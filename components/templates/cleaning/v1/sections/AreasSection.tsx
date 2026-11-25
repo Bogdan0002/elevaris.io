@@ -6,7 +6,7 @@ import { Container } from '@/components/site/Container'
 import { MapPin, CheckCircle2, Phone, ArrowRight } from 'lucide-react'
 import { ServiceAreaMap } from './ServiceAreaMap'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface AreasSectionProps {
   config: PreviewConfig
@@ -15,7 +15,8 @@ interface AreasSectionProps {
 export function AreasSection({ config }: AreasSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
+  const nicheLabel = resolveCleaningPresentation(config).servicePhrase
+  const areasIntro = resolveCleaningPresentation(config).areasIntro
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
@@ -72,7 +73,7 @@ export function AreasSection({ config }: AreasSectionProps) {
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            We provide professional {nicheLabel.toLowerCase()} services across {config.areasServed.length} locations 
+            {areasIntro} Coverage includes {config.areasServed.length} locations 
             in and around {config.business.city}, {config.business.state}.
           </p>
         </motion.div>
@@ -108,19 +109,19 @@ export function AreasSection({ config }: AreasSectionProps) {
                     className="text-3xl font-bold mb-1"
                     style={{ color: accentColor }}
                   >
-                    24/7
+                    {config.services.length}
                   </div>
-                  <div className="text-sm text-slate-600">Availability</div>
+                  <div className="text-sm text-slate-600">Listed services</div>
                 </div>
               </div>
 
               {/* Features */}
               <div className="space-y-3 mb-6">
                 {[
-                  'Same-day service available',
-                  'No travel fees within service area',
-                  'Flexible scheduling',
-                  `Emergency ${nicheLabel.toLowerCase()} available`,
+                  'Request a quote for the listed services',
+                  'Service area shown for this preview',
+                  'Scheduling is confirmed after you call',
+                  `${nicheLabel} in ${config.business.city}`,
                 ].map((feature, i) => (
                   <motion.div
                     key={i}

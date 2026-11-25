@@ -14,7 +14,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 
 interface TransformationSectionProps {
   config: PreviewConfig
@@ -104,7 +104,7 @@ function BeforeAfterSlider({
             <Sparkles className="w-7 h-7 text-white" />
           </div>
           <p className="font-bold text-lg" style={{ color: primaryColor }}>After</p>
-          <p className="text-xs text-slate-600 mt-1">Sparkling Clean!</p>
+          <p className="text-xs text-slate-600 mt-1">Preview result</p>
         </div>
       </div>
 
@@ -147,31 +147,17 @@ function BeforeAfterSlider({
 export function TransformationSection({ config }: TransformationSectionProps) {
   const primaryColor = config.branding.primaryColor || '#0EA5E9'
   const accentColor = config.branding.accentColor || '#10B981'
-  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
+  const presentation = resolveCleaningPresentation(config)
+  const nicheLabel = presentation.servicePhrase
   
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [activeSlide, setActiveSlide] = useState(0)
 
-  // Generate transformations from services if available, otherwise use defaults
-  const serviceBasedTransformations = (config.services || []).slice(0, 4).map(service => {
-    const serviceName = typeof service === 'string' ? service : service.name
-    return {
-      label: serviceName,
-      room: serviceName.split(' ')[0] // Use first word as room type
-    }
-  })
-
-  const defaultTransformations = [
-    { label: 'Kitchen Deep Clean', room: 'Kitchen' },
-    { label: 'Bathroom Restoration', room: 'Bathroom' },
-    { label: 'Living Room Refresh', room: 'Living Room' },
-    { label: 'Office Space Cleaning', room: 'Office' },
-  ]
-
-  const transformations = serviceBasedTransformations.length >= 2 
-    ? serviceBasedTransformations 
-    : defaultTransformations
+  const transformations = presentation.transformations.map((item) => ({
+    label: item.label,
+    room: item.label,
+  }))
 
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % transformations.length)
@@ -255,8 +241,7 @@ export function TransformationSection({ config }: TransformationSectionProps) {
           </h2>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Drag the slider to see the incredible difference {config.business.name} can make. 
-            These are the results our {config.business.city} clients love!
+            Preview placeholders for {nicheLabel}. These are not photos of completed work.
           </p>
         </motion.div>
 
@@ -335,18 +320,16 @@ export function TransformationSection({ config }: TransformationSectionProps) {
               </h3>
 
               <p className="text-slate-600 mb-6 leading-relaxed">
-                Our professional team transformed this space from cluttered and dirty to 
-                sparkling clean in just a few hours. This is the quality you can expect 
-                from every {config.business.name} {nicheLabel.toLowerCase()} service.
+                Placeholder result for {transformations[activeSlide].label}. Approved photos can replace this after onboarding.
               </p>
 
               {/* Results list */}
               <div className="space-y-3 mb-8">
                 {[
-                  'Deep cleaned all surfaces',
-                  'Sanitized high-touch areas',
-                  'Removed stubborn stains',
-                  'Eco-friendly products used',
+                  'Preview layout only',
+                  'Not a completed job photo',
+                  'Service label follows the quoted work',
+                  'Real photos are added after onboarding',
                 ].map((item, i) => (
                   <motion.div
                     key={i}

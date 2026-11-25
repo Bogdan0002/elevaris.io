@@ -6,7 +6,7 @@ import { Container } from '@/components/site/Container'
 import { Phone, Mail, MapPin, Facebook, Instagram, ArrowUp, Star, Shield, Leaf } from 'lucide-react'
 import type { PreviewConfig } from '@/lib/previews/types'
 import { getFooterLinks, getNavItems } from '@/lib/previews/defaults'
-import { getNicheDisplayName } from '@/lib/templates/registry'
+import { resolveCleaningPresentation } from '@/lib/previews/cleaning-presentation'
 import { getGoogleReviewUrl } from '@/lib/previews/helpers'
 
 interface FooterSectionProps {
@@ -29,7 +29,7 @@ export function FooterSection({ config }: FooterSectionProps) {
     ? { services: serviceLinks, company: getFooterLinks().company }
     : getFooterLinks()
   
-  const nicheLabel = getNicheDisplayName(config.niche || 'cleaning')
+  const presentation = resolveCleaningPresentation(config)
   const reviewUrl = getGoogleReviewUrl(config.placeId)
   
   const footerRef = useRef(null)
@@ -53,9 +53,8 @@ export function FooterSection({ config }: FooterSectionProps) {
   ]
 
   const badges = [
-    { icon: Star, text: '5-Star Rated' },
-    { icon: Shield, text: 'Fully Insured' },
-    { icon: Leaf, text: 'Eco-Friendly' },
+    { icon: MapPin, text: config.business.city || 'Local service' },
+    { icon: Phone, text: presentation.servicePhrase },
   ]
 
   return (
@@ -82,10 +81,10 @@ export function FooterSection({ config }: FooterSectionProps) {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-white">
             <div className="text-center md:text-left">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">
-                Ready for a Cleaner Space?
+                {presentation.contactHeadline}
               </h3>
               <p className="text-white/90">
-                Get your free quote today — no obligation, just results.
+                Request a quote for {presentation.servicePhrase}.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -148,9 +147,8 @@ export function FooterSection({ config }: FooterSectionProps) {
               </div>
               
               <p className="text-slate-400 mb-6 leading-relaxed text-sm">
-                Professional {nicheLabel.toLowerCase()} services in {config.business.city},{' '}
-                {config.business.state}. Your trusted partner for a spotless, 
-                healthy space.
+                {presentation.servicePhrase} in {config.business.city},{' '}
+                {config.business.state}.
               </p>
 
               {/* Trust badges */}

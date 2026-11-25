@@ -55,6 +55,9 @@ export interface ServiceItem {
 // REVIEW CONFIGURATION
 // ============================================================================
 
+export type ReviewKind = 'genuine' | 'illustrative'
+export type ReviewSource = 'google' | 'operator' | 'ai' | 'default' | 'unknown'
+
 export interface ReviewItem {
   name: string
   text: string
@@ -63,6 +66,9 @@ export interface ReviewItem {
   service?: string // Which service they used
   image?: string // Reviewer avatar (optional)
   verified?: boolean
+  kind?: ReviewKind
+  source?: ReviewSource
+  sourceUrl?: string
 }
 
 // ============================================================================
@@ -211,7 +217,45 @@ export interface ContentOverrides {
 // MAIN PREVIEW CONFIGURATION
 // ============================================================================
 
+export type SiteMode = 'preview' | 'production'
+
+export type CleaningCategory =
+  | 'residential-cleaning'
+  | 'commercial-janitorial'
+  | 'exterior-cleaning'
+  | 'window-cleaning'
+  | 'carpet-upholstery'
+  | 'vacation-rental'
+  | 'post-construction'
+  | 'mixed-specialized'
+
+export type CleaningAudience = 'residential' | 'commercial' | 'mixed'
+export type CleaningEnvironment = 'interior' | 'exterior' | 'specialized'
+
+export interface CleaningProfile {
+  primaryCategory: CleaningCategory
+  secondaryCategories?: CleaningCategory[]
+  audience: CleaningAudience
+  environment: CleaningEnvironment
+  assetCollection: string
+  serviceModel?: 'recurring' | 'project' | 'mixed'
+}
+
+export interface GoogleBusinessProfile {
+  placeId?: string
+  profileUrl?: string
+  rating?: number
+  reviewCount?: number
+  primaryCategory?: string
+  additionalCategories?: string[]
+}
+
 export interface PreviewConfig {
+  schemaVersion?: 2
+  mode?: SiteMode
+  attributionId?: string
+  cleaningProfile?: CleaningProfile
+  googleBusinessProfile?: GoogleBusinessProfile
   // Required identifiers
   slug: string
   niche: BusinessNiche
@@ -367,7 +411,9 @@ export function migrateToPreviewConfig(legacy: CleaningPreviewConfig): PreviewCo
     ),
     sampleReviews: legacy.sampleReviews?.map(r => ({
       ...r,
-      verified: true,
+      kind: 'illustrative' as const,
+      source: 'unknown' as const,
+      verified: false,
     })),
   }
 }

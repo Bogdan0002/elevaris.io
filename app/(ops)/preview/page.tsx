@@ -10,7 +10,8 @@ import { generateContentAction } from './ai-actions'
 import { generateFromDescriptionAction } from './ai-description-action'
 import { TEMPLATE_REGISTRY } from '@/lib/templates/registry'
 import { Copy, ExternalLink, CheckCircle2, AlertCircle, Sparkles, Loader2, Clock, List, Building2 } from 'lucide-react'
-import type { BusinessNiche } from '@/lib/previews/types'
+import type { BusinessNiche, CleaningAudience, CleaningCategory, CleaningEnvironment } from '@/lib/previews/types'
+import { CLEANING_CATEGORIES } from '@/lib/previews/cleaning-presentation'
 import { useRouter } from 'next/navigation'
 
 function OpsConsoleContent() {
@@ -31,8 +32,6 @@ function OpsConsoleContent() {
 
   const [companyDescription, setCompanyDescription] = useState('')
   const [selectedNiche] = useState<BusinessNiche>('cleaning')
-  const [generatedReviews, setGeneratedReviews] = useState<Array<{name: string; text: string; stars: number}>>([])
-  const [generatedServices, setGeneratedServices] = useState<Array<{name: string; description: string; features?: string[]}>>([])
   const [formData, setFormData] = useState({
     templateId: 'cleaning-v1',
     niche: 'cleaning' as BusinessNiche,
@@ -55,6 +54,15 @@ function OpsConsoleContent() {
     heroHeadline: '',
     heroSubheadline: '',
     aboutStory: '',
+    primaryCategory: 'residential-cleaning' as CleaningCategory,
+    secondaryCategories: '',
+    audience: 'residential' as CleaningAudience,
+    environment: 'interior' as CleaningEnvironment,
+    reviewsText: '',
+    googleRating: '',
+    googleReviewCount: '',
+    gbpCategory: '',
+    updateExisting: false,
   })
 
   const [loading, setLoading] = useState(false)
@@ -67,6 +75,7 @@ function OpsConsoleContent() {
     reviewUrl?: string
     templateName?: string
     error?: string
+    conflict?: boolean
   } | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
   const [recentPreviews, setRecentPreviews] = useState<Array<{
@@ -107,19 +116,10 @@ function OpsConsoleContent() {
 
     try {
       // Parse services - format is "Service Name\nDescription\n\nNext Service..."
-      const serviceLines = formData.services.split('\n').map((s) => s.trim()).filter((s) => s.length > 0)
-      const services: Array<string | { name: string; description: string; features?: string[] }> = []
-      for (let i = 0; i < serviceLines.length; i++) {
-        if (serviceLines[i] && !serviceLines[i].startsWith(' ') && i === 0 || serviceLines[i - 1] === '') {
-          // This is a service name (not a description)
-          services.push(serviceLines[i])
-        }
-      }
-      // Fallback: if parsing fails, just use all non-empty lines
-      if (services.length === 0) {
-        services.push(...serviceLines.filter(line => line.length > 0))
-      }
-      const servicesToUse = generatedServices.length > 0 ? generatedServices : services
+      const services = formData.services.split(/\n\s*\n/).map((block) => {
+        const [name, ...rest] = block.split('\n').map((line) => line.trim()).filter(Boolean)
+        return { name, description: rest.join(' ') }
+      }).filter((service) => service.name)
       
       const areasServed = formData.areasServed
         .split('\n')
@@ -138,7 +138,7 @@ function OpsConsoleContent() {
         offerBadge: formData.offerBadge || undefined,
         primaryColor: formData.primaryColor,
         accentColor: formData.accentColor,
-        services: servicesToUse,
+        services,
         areasServed,
         hours: formData.hours || undefined,
         lat: formData.lat ? parseFloat(formData.lat) : undefined,
@@ -146,10 +146,34 @@ function OpsConsoleContent() {
         radiusMiles: formData.radiusMiles
           ? parseFloat(formData.radiusMiles)
           : undefined,
-        sampleReviews: generatedReviews.length > 0 ? generatedReviews : undefined,
+        sampleReviews: formData.reviewsText.split('\n').map((line) => {
+          const [name, stars, text, source] = line.split('|').map((part) => part.trim())
+          if (!name || !text) return null
+          return {
+            name,
+            stars: Number(stars) || 5,
+            text,
+            kind: 'genuine' as const,
+            source: source === 'google' ? 'google' as const : 'operator' as const,
+          }
+        }).filter((review): review is NonNullable<typeof review> => Boolean(review)),
         heroHeadline: formData.heroHeadline || undefined,
         heroSubheadline: formData.heroSubheadline || undefined,
         aboutStory: formData.aboutStory || undefined,
+        cleaningProfile: {
+          primaryCategory: formData.primaryCategory,
+          secondaryCategories: formData.secondaryCategories.split(',').map((item) => item.trim()).filter((item): item is CleaningCategory => CLEANING_CATEGORIES.includes(item as CleaningCategory)),
+          audience: formData.audience,
+          environment: formData.environment,
+          assetCollection: formData.primaryCategory,
+        },
+        googleBusinessProfile: {
+          placeId: formData.placeId || undefined,
+          rating: formData.googleRating ? Number(formData.googleRating) : undefined,
+          reviewCount: formData.googleReviewCount ? Number(formData.googleReviewCount) : undefined,
+          primaryCategory: formData.gbpCategory || undefined,
+        },
+        updateExisting: formData.updateExisting,
       })
 
       setResult(response)
@@ -187,6 +211,14 @@ function OpsConsoleContent() {
 
     setAiGenerating(true)
     setResult(null)
+    setFormData((current) => ({
+      ...current,
+      services: '',
+      reviewsText: '',
+      aboutStory: '',
+      heroHeadline: '',
+      heroSubheadline: '',
+    }))
     try {
         const aiResult = await generateFromDescriptionAction({
         description: companyDescription,
@@ -215,22 +247,17 @@ function OpsConsoleContent() {
           heroHeadline: data.heroHeadline || '',
           heroSubheadline: data.heroSubheadline || '',
           aboutStory: data.aboutStory || '',
+          primaryCategory: data.cleaningProfile.primaryCategory,
+          secondaryCategories: (data.cleaningProfile.secondaryCategories || []).join(', '),
+          audience: data.cleaningProfile.audience,
+          environment: data.cleaningProfile.environment,
+          reviewsText: (data.sampleReviews || []).map((review) => `${review.name} | ${review.stars} | ${review.text} | ${review.source}`).join('\n'),
+          googleRating: data.googleBusinessProfile?.rating ? String(data.googleBusinessProfile.rating) : '',
+          googleReviewCount: data.googleBusinessProfile?.reviewCount ? String(data.googleBusinessProfile.reviewCount) : '',
+          gbpCategory: data.googleBusinessProfile?.primaryCategory || '',
+          placeId: data.googleBusinessProfile?.placeId || formData.placeId,
+          updateExisting: false,
         })
-        // Store generated reviews
-        if (data.sampleReviews && data.sampleReviews.length > 0) {
-          setGeneratedReviews(data.sampleReviews.map(r => ({
-            name: r.name,
-            text: r.text,
-            stars: r.stars,
-          })))
-        }
-        if (data.services && data.services.length > 0) {
-          setGeneratedServices(data.services.map(s => ({
-            name: s.name,
-            description: s.description,
-            features: s.features,
-          })))
-        }
         setFormGenerated(true)
       } else {
         setResult({
@@ -610,10 +637,46 @@ function OpsConsoleContent() {
                 </div>
               </div>
 
+              <div className="bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-[#FF6A55]/30 rounded-2xl shadow-lg shadow-[#FF6A55]/10 p-6 space-y-4">
+                <h2 className="text-xl font-semibold text-white">Classification</h2>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <label className="text-sm text-white">Primary category
+                    <select className="mt-2 w-full rounded-lg border border-[#FF6A55]/30 bg-[#111111] p-2" value={formData.primaryCategory} onChange={(e) => setFormData({ ...formData, primaryCategory: e.target.value as CleaningCategory })}>
+                      {CLEANING_CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
+                    </select>
+                  </label>
+                  <label className="text-sm text-white">Audience
+                    <select className="mt-2 w-full rounded-lg border border-[#FF6A55]/30 bg-[#111111] p-2" value={formData.audience} onChange={(e) => setFormData({ ...formData, audience: e.target.value as CleaningAudience })}>
+                      <option value="residential">residential</option>
+                      <option value="commercial">commercial</option>
+                      <option value="mixed">mixed</option>
+                    </select>
+                  </label>
+                  <label className="text-sm text-white">Work type
+                    <select className="mt-2 w-full rounded-lg border border-[#FF6A55]/30 bg-[#111111] p-2" value={formData.environment} onChange={(e) => setFormData({ ...formData, environment: e.target.value as CleaningEnvironment })}>
+                      <option value="interior">interior</option>
+                      <option value="exterior">exterior</option>
+                      <option value="specialized">specialized</option>
+                    </select>
+                  </label>
+                </div>
+                <label className="block text-sm text-white">Secondary categories
+                  <Input value={formData.secondaryCategories} onChange={(e) => setFormData({ ...formData, secondaryCategories: e.target.value })} placeholder="window-cleaning, exterior-cleaning" className="mt-2 bg-[#111111] border-[#FF6A55]/30 text-white" />
+                </label>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <Input value={formData.googleRating} onChange={(e) => setFormData({ ...formData, googleRating: e.target.value })} placeholder="Google rating" className="bg-[#111111] border-[#FF6A55]/30 text-white" />
+                  <Input value={formData.googleReviewCount} onChange={(e) => setFormData({ ...formData, googleReviewCount: e.target.value })} placeholder="Google review count" className="bg-[#111111] border-[#FF6A55]/30 text-white" />
+                  <Input value={formData.gbpCategory} onChange={(e) => setFormData({ ...formData, gbpCategory: e.target.value })} placeholder="Google category" className="bg-[#111111] border-[#FF6A55]/30 text-white" />
+                </div>
+                <label className="block text-sm text-white">Supplied reviews
+                  <Textarea value={formData.reviewsText} onChange={(e) => setFormData({ ...formData, reviewsText: e.target.value })} rows={4} placeholder="Name | 5 | Review text | google" className="mt-2 bg-[#111111] border-[#FF6A55]/30 text-white font-mono text-sm" />
+                </label>
+              </div>
+
               {/* Services */}
               <div className="bg-[linear-gradient(160deg,#181116_0%,#0f0b0e_100%)] border border-[#FF6A55]/30 rounded-2xl shadow-lg shadow-[#FF6A55]/10 p-6">
                 <label className="block text-sm font-medium text-white mb-2">
-                  Services * <span className="text-[#9A9A9A] font-normal">(3-6 services with descriptions)</span>
+                  Services * <span className="text-[#9A9A9A] font-normal">(one block per service: name, then description)</span>
                 </label>
                 <Textarea
                   required
@@ -710,6 +773,11 @@ function OpsConsoleContent() {
                   </div>
                 </div>
               </div>
+
+              <label className="flex items-center gap-2 text-sm text-white">
+                <input type="checkbox" checked={formData.updateExisting} onChange={(e) => setFormData({ ...formData, updateExisting: e.target.checked })} />
+                Update the existing preview if this business already has one
+              </label>
 
               {/* Submit Button */}
               <Button 
@@ -847,6 +915,11 @@ function OpsConsoleContent() {
                   <p className="text-sm text-[#CFCFCF] bg-[#111111] p-3 rounded-lg border border-[#FF6A55]/20">
                     {result.error}
                   </p>
+                  {result.conflict && (
+                    <Button type="button" onClick={() => setFormData({ ...formData, updateExisting: true })}>
+                      Enable update, then submit again
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-12">

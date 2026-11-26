@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
 import { CheckCircle2, X, Sparkles, ArrowRight } from "lucide-react"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 
@@ -66,17 +65,18 @@ const colorClasses = {
 
 export function PricingTiers({ tiers, accentColor = "cyan" }: PricingTiersProps) {
   const colors = colorClasses[accentColor]
-  const searchParams = useSearchParams()
-  const ref = searchParams.get('ref') || ''
+  const [ref, setRef] = useState('')
 
   useEffect(() => {
-    if (!ref) return
+    const value = new URLSearchParams(window.location.search).get('ref') || ''
+    setRef(value)
+    if (!value) return
     fetch('/api/preview-events', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: 'sales_page_viewed', attributionId: ref, path: window.location.pathname }),
+      body: JSON.stringify({ event: 'sales_page_viewed', attributionId: value, path: window.location.pathname }),
     }).catch(() => undefined)
-  }, [ref])
+  }, [])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
